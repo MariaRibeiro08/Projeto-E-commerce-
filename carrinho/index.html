@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zados - Carrinho</title>
+  <link rel="stylesheet" href="style.css">
+
+</head>
+<body>
+
+<!-- Header -->
+<header>
+    <img class="LogoMark" src="imagens\Logo.PNG" alt="Logo_Zados">
+    <h1 class="Nome">ZADOS</h1>
+    <nav>
+        <a href="#" class="nav_item">BUSCA</a>
+        <a href="#" class="headerimg"><img src="imagens\lupa copy.png" alt="lupa"></a>
+        <a href="http://127.0.0.1:5500/home/index.html" class="nav_item">HOME</a>
+        <a href="http://127.0.0.1:5500/home/index.html" class="headerimg"><img src="Imagens\casa.png" alt="home"></a>
+        <a href="http://127.0.0.1:5500/catalogo/index.html" class="nav_item">LOJA</a>
+        <a href="http://127.0.0.1:5500/catalogo/index.html" class="headerimg"><img src="Imagens\loja.png" alt="home"></a>
+        <button class="botao_entrar">ENTRAR</button>
+    </nav>
+  </header>
+
+  <!-- STEPS -->
+  <div class="steps">
+    <div class="step ativo">1 CARRINHO</div>
+    <div class="step">2 IDENTIFICAÇÃO</div>
+    <div class="step">3 PAGAMENTO</div>
+  </div>
+
+  <!-- PRODUTO -->
+  <section class="carrinho">
+    <div class="produto">
+      <img src="imagens\CamisaPretaProduto.PNG" alt="Produto">
+      <div class="info">
+        <p><strong>Camiseta Basica</strong></p>
+        <p>Quantidade: 1</p>
+        <p>Cor: Preto</p>
+        <p>Tamanho: GG</p>
+      </div>
+      <div class="quantidade">
+        <button>-</button>
+        <span>1</span>
+        <button>+</button>
+      </div>
+      <div class="valor">R$129,99</div>   
+      <button class="delete"><i class="fa fa-trash"></i></button>
+    </div>
+
+    <div class="resumo">
+      <h3>Resumo</h3>
+      <p>Valor do Produto <span>R$129,99</span></p>
+      <p><strong>Valor Total</strong> <span><strong>R$129,99</strong></span></p>
+    </div>
+
+    <button class="continuar">Continuar</button>
+
+    <div class="pagamentos">
+      <img src="imagens/mastercard.png" alt="mastercard">
+      <img src="imagens/visa.png" alt="visa">
+      <img src="imagens/amex.png" alt="amex">
+      <img src="imagens/hipercard.png" alt="hipercard">
+      <img src="imagens/diners.png" alt="diners">
+      <img src="imagens\pix.png" alt="PIX">
+      <img src="imagens\boleto.png" alt="Boleto">
+    </div>
+
+    <a href="#" class="fale">Fale Conosco</a>
+  </section>
+
+     <!-- FOOTER -->
+     <footer>
+        <div class="footer-end">
+      <div class="footer-col">
+        <h4>Zados</h4>
+        <div class="social">
+          <a href="#" class="fcb"><img src="imagens\FacebookIcon.png" alt="Facebook"/></a>
+          <a href="#"><img src="imagens\IGIcon.png" alt="Instagram"/></a>
+          <a href="#"><img src="imagens\YTIcon.png" alt="Youtube"/></a>
+        </div>
+      </div>
+    
+      <div class="footer-col">
+        <h4>Camisetas</h4>
+        <ul>
+          <li><a href="#">Oversize</a></li>
+          <li><a href="#">Regata</a></li>
+          <li><a href="#">Manga-longa</a></li>
+        </ul>
+      </div>
+    
+      <div class="footer-col">
+        <h4>Camisas</h4>
+        <ul>
+          <li><a href="#">Polo</a></li>
+          <li><a href="#">Social</a></li>
+          <li><a href="#">Colarinho longo</a></li>
+          <button href="#" class="saiba_btn">Saiba Mais</button>
+        </ul>
+      </div>
+    </div>
+      </footer>
+</body>
+</html>

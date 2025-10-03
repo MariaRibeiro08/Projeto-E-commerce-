@@ -1,0 +1,239 @@
+body {
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background: #FBF4E6;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+nav { 
+    display:flex; 
+    gap:12px; 
+    align-items:center; 
+}
+nav .nav-item { 
+    text-decoration:none; 
+    color:#222; 
+    font-size:20px; 
+    padding:8px 8px;
+}
+.botao_entrar { 
+    background:#000; 
+    color:#fff; 
+    border:none; 
+    padding:15px 14px; 
+    border-radius:6px; 
+    cursor:pointer;
+    margin-left: 20px;
+    transition: 0.3s;
+}
+.botao_entrar:hover{
+    background: gray;
+    color: white;
+}
+
+header h1 {
+    margin: 0;
+    width: 900px;
+    font-size: 50px;
+
+}
+.LogoMark {
+    width:100px; 
+    height:100px; 
+    border-radius:6px; 
+    display:flex; 
+}
+nav a {
+    margin: 10px;
+    text-decoration: none;
+    color: black;
+    font-size: 20px;
+}
+
+.headerimg img{
+    width: 30px;
+}
+  /* HEADER */
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #fbeedc;
+    padding: 10px 40px;
+  }
+  .header .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .header nav {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  .header nav a {
+    text-decoration: none;
+    color: #000;
+    font-weight: bold;
+  }
+  .btn-login {
+    background: #000;
+    color: #fff;
+    border: none;
+    padding: 8px 16px;
+    cursor: pointer;
+  }
+  
+  /* STEPS */
+  .steps {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+  }
+  .step {
+    padding: 10px 20px;
+    border: 1px solid #000;
+    background: #fbeedc;
+    margin: 0 5px;
+    border-radius: 4px;
+  }
+  .step.ativo {
+    background: #000;
+    color: #fff;
+  }
+  
+  /* CARRINHO */
+  .carrinho {
+    max-width: 800px;
+    margin: auto;
+    text-align: center;
+  }
+  .produto {
+    display: grid;
+    grid-template-columns: 120px 1fr 120px 120px 50px;
+    align-items: center;
+    border: 1px solid #ddd;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+  }
+  .produto img {
+    width: 100px;
+  }
+  .quantidade button {
+    border: 1px solid #000;
+    padding: 5px 10px;
+    cursor: pointer;
+    background: none;
+  }
+  .quantidade span {
+    margin: 0 10px;
+  }
+  .delete {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: red;
+    font-size: 18px;
+  }
+  .valor {
+    font-weight: bold;
+  }
+  
+  /* RESUMO */
+  .resumo {
+    text-align: left;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  .resumo p {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  /* BOTÃO CONTINUAR */
+  .continuar {
+    background: #000;
+    color: #fff;
+    padding: 15px 30px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-bottom: 20px;
+  }
+  
+  /* PAGAMENTOS */
+  .pagamentos img {
+    height: 30px;
+    margin: 5px;
+  }
+  
+  /* FALE */
+  .fale {
+    display: block;
+    margin: 20px 0;
+    text-decoration: none;
+    color: #000;
+    font-weight: bold;
+  }
+  
+  /* FOOTER END */
+.footer-end {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); 
+    gap: 40px;
+    background: url("imagens/image.png") no-repeat center/cover; 
+    padding: 50px 60px;
+  }
+  
+  .footer-col h4 {
+    font-size: 20px;
+    margin-bottom: 15px;
+  }
+  
+  .footer-col ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .footer-col ul li {
+    margin: 6px 0;
+  }
+  
+  .footer-col ul li a {
+    text-decoration: none;
+    color: #000;
+    font-size: 16px;
+  }
+  
+  
+  .footer-col .social img{
+    width: 30px;
+    margin-top: 90px;
+  }
+  
+  .footer-col .social .fcb img{
+    width: 28px;
+    margin-top: 86px;
+  }
+  
+  .saiba_btn{
+    font-size: 16x;
+    margin-top: 20px; 
+    height: 20px;
+    background-color: rgba(255, 255, 255, 0);
+    cursor: pointer;
+    border-color: #00000000;
+    border-radius: 2px;
+    box-shadow: 1px 1px 1rem #3333334d;
+  }

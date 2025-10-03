@@ -1,0 +1,383 @@
+/* RESET */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: #fff;
+  color: #000000;
+  line-height: 1.6;
+  overflow-x: hidden
+}
+
+/* HEADER */
+header {
+    padding: 450px;
+    display: flex;
+    justify-content: space-between;
+    background: url("imagens/INIC.PNG") no-repeat center/cover; 
+    position: relative;
+
+}
+
+.barra { 
+    display:flex; 
+    gap:12px; 
+    top: 200px;
+
+}
+
+nav {
+  position: absolute; 
+  top: 20px;          
+  right: 40px;         
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+nav .nav-item { 
+    text-decoration:none; 
+    color:#222; 
+    font-size: 40px; 
+    padding:8px 8px;
+}
+.botao_entrar { 
+    background:#ffffff; 
+    color:#000000; 
+    border:none; 
+    padding:15px 15px; 
+    border-radius:6px; 
+    cursor:pointer;
+    margin-left: 20px;
+    transition: 0.3s;
+    font-size: 15px;
+}
+.botao_entrar:hover{
+    background: rgb(0, 0, 0);
+    color: white;
+}
+
+header h1 {
+    margin: 0;
+    width: 1050px;
+    font-size: 50px;
+
+}
+
+nav a {
+    margin: 10px;
+    text-decoration: none;
+    color: rgb(255, 255, 255);
+    font-size: 20px;
+}
+
+.headerimg img{
+    width: 45px;
+}
+
+.logo{
+    width: 150px;
+    position: absolute; 
+    top: 0px;        
+    left: 10px;         
+}
+
+.meio{
+    color: #fff;
+    position: absolute;
+    text-align: center;   
+    font-size: 40px ;
+    right: 640px;
+    top: 550px;
+}
+
+.ttl{
+    position: absolute;
+    color: #fff;
+    position: absolute;
+    text-align: center;   
+    right: 440px;
+    top: 200px;
+
+}
+
+.meio button{
+    background:#ffffff; 
+    color:#000000; 
+    border:none; 
+    padding:20px 20px; 
+    border-radius:6px; 
+    cursor:pointer;
+    margin-left: 20px;
+    transition: 0.3s;
+    font-size: 25px;
+}
+.meio button:hover{
+    background: rgb(0, 0, 0);
+    color: white;
+}
+
+/* NOVA COLEÇÂO */
+
+.colecao{
+  position: relative;
+  top: -100px;
+  right: -100px;
+}
+
+.colecao img{
+  position: relative;
+  width: 900px;
+  right: -950px;
+  border-radius: 8px;
+}
+
+.colecao h3{
+  position: relative;
+  font-size: 58px;
+}
+
+.colecao p{
+  position: relative;
+  font-size: 35px;
+  color: gray;
+}
+
+.clc_txt{
+  position: relative;
+  top: 300px;
+}
+
+.btn_clc{
+    background:#000000; 
+    color:#ffffff; 
+    border:none; 
+    padding:20px 40px; 
+    border-radius:6px; 
+    cursor:pointer;
+    margin-left: 20px;
+    transition: 0.3s;
+    font-size: 25px;
+}
+
+.btns{
+  position: absolute;
+  left: -20px;
+}
+
+.btn_clc1{
+    background:#d8d8d8; 
+    color:#000000; 
+    border:none; 
+    padding:20px 40px; 
+    border-radius:6px; 
+    cursor:pointer;
+    margin-left: 20px;
+    transition: 0.3s;
+    font-size: 25px;
+}
+
+.colecao button:hover{
+    background: rgb(189, 189, 189);
+    color: rgb(0, 0, 0);
+}
+
+/*ALTA TECNOLOGIA */
+
+.alt_tec {
+  position: relative;
+
+}
+
+.alt_tec img{
+  position:relative ;  
+  right: -60px;
+  border-radius: 9px;
+  width: 1000px;
+}
+
+.alt_txt{
+  position: relative;
+  top: -400px;
+  left: 1211px;
+}
+
+.alt_txt h3{
+  font-size: 58px;
+}
+
+.alt_txt p{
+  font-size: 38px;
+  color: gray;
+}
+
+.btn_alt{
+  position: relative;
+  top: 50px;
+  right: 31px;
+  background:#000000; 
+  color:#ffffff; 
+  border:none; 
+  padding:20px 40px; 
+  border-radius:6px; 
+  cursor:pointer;
+  margin-left: 20px;
+  transition: 0.3s;
+  font-size: 25px;
+}
+
+.alt_tec button:hover{
+    background: rgb(189, 189, 189);
+    color: rgb(0, 0, 0);
+}
+
+/*PRODUTOS EM DETAQUES */
+.lista_produto{
+  margin: 50px;
+  display: flex;
+}
+
+.produtos h2{
+  font-size: 40px;
+}
+
+.produtos h4{
+  font-size: 35px;
+}
+
+.produtos p{
+  color: gray;
+}
+
+.tlt{
+  position: relative;
+  right: -100px;
+}
+
+.prod_prcl{ 
+  top: 2000px;
+  width: 1000px;
+  height: auto;
+  font-size: 30px;
+}
+.prod_prcl img{
+  width: 900px;
+  height: auto;
+  left: 100px;
+  cursor: pointer;
+}
+
+.mangalonga img{
+  width: 50px;
+  height: 50px;
+}
+
+.prod_scnd{
+  margin: -200px;
+  position: absolute;
+  font-size: 20px;
+  right: 300px;
+  top: 2750px;
+  font-size: 25px;
+}
+.cores{
+  display: inline-block;
+  margin: 10px;
+}
+.cor_branca{
+  background-color: white;
+  width: 50px;
+  height: 50px;
+}
+
+.cor_azul{
+  background-color: blue;
+  margin: 10px;
+  width: 50px;
+  height: 50px;
+}
+
+.cor_cinza{
+  background-color: gray;
+  width: 50px;
+  height: 50px;
+}
+
+.prod_scnd img{
+  width: 380px;
+  height: auto;
+  cursor: pointer;
+}
+
+.ver_mais{
+  position: relative;
+  top: 50px;
+  right: -760px;
+}
+.ver_mais button{
+  background:#e6e6e6; 
+  color:#000000; 
+  border:none; 
+  padding:20px 40px; 
+  border-radius:6px; 
+  cursor:pointer;
+  margin-left: 20px;
+  font-size: 25px;
+  margin: 60px;
+}
+
+/* FOOTER END */
+.footer-end {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); 
+  gap: 40px;
+  background: url("imagens/Footer-home.png") no-repeat center/cover; 
+  padding: 50px 60px;
+}
+
+.footer-col h4 {
+  font-size: 20px;
+  margin-bottom: 15px;
+}
+
+.footer-col ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-col ul li {
+  margin: 6px 0;
+}
+
+.footer-col ul li a {
+  text-decoration: none;
+  color: #000;
+  font-size: 16px;
+}
+
+
+.footer-col .social img{
+  width: 30px;
+  margin-top: 90px;
+}
+
+.footer-col .social .fcb img{
+  width: 28px;
+  margin-top: 86px;
+}
+
+.saiba_btn{
+  font-size: 16x;
+  margin-top: 20px; 
+  height: 20px;
+  background-color: rgba(255, 255, 255, 0);
+  cursor: pointer;
+  border-color: #00000000;
+  border-radius: 2px;
+  box-shadow: 1px 1px 1rem #3333334d;
+}
