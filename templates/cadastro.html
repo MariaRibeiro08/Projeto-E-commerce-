@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Zados - Cadastro</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="icon" href="{{ url_for('static', path='uploads/Logo_SF_Branca.PNG') }}" type="image/x-icon">
+  <style>
+    /* ==== CSS já incluído ==== */
+    * {margin:0; padding:0; box-sizing:border-box; font-family: 'Inter', sans-serif;}
+    body {background-color:#fff; color:#000;}
+    .topbar {display:flex; justify-content:space-between; align-items:center; background:#FBF4E6; padding:16px 32px;}
+    .logo-area {display:flex; align-items:center; gap:12px;}
+    .logo-img {width:150px;}
+    .topbar h1 {margin-left:20px; font-size:50px;}
+    .sobre-btn {display:flex; align-items:center; gap:40px; font-size:18px;}
+    .sobre-btn a {padding:10px 18px; background:#000; color:#fff; border-radius:6px; text-decoration:none;}
+    .cadastro {display:flex; justify-content:space-between; padding:40px 5%; min-height:70vh;}
+    .cadastro-form {flex:1; max-width:600px; margin-top:70px; font-size:15px;}
+    .cadastro-form h1 {font-size:50px; margin-bottom:10px;}
+    .cadastro-form p {color:#666; font-size:20px;}
+    .cadastro-form a {color:#000; font-weight:bold;}
+    .cadastro-form form {display:flex; flex-direction:column; gap:15px; margin-top:15px;}
+    input {padding:12px; border:1px solid #ccc; border-radius:8px; font-size:15px;}
+    .alinhar {display:flex; gap:10px;}
+    .nomes input {margin-top:15px; width:287px;}
+    .login-button {padding:12px; background:#000; color:#fff; border:none; border-radius:8px; cursor:pointer; font-size:20px;}
+    .cadastro-img {flex:1; display:flex; justify-content:center; align-items:center;}
+    .cadastro-img img {width:750px; border-radius:8px;}
+    .footer {display:flex; justify-content:space-between; padding:40px 5%; background:linear-gradient(to right,#f3e9d9,#e2c8a9,#f3e9d9); flex-wrap:wrap;}
+    .footer-col {flex:1; min-width:180px; margin-bottom:20px;}
+    .footer-col h3, .footer-col h4 {margin-bottom:12px;}
+    .footer-col ul {list-style:none;}
+    .footer-col li {margin-bottom:8px;}
+    .social-icons img {width:45px; height:auto; margin-top:50px;}
+    .footer-btn {margin-top:12px; padding:6px 12px; border:none; border-radius:6px; cursor:pointer; color: #000; text-decoration: none;}
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="logo-area">
+      <img src="{{ url_for('static', path='uploads/Logo.png') }}" alt="Logo Zados" class="logo-img"/>
+      <h1>ZADOS</h1>
+    </div>
+    <div class="sobre-btn">
+      <span>Saiba mais aqui:</span>
+      <a href="/sobre">Sobre</a>
+    </div>
+  </header>
+
+  <main class="cadastro">
+    <section class="cadastro-form">
+      <h1>Cadastro</h1>
+      <p>Realize o cadastro para efetuar o login</p>
+      
+      <form method="POST" action="/register">
+        <div class="alinhar">
+          <div class="nomes">
+            <label for="nome">Nome</label>
+            <input type="text" id="nome" name="nome" placeholder="Maria" required>
+          </div>
+          <div class="nomes">
+            <label for="sobrenome">Sobrenome</label>
+            <input type="text" id="sobrenome" name="sobrenome" placeholder="Ribeiro" required>
+          </div>
+        </div>
+
+        <label for="email">Endereço de e-mail</label>
+        <input type="email" id="email" name="email" placeholder="bahiateles@gmail.com" required />
+
+        <label for="telefone">Telefone</label>
+        <input type="tel" id="telefone" name="telefone" placeholder="(11)4002-8922" required maxlength="11"/>
+
+        <label for="senha">Senha</label>
+        <input type="password" id="senha" name="senha" placeholder="*******" required />
+
+        <label for="confirma">Confirme sua senha</label>
+        <input type="password" id="confirma" name="confirma" placeholder="*******" required />
+
+        <button type="submit" class="login-button">Cadastrar</button>
+      </form>
+
+      <h4>Verifique seu email ou SMS após o envio das informações acima</h4>
+      <p>Já possui uma conta? <a href="/login">login</a></p> 
+    </section>
+
+    <section class="cadastro-img">
+      <img src="{{ url_for('static', path='uploads/img_cadastro.png') }}" alt="Camisetas dobradas" />
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-col">
+      <h3>Zados</h3>
+      <div class="social-icons">
+        <a href="#" class="fcb"><img src="{{ url_for('static', path='uploads/FacebookIcon.png') }}" alt="Facebook"/></a>
+        <a href="#"><img src="{{ url_for('static', path='uploads/IGIcon.png') }}" alt="Instagram"/></a>
+        <a href="#"><img src="{{ url_for('static', path='uploads/YTIcon.png') }}" alt="Youtube"/></a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Camisetas</h4>
+      <ul>
+        <li>Oversize</li>
+        <li>Regata</li>
+        <li>Manga-longa</li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Camisas</h4>
+      <ul>
+        <li>Polo</li>
+        <li>Regata-social</li>
+        <li>Colarinho-longo</li>
+      </ul>
+      <a class="footer-btn" href="/sobre">Sobre nós</a>
+    </div>
+  </footer>
+</body>
+</html>

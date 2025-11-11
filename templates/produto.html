@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="UTF-8">
+  <title>{{ produto.nome }} - Zados</title>
+  <link rel="icon" href="{{ url_for('static', path='uploads/Logo_SF_Branca.PNG') }}" type="image/x-icon">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background: #FBF4E6;
+      padding: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    nav {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    nav .nav-item {
+      text-decoration: none;
+      color: #222;
+      font-size: 20px;
+      padding: 8px 8px;
+    }
+
+    .botao_entrar {
+      background: #000;
+      color: #fff;
+      border: none;
+      padding: 15px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-left: 20px;
+      transition: 0.3s;
+      position: relative;
+      top: 18px;
+    }
+
+    .botao_entrar:hover {
+      background: gray;
+      color: white;
+    }
+
+    header h1 {
+      margin: 0;
+      width: 900px;
+      font-size: 50px;
+    }
+
+    .LogoMark {
+      width: 100px;
+      height: 100px;
+      border-radius: 6px;
+      display: flex;
+    }
+
+    nav a {
+      margin: 10px;
+      text-decoration: none;
+      color: black;
+      font-size: 20px;
+    }
+
+    .headerimg img {
+      width: 30px;
+    }
+
+    /* PRODUTO */
+    .produto {
+      display: flex;
+      padding: 30px;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+
+    .produto img {
+      width: 450px;
+      margin-right: 80px;
+      box-shadow: 1px 1px 1rem rgba(128, 128, 128, 0.356);
+      border-radius: 15px;
+      transition: opacity 0.3s ease;
+    }
+
+    .info p,
+    ul,
+    h4 {
+      color: #00000093;
+    }
+
+    /* TAMANHOS DINÂMICOS */
+    .Tamanhos {
+      background: black;
+      color: white;
+      padding: 5px 30px;
+      cursor: pointer;
+      border-radius: 15px;
+      transition: 0.3s;
+      position: relative;
+      border: 2px solid black;
+      margin: 5px;
+    }
+
+    .Tamanhos:hover {
+      background: gray;
+      color: white;
+    }
+
+    .Tamanhos.selecionado {
+      background: #0078ff;
+      border-color: #0078ff;
+    }
+
+    .Tamanhos.indisponivel {
+      background: #ccc;
+      color: #666;
+      cursor: not-allowed;
+      border-color: #ccc;
+    }
+
+    .Carrinho {
+      background: black;
+      color: white;
+      padding: 10px;
+      width: 880px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: 0.3s;
+      position: relative;
+      margin-top: 20px;
+      text-decoration: none;
+      border: none;
+      font-size: 16px;
+    }
+
+    .Carrinho:hover {
+      background: gray;
+      color: white;
+    }
+
+    .Carrinho:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+
+    .saibamais {
+      text-decoration: none;
+      color: #000;
+      font-size: 15px;
+    }
+
+    /* CORES DINÂMICAS */
+    .cores-container {
+      margin: 15px 0;
+    }
+
+    .cores {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .cor-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 3px solid #ddd;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .cor-btn:hover {
+      transform: scale(1.1);
+      border-color: #999;
+    }
+
+    .cor-btn.selecionada {
+      border-color: #0078ff;
+      transform: scale(1.1);
+    }
+
+    .cor-btn.indisponivel {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .cor-btn.indisponivel:hover {
+      transform: none;
+      border-color: #ddd;
+    }
+
+    /* INFO DINÂMICA */
+    .info-dinamica {
+      margin: 15px 0;
+      padding: 10px;
+      background: #f9f9f9;
+      border-radius: 8px;
+    }
+
+    .estoque-info {
+      color: #008000;
+      font-weight: bold;
+    }
+
+    .estoque-baixo {
+      color: #ff6600;
+    }
+
+    .estoque-zero {
+      color: #ff0000;
+    }
+
+    /* PRODUTOS SEMELHANTES */
+    .h1semelhantes {
+      margin-top: 100px;
+      font-size: 45px;
+    }
+
+    .semelhantes {
+      display: inline-flex;
+      justify-content: center;
+      margin: 50px;
+      position: relative;
+      left: 300px;
+    }
+
+    .info_smlnt h3 {
+      font-size: 30px;
+    }
+
+    .info_smlnt {
+      column-gap: 500PX;
+    }
+
+    .semelhantes img{
+      display: inline-flex;
+      width: 400px;
+      height: auto;
+    }
+
+    /* FOOTER END */
+    .footer-end {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 40px;
+      background: linear-gradient(to right, #f3e9d9, #e2c8a9, #f3e9d9);
+      padding: 50px 60px;
+    }
+
+    .footer-col h4 {
+      font-size: 20px;
+      margin-bottom: 15px;
+    }
+
+    .footer-col ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .footer-col ul li {
+      margin: 6px 0;
+    }
+
+    .footer-col ul li a {
+      text-decoration: none;
+      color: #000;
+      font-size: 16px;
+    }
+
+    .footer-col .social img {
+      width: 30px;
+      margin-top: 90px;
+    }
+
+    .footer-col .social .fcb img {
+      width: 28px;
+      margin-top: 86px;
+    }
+
+    .saiba_btn {
+      font-size: 16x;
+      padding: 10px 5px;
+      margin-top: 20px;
+      height: 35px;
+      background-color: rgba(255, 255, 255, 0);
+      cursor: pointer;
+      border-color: #00000000;
+      border-radius: 2px;
+      box-shadow: 1px 1px 1rem #3333334d;
+      position: relative;
+      color: #000;
+      text-decoration: none;
+    }
+    /* CORREÇÃO: Remove a duplicação de estoque */
+    .infoPrincipal {
+        list-style: none;
+        padding: 0;
+    }
+
+    .infoPrincipal li {
+        margin: 8px 0;
+    }
+
+    /* Estoque dinâmico */
+    .estoque-dinamico {
+        font-weight: bold;
+        margin: 10px 0;
+    }
+
+    .estoque-disponivel { color: #008000; }
+    .estoque-baixo { color: #ff6600; }
+    .estoque-esgotado { color: #ff0000; }
+  </style>
+</head>
+
+<body>
+  <!-- Header -->
+  <header>
+    <img class="LogoMark" src="{{ url_for('static', path='uploads/Logo.png') }}" alt="Logo Zados">
+    <h1 class="Nome">ZADOS</h1>
+    <nav>
+      <a href="/busca" class="nav_item">BUSCA</a>
+      <a href="/busca" class="headerimg"><img src="{{ url_for('static', path='uploads/lupa.png') }}" alt="lupa"></a>
+      <a href="/home" class="nav_item">HOME</a>
+      <a href="/home" class="headerimg"><img src="{{ url_for('static', path='uploads/casa.png') }}" alt="home"></a>
+      <a href="/" class="nav_item">CATÁLOGO</a>
+      <a href="/" class="headerimg"><img src="{{ url_for('static', path='uploads/loja.png') }}" alt="catalogo"></a>
+      <a href="/carrinho" class="nav_item">CARRINHO</a>
+      <a href="/carrinho" class="headerimg" style="position: relative;">
+          <img src="{{ url_for('static', path='uploads/carrinho.png') }}" alt="carrinho">
+          <span id="contador-carrinho" class="contador-carrinho"></span>
+      </a>
+      {% if usuario %}
+        <a href="/logout" class="botao_entrar">SAIR ({{ usuario.nome }})</a>
+      {% else %}
+        <a href="/login" class="botao_entrar">ENTRAR</a>
+      {% endif %}
+    </nav>
+  </header>
+
+  <!-- Produto (dinâmico com backend) -->
+  <section class="produto">
+    <img id="produto-imagem" src="{{ url_for('static', path='uploads/' + produto.imagem) }}" alt="{{ produto.nome }}" width="400">
+
+    <div class="info">
+      <h2 id="produto-nome">{{ produto.nome }}</h2>
+      <p>{{ produto.descricao or 'Tech-Tshirt' }}</p>
+      <h3 id="produto-preco">R$ {{ "%.2f"|format(produto.preco) }}</h3>
+      <p>
+        Peça essencial e versátil. Confeicionada em algodão macio, com modelagem regular e gola careca.<br>
+        Ideal para o dia a dia ou composições estilosas.
+      </p>
+
+      <ul class="infoPrincipal">
+        <!-- ✅ CORREÇÃO: Remove estoque duplicado -->
+        <li><strong id="cor-info">Cor:</strong> <span id="cor-atual">{{ produto.cor }}</span></li>
+        <li>Tecido: 100% algodão</li>
+        <li>Confortável</li>
+        <li>Unissex</li>
+      </ul>
+
+      <!-- ✅ CORREÇÃO: Estoque dinâmico -->
+      <div class="estoque-dinamico estoque-disponivel" id="estoque-info">
+        Quantidade em estoque: {{ produto.quantidade }}
+      </div>
+
+      <!-- CORES DISPONÍVEIS -->
+      <div class="cores-container">
+        <h4>Cores disponíveis:</h4>
+        <div class="cores" id="cores-container">
+          <!-- As cores serão preenchidas via JavaScript -->
+        </div>
+      </div>
+
+      <!-- TAMANHOS DISPONÍVEIS -->
+      <div class="Tamanho">
+        <p>Tamanhos disponíveis:</p>
+        <div id="tamanhos-container">
+          <!-- Os tamanhos serão preenchidos via JavaScript -->
+        </div>
+      </div>
+
+      <!-- INFO DINÂMICA -->
+      <div class="info-dinamica" id="info-dinamica" style="display: none;">
+        <p id="variacao-info"></p>
+      </div>
+
+      <br>
+      <!-- Botão Adicionar ao Carrinho -->
+      <button onclick="adicionarAoCarrinho()" class="Carrinho" id="btn-carrinho">
+        Adicionar ao Carrinho
+      </button>
+
+      {% if is_admin %}
+      <br><br>
+      <a href="/editar/{{ produto.id }}">Editar</a> |
+      <a href="/deletar/{{ produto.id }}">Deletar</a> |
+      <a href="/logout">Sair do modo Admin</a>
+      {% endif %}
+
+      <br><br>
+      <a href="/sobre" class="saibamais">Saiba Mais</a>
+      <br><br><br>
+      <a href="/" class="Carrinho">Voltar</a>
+    </div>
+  </section>
+
+  <!-- ✅ CORREÇÃO: Produtos semelhantes dinâmicos -->
+  <center>
+    <h2 class="h1semelhantes">Produtos Semelhantes</h2>
+  </center>
+  <section class="semelhantes" id="produtos-semelhantes">
+    <!-- Será preenchido via JavaScript -->
+  </section>
+
+  <!-- Footer -->
+  <div class="footer-end">
+    <div class="footer-col">
+      <h4>Zados</h4>
+      <div class="social">
+        <a href="#" class="fcb"><img src="{{ url_for('static', path='uploads/FacebookIcon.png') }}" alt="Facebook" class="fcb"/></a>
+        <a href="#"><img src="{{ url_for('static', path='uploads/IGIcon.png') }}" alt="Instagram"/></a>
+        <a href="#"><img src="{{ url_for('static', path='uploads/YTIcon.png') }}" alt="Youtube"/></a>
+      </div>
+    </div>
+
+    <div class="footer-col">
+      <h4>Camisetas</h4>
+      <ul>
+        <li><a href="/categoria/1">Oversize</a></li>
+        <li><a href="/categoria/2">Regata</a></li>
+        <li><a href="/categoria/3">Manga-longa</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h4>Camisas</h4>
+      <ul>
+        <li><a href="/categoria/4">Polo</a></li>
+        <li><a href="/categoria/5">Social</a></li>
+        <li><a href="/categoria/6">Colarinho longo</a></li>
+        <a href="/sobre" class="saiba_btn">Saiba Mais</a>
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    // Mapa de cores para CSS
+    const mapaCores = {
+        'preto': '#000000',
+        'branco': '#ffffff', 
+        'vermelho': '#ff0000',
+        'azul': '#0000ff',
+        'verde': '#008000',
+        'cinza': '#808080',
+        'bege': '#f5f5dc',
+        'rosa': '#ff69b4',
+        'amarelo': '#ffff00',
+        'laranja': '#ffa500',
+        'roxo': '#800080',
+        'marrom': '#8b4513'
+    };
+
+    let variacoes = [];
+    let corSelecionada = '{{ produto.cor }}';
+    let tamanhoSelecionado = '{{ produto.tamanho }}';
+
+    // ✅ VERSÃO SIMPLIFICADA: Carrega apenas as variações
+    async function carregarVariacoes() {
+        console.log('🚀 Iniciando carregamento de variações...');
+        
+        try {
+            const response = await fetch(`/api/produto/{{ produto.id }}/variacoes`);
+            console.log('📡 Resposta da API:', response.status);
+            
+            if (!response.ok) {
+                throw new Error(`Erro HTTP: ${response.status}`);
+            }
+            
+            variacoes = await response.json();
+            console.log('✅ Variações carregadas:', variacoes);
+            
+            // Se não tem variações, cria uma fake com os dados do produto
+            if (variacoes.length === 0) {
+                console.log('⚠️ Nenhuma variação encontrada, criando fallback...');
+                variacoes = [{
+                    id: null,
+                    cor: '{{ produto.cor }}',
+                    tamanho: '{{ produto.tamanho }}',
+                    quantidade: {{ produto.quantidade }},
+                    imagem: '{{ produto.imagem }}'
+                }];
+            }
+            
+            inicializarInterface();
+            
+        } catch (error) {
+            console.error('❌ Erro ao carregar variações:', error);
+            // Fallback de emergência
+            variacoes = [{
+                id: null,
+                cor: '{{ produto.cor }}',
+                tamanho: '{{ produto.tamanho }}',
+                quantidade: {{ produto.quantidade }},
+                imagem: '{{ produto.imagem }}'
+            }];
+            inicializarInterface();
+        }
+    }
+
+    // ✅ INICIALIZAÇÃO SIMPLIFICADA
+    function inicializarInterface() {
+        console.log('🎨 Inicializando interface...');
+        console.log('Variações disponíveis:', variacoes);
+        
+        carregarCores();
+        carregarTamanhos();
+        atualizarDisplay();
+    }
+
+    // ✅ CARREGA CORES - VERSÃO SIMPLES
+    function carregarCores() {
+        const coresContainer = document.getElementById('cores-container');
+        
+        // Pega todas as cores únicas das variações
+        const coresUnicas = [...new Set(variacoes.map(v => v.cor).filter(cor => cor))];
+        console.log('🎨 Cores únicas:', coresUnicas);
+        
+        coresContainer.innerHTML = '';
+        
+        if (coresUnicas.length === 0) {
+            coresContainer.innerHTML = '<p>Nenhuma cor disponível</p>';
+            return;
+        }
+        
+        coresUnicas.forEach(cor => {
+            const corBtn = document.createElement('button');
+            corBtn.className = `cor-btn ${cor === corSelecionada ? 'selecionada' : ''}`;
+            corBtn.setAttribute('data-cor', cor);
+            corBtn.setAttribute('title', cor);
+            
+            // Aplica cor de fundo
+            const corLower = cor.toLowerCase().split(' ')[0];
+            const corCSS = mapaCores[corLower] || '#cccccc';
+            corBtn.style.backgroundColor = corCSS;
+            
+            // SEMPRE clicável nesta versão simples
+            corBtn.addEventListener('click', () => {
+                console.log(`🎯 Clicou na cor: ${cor}`);
+                selecionarCor(cor);
+            });
+            
+            coresContainer.appendChild(corBtn);
+        });
+    }
+
+    // ✅ CARREGA TAMANHOS - VERSÃO SIMPLES  
+    function carregarTamanhos() {
+        const tamanhosContainer = document.getElementById('tamanhos-container');
+        
+        // Pega todos os tamanhos únicos para a cor selecionada
+        const tamanhosCor = variacoes
+            .filter(v => v.cor === corSelecionada && v.tamanho)
+            .map(v => v.tamanho);
+            
+        const tamanhosUnicos = [...new Set(tamanhosCor)];
+        console.log(`📏 Tamanhos para cor "${corSelecionada}":`, tamanhosUnicos);
+        
+        tamanhosContainer.innerHTML = '';
+        
+        if (tamanhosUnicos.length === 0) {
+            tamanhosContainer.innerHTML = '<p>Nenhum tamanho disponível</p>';
+            return;
+        }
+        
+        // Ordem dos tamanhos
+        const ordemTamanhos = ['PP', 'P', 'M', 'G', 'GG'];
+        const tamanhosOrdenados = ordemTamanhos.filter(t => tamanhosUnicos.includes(t));
+        
+        tamanhosOrdenados.forEach(tamanho => {
+            const btn = document.createElement('button');
+            btn.className = `Tamanhos ${tamanho === tamanhoSelecionado ? 'selecionado' : ''}`;
+            btn.textContent = tamanho;
+            btn.setAttribute('data-tamanho', tamanho);
+            
+            // SEMPRE clicável nesta versão simples
+            btn.addEventListener('click', () => {
+                console.log(`🎯 Clicou no tamanho: ${tamanho}`);
+                selecionarTamanho(tamanho);
+            });
+            
+            tamanhosContainer.appendChild(btn);
+        });
+    }
+
+    // ✅ SELECIONA COR - VERSÃO SIMPLES
+    function selecionarCor(cor) {
+        console.log(`🔄 Selecionando cor: ${cor}`);
+        corSelecionada = cor;
+        
+        // Reseta tamanho quando muda cor
+        tamanhoSelecionado = '';
+        
+        // Atualiza visual das cores
+        document.querySelectorAll('.cor-btn').forEach(btn => {
+            btn.classList.toggle('selecionada', btn.getAttribute('data-cor') === cor);
+        });
+        
+        // Recarrega tamanhos para nova cor
+        carregarTamanhos();
+        atualizarDisplay();
+    }
+
+    // ✅ SELECIONA TAMANHO - VERSÃO SIMPLES
+    function selecionarTamanho(tamanho) {
+        console.log(`🔄 Selecionando tamanho: ${tamanho}`);
+        tamanhoSelecionado = tamanho;
+        
+        // Atualiza visual dos tamanhos
+        document.querySelectorAll('.Tamanhos').forEach(btn => {
+            btn.classList.toggle('selecionado', btn.getAttribute('data-tamanho') === tamanho);
+        });
+        
+        atualizarDisplay();
+    }
+
+    // ✅ ATUALIZA DISPLAY - VERSÃO SIMPLES
+    function atualizarDisplay() {
+        console.log(`🔄 Atualizando display - Cor: ${corSelecionada}, Tamanho: ${tamanhoSelecionado}`);
+        
+        const infoDinamica = document.getElementById('info-dinamica');
+        const variacaoInfo = document.getElementById('variacao-info');
+        const btnCarrinho = document.getElementById('btn-carrinho');
+        const corAtual = document.getElementById('cor-atual');
+        const estoqueInfo = document.getElementById('estoque-info');
+        
+        // Encontra a variação atual
+        const variacaoAtual = variacoes.find(v => 
+            v.cor === corSelecionada && v.tamanho === tamanhoSelecionado
+        );
+        
+        console.log('🔍 Variação atual:', variacaoAtual);
+        
+        if (variacaoAtual) {
+            // ✅ TEM VARIAÇÃO - Atualiza informações
+            corAtual.textContent = corSelecionada;
+            estoqueInfo.textContent = `Quantidade em estoque: ${variacaoAtual.quantidade}`;
+            
+            // Habilita/desabilita botão baseado na quantidade
+            if (variacaoAtual.quantidade > 0) {
+                btnCarrinho.disabled = false;
+                btnCarrinho.textContent = 'Adicionar ao Carrinho';
+                estoqueInfo.className = 'estoque-dinamico estoque-disponivel';
+            } else {
+                btnCarrinho.disabled = true;
+                btnCarrinho.textContent = 'PRODUTO ESGOTADO';
+                estoqueInfo.className = 'estoque-dinamico estoque-esgotado';
+            }
+            
+            infoDinamica.style.display = 'block';
+            variacaoInfo.textContent = `Selecionado: ${corSelecionada} - Tamanho ${tamanhoSelecionado}`;
+            
+        } else {
+            // ❌ NENHUMA VARIAÇÃO ENCONTRADA
+            infoDinamica.style.display = 'none';
+            btnCarrinho.disabled = true;
+            btnCarrinho.textContent = 'SELECIONE COR E TAMANHO';
+            
+            // Mostra informações do produto principal como fallback
+            if (!corSelecionada || !tamanhoSelecionado) {
+                estoqueInfo.textContent = `Quantidade em estoque: {{ produto.quantidade }}`;
+                estoqueInfo.className = 'estoque-dinamico estoque-disponivel';
+            }
+        }
+    }
+
+    // ✅ INICIALIZAÇÃO
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('🚀 Página carregada, iniciando...');
+        carregarVariacoes();
+    });
+
+    async function adicionarAoCarrinho() {
+    const btnCarrinho = document.getElementById('btn-carrinho');
+    const originalText = btnCarrinho.textContent;
+    
+    // Verificar se tem cor e tamanho selecionados
+    if (!corSelecionada || !tamanhoSelecionado) {
+        alert('⚠️ Por favor, selecione cor e tamanho antes de adicionar ao carrinho');
+        return;
+    }
+    
+    // Encontrar a variação atual para verificar estoque
+    const variacaoAtual = variacoes.find(v => 
+        v.cor === corSelecionada && v.tamanho === tamanhoSelecionado
+    );
+    
+    if (!variacaoAtual || variacaoAtual.quantidade <= 0) {
+        alert('❌ Produto indisponível no momento');
+        return;
+    }
+    
+    try {
+        // Mostrar loading no botão
+        btnCarrinho.disabled = true;
+        btnCarrinho.textContent = 'Adicionando...';
+        
+        // Preparar dados para a API
+        const dadosCarrinho = {
+            produto_id: {{ produto.id }},  // ID do produto principal
+            quantidade: 1,
+            cor: corSelecionada,
+            tamanho: tamanhoSelecionado
+        };
+        
+        console.log('📤 Enviando para carrinho:', dadosCarrinho);
+        
+        // Fazer requisição para a API
+        const response = await fetch('/api/carrinho/adicionar', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(dadosCarrinho)
+        });
+        
+        const resultado = await response.json();
+        
+        if (response.ok) {
+            // ✅ SUCESSO
+            console.log('✅ Item adicionado:', resultado);
+            
+            // Feedback visual
+            btnCarrinho.textContent = '✅ Adicionado!';
+            btnCarrinho.style.background = '#28a745';
+            
+            // Mostrar mensagem de sucesso
+            mostrarMensagemSucesso('Produto adicionado ao carrinho!');
+            
+            // Atualizar contador do carrinho no header (se existir)
+            atualizarContadorCarrinho();
+            
+            // Restaurar botão após 2 segundos
+            setTimeout(() => {
+                btnCarrinho.disabled = false;
+                btnCarrinho.textContent = originalText;
+                btnCarrinho.style.background = '';
+            }, 2000);
+            
+        } else {
+            // ❌ ERRO
+            throw new Error(resultado.detail || 'Erro ao adicionar ao carrinho');
+        }
+        
+    } catch (error) {
+        console.error('❌ Erro ao adicionar ao carrinho:', error);
+        
+        // Restaurar botão
+        btnCarrinho.disabled = false;
+        btnCarrinho.textContent = originalText;
+        
+        // Mostrar erro
+        if (error.message.includes('autenticado')) {
+            alert('🔐 Você precisa estar logado para adicionar itens ao carrinho');
+            window.location.href = '/login';
+        } else if (error.message.includes('Estoque')) {
+            alert(`❌ ${error.message}`);
+        } else {
+            alert('❌ Erro ao adicionar produto ao carrinho');
+        }
+    }
+}
+
+// ✅ FUNÇÃO PARA MOSTRAR MENSAGEM DE SUCESSO
+function mostrarMensagemSucesso(mensagem) {
+    // Remove mensagem anterior se existir
+    const mensagemAnterior = document.getElementById('mensagem-carrinho');
+    if (mensagemAnterior) {
+        mensagemAnterior.remove();
+    }
+    
+    // Cria nova mensagem
+    const mensagemDiv = document.createElement('div');
+    mensagemDiv.id = 'mensagem-carrinho';
+    mensagemDiv.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: #28a745;
+        color: white;
+        padding: 15px 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        z-index: 1000;
+        font-weight: bold;
+        animation: slideIn 0.3s ease;
+    `;
+    mensagemDiv.textContent = mensagem;
+    
+    // Adiciona ao body
+    document.body.appendChild(mensagemDiv);
+    
+    // Remove após 3 segundos
+    setTimeout(() => {
+        mensagemDiv.style.animation = 'slideOut 0.3s ease';
+        setTimeout(() => mensagemDiv.remove(), 300);
+    }, 3000);
+}
+
+// ✅ ATUALIZAR CONTADOR DO CARRINHO NO HEADER
+async function atualizarContadorCarrinho() {
+    try {
+        const response = await fetch('/api/carrinho/dados');
+        const data = await response.json();
+        
+        if (data.autenticado && data.total_itens > 0) {
+            // Atualiza o contador no header (se existir)
+            const contadorCarrinho = document.getElementById('contador-carrinho');
+            if (contadorCarrinho) {
+                contadorCarrinho.textContent = data.total_itens;
+                contadorCarrinho.style.display = 'inline-block';
+            }
+        }
+    } catch (error) {
+        console.log('Não foi possível atualizar contador do carrinho');
+    }
+}
+
+// ✅ ADICIONAR ESTILOS DE ANIMAÇÃO (no <style> do produto.html)
+// Adicione isso na seção <style> do seu produto.html:
+const estilosAnimacao = `
+@keyframes slideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slideOut {
+    from { transform: translateX(0); opacity: 1; }
+    to { transform: translateX(100%); opacity: 0; }
+}
+
+.contador-carrinho {
+    background: #ff4444;
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    font-size: 12px;
+    display: none;
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    text-align: center;
+    line-height: 20px;
+}
+`;
+
+// ✅ INICIALIZAR CONTADOR AO CARREGAR A PÁGINA
+document.addEventListener('DOMContentLoaded', function() {
+    // Adiciona estilos de animação
+    const styleSheet = document.createElement('style');
+    styleSheet.textContent = estilosAnimacao;
+    document.head.appendChild(styleSheet);
+    
+    // Carrega contador do carrinho
+    atualizarContadorCarrinho();
+});
+  </script>
+</body>
+</html>

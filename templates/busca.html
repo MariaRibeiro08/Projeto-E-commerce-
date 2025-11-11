@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Busca</title>
+    <link rel="stylesheet" href="busca.css" />
+    <link rel="icon" href="{{ url_for('static', path='uploads/Logo_SF_Branca.PNG') }}" type="image/x-icon">
+  </head>
+  <style>
+    body {
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background: #FBF4E6;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+nav { 
+    display:flex; 
+    gap:12px; 
+    align-items:center; 
+}
+nav .nav-item { 
+    text-decoration:none; 
+    color:#222; 
+    font-size:20px; 
+    padding:8px 8px;
+}
+.botao_entrar { 
+    background:#000; 
+    color:#fff; 
+    border:none; 
+    padding:15px 14px; 
+    border-radius:6px; 
+    cursor:pointer;
+    margin-left: 20px;
+    transition: 0.3s;
+    position: relative;
+    top: 18px;
+}
+.botao_entrar:hover{
+    background: gray;
+    color: white;
+}
+
+header h1 {
+    margin: 0;
+    width: 900px;
+    font-size: 50px;
+
+}
+.LogoMark {
+    width:100px; 
+    height:100px; 
+    border-radius:6px; 
+    display:flex; 
+}
+nav a {
+    margin: 10px;
+    text-decoration: none;
+    color: black;
+    font-size: 20px;
+}
+
+.headerimg img{
+    width: 30px;
+}
+
+.footer-end {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); 
+  gap: 40px;
+  background: url("static/uploads/Footer-home.png") no-repeat center/cover; 
+  padding: 50px 60px;
+}
+
+.footer-col h4 {
+  font-size: 20px;
+  margin-bottom: 15px;
+}
+
+.footer-col ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-col ul li {
+  margin: 6px 0;
+}
+
+.footer-col ul li a {
+  text-decoration: none;
+  color: #000;
+  font-size: 16px;
+}
+
+
+.footer-col .social img{
+  width: 30px;
+  margin-top: 90px;
+}
+
+.footer-col .social .fcb img{
+  width: 28px;
+  margin-top: 86px;
+}
+
+.saiba_btn{
+  font-size: 16x;
+  padding: 10px 5px;
+  margin-top: 20px; 
+  height: 35px;
+  background-color: rgba(255, 255, 255, 0);
+  cursor: pointer;
+  border-color: #00000000;
+  border-radius: 2px;
+  box-shadow: 1px 1px 1rem #3333334d;
+  position: relative;
+}
+  </style>
+  <body>
+    <header>
+      <img class="LogoMark" src="static\uploads\Logo_Zados.png" alt="Logo_Zados" />
+      <h1 class="Nome">ZADOS</h1>
+      <nav>
+        <a href="#" class="nav_item">BUSCA</a>
+        <a href="#" class="headerimg"
+          ><img src="static\uploads\lupa.png" alt="lupa"
+        /></a>
+        <a href="http://127.0.0.1:5500/home/index.html" class="nav_item"
+          >HOME</a
+        >
+        <a href="/home
+        " class="headerimg"
+          ><img src="static\uploads\casa.png" alt="home"
+        /></a>
+        <a href="http://127.0.0.1:5500/catalogo/index.html" class="nav_item"
+          >CATÁLOGO</a
+        >
+        <a href="http://127.0.0.1:5500/catalogo/index.html" class="headerimg"
+          ><img src="static\uploads\loja.png" alt="home"
+        /></a>
+        <a href="http://127.0.0.1:5500/carrinho/index.html#" class="nav_item"
+          >CARRINHO</a
+        >
+        <a href="http://127.0.0.1:5500/carrinho/index.html#" class="headerimg"
+          ><img src="static\uploads\carrinho.png" alt="carrinho"
+        /></a>
+        <button class="botao_entrar">ENTRAR</button>
+      </nav>
+    </header>
+
+    <main>
+      <section class="filtro">
+        <div class="item_filtro">
+          <label for="product-type">Tipo de Produto</label>
+          <select id="product-type">
+            <option value="">Todos</option>
+            <option value="camisa">Camisa</option>
+            <option value="camiseta">Camiseta</option>
+          </select>
+        </div>
+
+        <div class="item_filtro">
+          <label for="gender">Gênero</label>
+          <select id="genero">
+            <option value="">Todos</option>
+            <option value="masculino">Masculino</option>
+            <option value="feminino">Feminino</option>
+          </select>
+        </div>
+
+        <div class="item_filtro">
+          <label for="tamanho">Tamanho</label>
+          <select id="tamanho">
+            <option value="">Todos</option>
+            <option value="p">P</option>
+            <option value="m">M</option>
+            <option value="g">G</option>
+            <option value="gg">GG</option>
+          </select>
+        </div>
+
+        <div class="item_filtro">
+          <label for="cor">Cor</label>
+          <select id="cor">
+            <option value="">Todas</option>
+            <option value="preto">Preto</option>
+            <option value="branco">Branco</option>
+          </select>
+        </div>
+
+        <div class="item_filtro">
+          <label for="ordem">ORDENAR POR</label>
+          <select id="ordem">
+            <option value="relevancia">Relevância</option>
+            <option value="menor-preco">Menor Preço</option>
+            <option value="maior-preco">Maior Preço</option>
+            <option value="nome">Nome</option>
+          </select>
+        </div>
+      </section>
+
+      <section class="produtos">
+        <div class="produto" data-categoria="camisa" data-genero="masculino" data-tamanho="m" data-cor="preto" data-preco="50.00">
+          <h2>CAMISA 1</h2>
+          <p class="preco">R$ 50,00</p>
+        </div>
+
+        <div class="produto" data-categoria="camisa" data-genero="feminino" data-tamanho="p" data-cor="branco" data-preco="40.99">
+          <h2>CAMISA 2</h2>
+          <p class="preco">R$ 40,99</p>
+        </div>
+
+        <div class="produto" data-categoria="camiseta" data-genero="masculino" data-tamanho="g" data-cor="preto" data-preco="50.99">
+          <h2>CAMISETA 3</h2>
+          <p class="preco">R$ 50,99</p>
+        </div>
+
+        <div class="produto" data-categoria="camiseta" data-genero="feminino" data-tamanho="m" data-cor="branco" data-preco="90.99">
+          <h2>CAMISETA 4</h2>
+          <p class="preco">R$ 90,99</p>
+        </div>
+        <div class="produto" data-categoria="camisa" data-genero="feminino" data-tamanho="m" data-cor="branco" data-preco="20.99">
+          <h2>CAMISA 5</h2>
+          <p class="preco">R$ 20,99</p>
+        </div>
+        <div class="produto" data-categoria="camiseta" data-genero="feminino" data-tamanho="m" data-cor="branco" data-preco="60.99">
+          <h2>CAMISETA 6</h2>
+          <p class="preco">R$ 60,99</p>
+        </div>
+        <div class="produto" data-categoria="camisa" data-genero="feminino" data-tamanho="p" data-cor="branco" data-preco="99.99">
+          <h2>CAMISA 7</h2>
+          <p class="preco">R$ 99,99</p>
+        </div>
+        <div class="produto" data-categoria="camiseta" data-genero="feminino" data-tamanho="g" data-cor="branco" data-preco="80.99">
+          <h2>CAMISETA 8</h2>
+          <p class="preco">R$ 80,99</p>
+        </div>
+        <div class="produto" data-categoria="camisa" data-genero="feminino" data-tamanho="gg" data-cor="branco" data-preco="120.99">
+          <h2>CAMISA 9</h2>
+          <p class="preco">R$ 120.99</p>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="footer-end">
+        <div class="footer-col">
+          <h4>Zados</h4>
+          <div class="social">
+            <a href="#" class="fcb"
+              ><img src="static\uploads\FacebookIcon.png" alt="Facebook"
+            /></a>
+            <a href="#"><img src="static\uploads\IGIcon.png" alt="Instagram" /></a>
+            <a href="#"><img src="static\uploads\YTIcon.png" alt="Youtube" /></a>
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <h4>Camisetas</h4>
+          <ul>
+            <li><a href="#">Oversize</a></li>
+            <li><a href="#">Regata</a></li>
+            <li><a href="#">Manga-longa</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Camisas</h4>
+          <ul>
+            <li><a href="#">Polo</a></li>
+            <li><a href="#">Social</a></li>
+            <li><a href="#">Colarinho longo</a></li>
+            <button href="#" class="saiba_btn">Saiba Mais</button>
+          </ul>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      // FILTRO SIMPLIFICADO
+      document.addEventListener('DOMContentLoaded', function() {
+          const filtros = document.querySelectorAll('.filtro select');
+          const produtos = document.querySelectorAll('.produto');
+          
+          filtros.forEach(filtro => {
+              filtro.addEventListener('change', function() {
+                  const tipo = document.getElementById('product-type').value;
+                  const genero = document.getElementById('genero').value;
+                  const tamanho = document.getElementById('tamanho').value;
+                  const cor = document.getElementById('cor').value;
+                  const ordem = document.getElementById('ordem').value;
+                  
+                  // Primeiro aplica os filtros
+                  let produtosVisiveis = [];
+                  
+                  produtos.forEach(produto => {
+                      const prodTipo = produto.getAttribute('data-categoria');
+                      const prodGenero = produto.getAttribute('data-genero');
+                      const prodTamanho = produto.getAttribute('data-tamanho');
+                      const prodCor = produto.getAttribute('data-cor');
+                      
+                      const mostraProduto = 
+                          (!tipo || prodTipo === tipo) &&
+                          (!genero || prodGenero === genero) &&
+                          (!tamanho || prodTamanho === tamanho) &&
+                          (!cor || prodCor === cor);
+                      
+                      if (mostraProduto) {
+                          produto.style.display = 'block';
+                          produtosVisiveis.push(produto);
+                      } else {
+                          produto.style.display = 'none';
+                      }
+                  });
+                  
+                  // Depois aplica a ordenação nos produtos visíveis
+                  ordenarProdutos(produtosVisiveis, ordem);
+              });
+          });
+          
+          function ordenarProdutos(produtosArray, ordem) {
+              const container = document.querySelector('.produtos');
+              
+              // Remove todos os produtos do container
+              produtos.forEach(produto => {
+                  if (produto.parentNode === container) {
+                      container.removeChild(produto);
+                  }
+              });
+              
+              // Ordena o array conforme a opção selecionada
+              switch(ordem) {
+                  case 'menor-preco':
+                      produtosArray.sort((a, b) => {
+                          const precoA = parseFloat(a.getAttribute('data-preco'));
+                          const precoB = parseFloat(b.getAttribute('data-preco'));
+                          return precoA - precoB;
+                      });
+                      break;
+                      
+                  case 'maior-preco':
+                      produtosArray.sort((a, b) => {
+                          const precoA = parseFloat(a.getAttribute('data-preco'));
+                          const precoB = parseFloat(b.getAttribute('data-preco'));
+                          return precoB - precoA;
+                      });
+                      break;
+                      
+                  case 'nome':
+                      produtosArray.sort((a, b) => {
+                          const nomeA = a.querySelector('h2').textContent;
+                          const nomeB = b.querySelector('h2').textContent;
+                          return nomeA.localeCompare(nomeB);
+                      });
+                      break;
+                      
+                  // 'relevancia' mantém a ordem original
+              }
+              
+              // Adiciona os produtos ordenados de volta ao container
+              produtosArray.forEach(produto => container.appendChild(produto));
+          }
+      });
+    </script>
+
+    <style>
+      /* MAIN LAYOUT */
+      main {
+          max-width: 1200px;
+          margin: 30px auto;
+          padding: 0 20px;
+      }
+
+      /* FILTRO SECTION - PARTE SUPERIOR */
+      .filtro {
+          background-color: #fff;
+          padding: 20px 25px;
+          border-radius: 8px;
+          box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+          margin-bottom: 30px;
+          display: flex;
+          gap: 25px;
+          align-items: center;
+          flex-wrap: wrap;
+      }
+
+      .item_filtro {
+          display: inline-flex;
+          flex-direction: column;
+          min-width: 200px;
+      }
+
+      .item_filtro label {
+          margin-bottom: 8px;
+          font-weight: 600;
+          font-size: 14px;
+          color: #2c3e50;
+      }
+
+      .item_filtro select {
+          padding: 10px 12px;
+          border: 1px solid #dcdfe6;
+          border-radius: 6px;
+          background-color: #fff;
+          font-size: 14px;
+          color: #333;
+          cursor: pointer;
+          transition: border-color 0.3s;
+          width: 100%;
+      }
+
+      .item_filtro select:hover {
+          border-color: #c0c4cc;
+      }
+
+      .item_filtro select:focus {
+          outline: none;
+          border-color: #409eff;
+      }
+
+      /* PRODUTOS SECTION */
+      .produtos {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 25px;
+      }
+
+      .produto {
+          background-color: #fff;
+          padding: 20px;
+          border-radius: 8px;
+          box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+          text-align: center;
+          transition: transform 0.3s, box-shadow 0.3s;
+      }
+
+      .produto:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 15px rgba(0,0,0,0.12);
+      }
+
+      .produto h2 {
+          font-size: 16px;
+          margin-bottom: 12px;
+          color: #2c3e50;
+          font-weight: 600;
+      }
+
+      .preco {
+          font-weight: 700;
+          color: #e74c3c;
+          font-size: 18px;
+      }
+
+      /* RESPONSIVIDADE */
+      @media (max-width: 1024px) {
+          .produtos {
+              grid-template-columns: repeat(2, 1fr);
+          }
+      }
+
+      @media (max-width: 768px) {
+          .filtro {
+              flex-direction: column;
+              gap: 15px;
+          }
+          
+          .item_filtro {
+              width: 100%;
+          }
+          
+          .produtos {
+              grid-template-columns: 1fr;
+          }
+      }
+    </style>
+  </body>
+</html>
