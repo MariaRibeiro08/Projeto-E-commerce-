@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="{{ url_for('static', path='uploads/Logo_SF_Branca.PNG') }}" type="image/x-icon">
+<title>Zados - Catálogo</title>
+
+<style>
+/* RESET */
+* {margin:0; padding:0; box-sizing:border-box;}
+body {font-family:'Inter', sans-serif; background:#fff; color:#000; line-height:1.6; overflow-x:hidden;}
+
+/* HEADER */
+header {
+    position: relative;
+    background: url("{{ url_for('static', path='uploads/INIC.PNG') }}") no-repeat center/cover;
+    padding: 150px 60px 50px 60px;
+    text-align: center;
+    color: #fff;
+    height: 700px;
+}
+
+.logo{
+    position:absolute;
+    top:20px;
+    left:20px;
+    width:170px;
+}
+
+nav {
+    position:absolute;
+    top:20px;
+    right:40px;
+    display:flex;
+    align-items:center;
+    gap: 30px;
+    margin: 20px;
+}
+
+nav a {
+    text-decoration:none;
+    color:#fff;
+    font-size:18px;
+    padding:6px 8px;
+    transition:0.3s;
+}
+
+nav a:hover {
+    color:#ccc;
+}
+
+.headerimg img {
+    width:45px;
+}
+
+.botao_entrar {
+    background:#fff; 
+    color:#000; 
+    border:none; 
+    padding:10px 20px; 
+    border-radius:6px; 
+    cursor:pointer; 
+    transition:0.3s;
+    height: 50px;
+}
+.botao_entrar:hover {
+    background:#000; 
+    color:#fff;
+}
+
+.ttl h1 {
+    font-size:60px; 
+    margin-top:50px;
+}
+.meio {
+    margin-top:20px; 
+    font-size:24px;
+}
+.meio a {
+    padding:15px 25px; 
+    font-size:18px; border:none; 
+    border-radius:6px; 
+    cursor:pointer; 
+    background:#fff; 
+    color:#000; 
+    transition:0.3s;
+}
+    
+.meio a:hover {
+    background:#000; 
+    color:#fff;
+}
+
+/* COLEÇÃO E ALTA TECNOLOGIA */
+.colecao, .alt_tec {
+    display:flex; 
+    align-items:center; 
+    justify-content:space-between; 
+    margin:60px auto; 
+    max-width:1200px; 
+    flex-wrap:wrap;
+}
+.colecao img, .alt_tec img {
+    width:550px; 
+    border-radius:8px; 
+    margin:20px;
+}
+.clc_txt h3, .alt_txt h3 {
+    font-size:40px; 
+    margin-bottom:15px;
+}
+.clc_txt p, .alt_txt p {
+    font-size:20px; 
+    color:gray; 
+    margin-bottom:20px;
+}
+.btns {
+    display:flex; 
+    gap:15px;
+}
+.btn_clc, .btn_clc1, .btn_alt {
+    padding:15px 30px; 
+    border:none; 
+    border-radius:6px; 
+    cursor:pointer; 
+    font-size:18px; 
+    transition:0.3s;
+}
+.btn_clc {
+    background:#000; 
+    color:#fff;
+}
+.btn_clc1 {
+    background:#d8d8d8; 
+    color:#000;
+}
+.btn_alt {
+    background:#000; 
+    color:#fff;
+    text-decoration: none;
+}
+.btn_clc:hover {
+    background:#555;
+}
+.btn_clc1:hover {
+    background:#bbb;
+}
+.btn_alt:hover {
+    background:#555;
+}
+
+/* PRODUTOS */
+.produtos {
+    max-width:1200px; 
+    margin:60px auto; 
+    padding:0 20px;
+}
+.produtos h2 {
+    text-align:center; 
+    font-size:40px; 
+    margin-bottom:40px;
+}
+.produtos-grid {
+    display:grid; 
+    grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); 
+    gap:30px;
+}
+.produto-card {
+    background:#fff; 
+    border-radius:10px; 
+    box-shadow:0 2px 8px rgba(0,0,0,0.1); 
+    overflow:hidden; 
+    text-align:center; 
+    padding-bottom:15px; 
+    transition:0.3s;
+}
+.produto-card:hover {
+    transform:translateY(-4px);
+}
+.produto-card img {
+    width:100%; 
+    height:300px; 
+    object-fit:cover;
+}
+.produto-info {
+    padding:10px;
+}
+.produto-info h3 {
+    font-size:20px; 
+    margin:10px 0;
+}
+.produto-info p {
+    font-size:16px; 
+    color:gray; 
+    margin-bottom:10px;
+}
+.produto-info span {
+    font-weight:bold; 
+    font-size:18px;
+}
+.produto-info .cores {
+    display:flex; 
+    justify-content:center; 
+    gap:10px; 
+    margin:10px 0;
+}
+.cor_branca, .cor_azul, .cor_cinza {
+    width:25px; 
+    height:25px; 
+    border-radius:50%; 
+    cursor:pointer;
+}
+.cor_branca {
+    background:#fff; 
+    border:1px solid #ccc;
+}
+.cor_azul {
+    background:blue;
+}
+.cor_cinza {
+    background:gray;
+}
+.btn {
+    padding:8px 14px; 
+    background:#000; 
+    color:#fff; 
+    border:none; 
+    border-radius:6px; 
+    cursor:pointer; 
+    text-decoration:none; 
+    transition:0.3s;
+}
+.btn:hover {
+    background:#ccc; 
+    color:#000;
+}
+
+/* VER MAIS */
+.ver_mais {
+    text-align:center; 
+    margin:40px;
+}
+.ver_mais button {
+    padding:15px 30px; 
+    font-size:18px; 
+    border:none; 
+    border-radius:6px; 
+    background:#e6e6e6; 
+    cursor:pointer;
+}
+.ver_mais button:hover {
+    background:#ccc;
+}
+
+.btn_ver{
+    padding:14px; 
+    background:#000; 
+    color:#fff; 
+    border:none; 
+    border-radius:6px; 
+    cursor:pointer; 
+    text-decoration:none;
+    transition: 0.3s;
+}
+
+.btn_ver:hover {
+    background:#ccc; 
+    color:#000;
+}
+
+/* FOOTER */
+footer {
+    margin-top:60px;
+}
+.footer-end {
+    display:grid; 
+    grid-template-columns:repeat(3,1fr); 
+    gap:40px; 
+    background:#f5f5f5; 
+    padding:50px 60px;
+}
+.footer-col h4 {
+    font-size:20px; 
+    margin-bottom:15px;
+}
+.footer-col ul {
+    list-style:none; 
+    padding:0;
+}
+.footer-col ul li {
+    margin:6px 0;
+}
+.footer-col ul li a {
+    text-decoration:none; 
+    color:#000;
+}
+.footer-col .social img {
+    width:30px; 
+    margin-top:10px;
+}
+.saiba_btn {
+    background:transparent; 
+    border:none; 
+    cursor:pointer; 
+    font-size:16px;
+}
+.footer-end{
+    background: url("{{ url_for('static', path='uploads/Footer-home.png') }}") no-repeat center/cover;  
+}
+.saiba_btn{
+    font-size: 16x;
+    margin-top: 20px; 
+    height: 20px;
+    background-color: rgba(255, 255, 255, 0);
+    cursor: pointer;
+    border-color: #00000000;
+    border-radius: 2px;
+    box-shadow: 1px 1px 1rem #3333334d;
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+    <img class="logo" src="{{ url_for('static', path='uploads/Logo_SF_Branca.png') }}" alt="Logo_Zados">
+    <nav>
+      <a href="/home" class="nav_item">HOME</a>
+      <a href="/home" class="headerimg"><img src="{{ url_for('static', path='uploads/casa_branca.png') }}" alt="home"></a>
+      <a href="/carrinho" class="nav_item">CARRINHO</a>
+      <a href="/carrinho" class="headerimg"><img src="{{ url_for('static', path='uploads/carrinho_branco.png') }}" alt="carrinho"></a>
+        {% if is_admin %}
+            <a href="/lista_adm">Área Admin</a>
+        {% endif %}
+        <a class="botao_entrar" href="/login">ENTRAR</a>
+    </nav>
+    <div class="ttl"><h1>ZADOS</h1></div>
+    <div class="meio"><p>Trazendo para você a melhor solução</p><br><a class="busca_btn" href="/busca" >Busca</a></div>
+</header>
+
+<!-- NOVA COLEÇÃO -->
+<section class="colecao">
+    <div class="clc_txt">
+        <h3>Nova Coleção</h3>
+        <p>Explore nossa nova coleção de camisas nesse verão.</p>
+        <div class="btns">
+            <button class="btn_clc">Comprar peças</button>
+            <button class="btn_clc1">Adicionar carrinho</button>
+        </div>
+    </div>
+    <img src="{{ url_for('static', path='uploads/Nova Coleção Catalogo.PNG') }}" alt="Nova_Coleção"/>
+</section>
+
+<!-- ALTA TECNOLOGIA -->
+<section class="alt_tec">
+    <img src="{{ url_for('static', path='uploads/Alta tecnologia catalogo.PNG') }}" alt="Alta_Tecnologia"/>
+    <div class="alt_txt">
+        <h3>Alta Tecnologia</h3>
+        <p>Peças feitas visando o seu conforto</p>
+        <a class="btn_alt" href="/busca">Ver Produtos</a>
+    </div>
+</section>
+
+<!-- PRODUTOS EM DESTAQUE -->
+<section class="produtos">
+    <h2>PRODUTOS</h2>
+    <div class="produtos-grid" id="produtos-grid">
+        {% for produto in produtos[:6] %} <!-- Mostra os 6 primeiros -->
+        <div class="produto-card">
+            <img src="{{ url_for('static', path='uploads/' + produto.imagem) }}" alt="{{ produto.nome }}">
+            <div class="produto-info">
+                <h3>{{ produto.nome }}</h3>
+                <div class="cores">
+                    <button class="cor_branca"></button>
+                    <button class="cor_azul"></button>
+                    <button class="cor_cinza"></button>
+                </div>
+                <p>{{ produto.descricao or 'Descrição do produto' }}</p>
+                <span>R$ {{ produto.preco }}</span><br><br>
+                <a href="/produtos/{{ produto.id }}" class="btn_ver">Ver mais</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% if produtos|length > 6 %}
+    <div class="ver_mais">
+        <button id="verMaisBtn">Ver Mais</button>
+    </div>
+    {% endif %}
+</section>
+
+<!-- FOOTER -->
+<footer>
+    <div class="footer-end">
+        <div class="footer-col">
+            <h4>Zados</h4>
+            <div class="social">
+                <a href="#"><img src="{{ url_for('static', path='uploads/FacebookIcon.png') }}" alt="Facebook"/></a>
+                <a href="#"><img src="{{ url_for('static', path='uploads/IGIcon.png') }}" alt="Instagram"/></a>
+                <a href="#"><img src="{{ url_for('static', path='uploads/YTIcon.png') }}" alt="Youtube"/></a>
+            </div>
+        </div>
+        <div class="footer-col">
+            <h4>Camisetas</h4>
+            <ul>
+                <li><a href="#">Oversize</a></li>
+                <li><a href="#">Regata</a></li>
+                <li><a href="#">Manga-longa</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h4>Camisas</h4>
+            <ul>
+                <li><a href="#">Polo</a></li>
+                <li><a href="#">Social</a></li>
+                <li><a href="#">Colarinho longo</a></li>
+                <a class="saiba_btn" href="/sobre">Saiba Mais</a>
+            </ul>
+        </div>
+    </div>
+</footer>
+</body>
+</html>

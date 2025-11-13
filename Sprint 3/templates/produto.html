@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Zados - Detalhes do Produto</title>
+  <link rel="stylesheet" href="Styles.css">
+  <link rel="icon" href="{{ url_for('static', path='uploads/Logo_SF_Branca.PNG') }}" type="image/x-icon">
+</head>
+
+<body>
+  <!-- Header -->
+  <header>
+    <img class="LogoMark" src="{{ url_for('static', path='uploads/Logo.png') }}" alt="Logo Zados">
+    <h1 class="Nome">ZADOS</h1>
+    <nav>
+      <a href="/busca" class="nav_item">BUSCA</a>
+      <a href="/busca" class="headerimg"><img src="{{ url_for('static', path='uploads/lupa.png') }}" alt="lupa"></a>
+      <a href="/home" class="nav_item">HOME</a>
+      <a href="/home" class="headerimg"><img src="{{ url_for('static', path='uploads/casa.png') }}" alt="home"></a>
+      <a href="/" class="nav_item">CATÁLOGO</a>
+      <a href="/" class="headerimg"><img src="{{ url_for('static', path='uploads/loja.png') }}" alt="catalogo"></a>
+      <a href="/carrinho" class="nav_item">CARRINHO</a>
+      <a href="/carrinho" class="headerimg"><img src="{{ url_for('static', path='uploads/carrinho.png') }}" alt="carrinho"></a>
+      <a href="/login" class="botao_entrar">ENTRAR</a>
+    </nav>
+  </header>
+
+  <!-- Produto (dinâmico com backend) -->
+  <section class="produto">
+    <img src="{{ url_for('static', path='uploads/' + produto.imagem) }}" alt="{{ produto.nome }}" width="400">
+
+    <div class="info">
+      <h2>{{ produto.nome }}</h2>
+      <p>{{ produto.descricao or 'Tech-Tshirt' }}</p>
+      <h3>R$ {{ produto.preco }}</h3>
+      <p>
+        Peça essencial e versátil. Confeccionada em algodão macio, com modelagem regular e gola careca.<br>
+        Ideal para o dia a dia ou composições estilosas.
+      </p>
+
+      <ul class="infoPrincipal">
+        <li><strong>Quantidade em estoque:</strong> {{ produto.quantidade }}</li>
+        <li>Cor: Preto</li>
+        <li>Tecido: 100% algodão</li>
+        <li>Confortável</li>
+        <li>Unissex</li>
+      </ul>
+
+      <div class="Tamanho">
+        <p>Tamanhos:</p>
+        <button class="Tamanhos">PP</button>
+        <button class="Tamanhos">P</button>
+        <button class="Tamanhos">M</button>
+        <button class="Tamanhos">G</button>
+        <button class="Tamanhos">GG</button>
+      </div>
+
+      <div class="cores">
+        <h4>Cores:</h4>
+        <button class="cor_azul"></button>
+        <button class="cor_branca"></button>
+        <button class="cor_cinza"></button>
+      </div>
+
+      <br>
+      <!-- Botão Adicionar ao Carrinho -->
+      <button onclick="adicionarAoCarrinho({{ produto.id }}, '{{ produto.nome }}', {{ produto.preco }}, '{{ produto.imagem }}')" class="Carrinho">
+        Adicionar ao Carrinho
+      </button>
+
+      {% if is_admin %}
+      <br><br>
+      <a href="/editar/{{ produto.id }}">Editar</a> |
+      <a href="/deletar/{{ produto.id }}">Deletar</a> |
+      <a href="/logout">Sair do modo Admin</a>
+      {% endif %}
+
+      <br><br>
+      <a href="/sobre" class="saibamais">Saiba Mais</a>
+      <br><br><br>
+      <a href="/" class="Carrinho">Voltar</a>
+    </div>
+  </section>
+
+  <!-- Produtos semelhantes -->
+  <center>
+    <h2 class="h1semelhantes">Semelhantes</h2>
+  </center>
+  <section class="semelhantes">
+        <div class="info_smlnt">
+        <img src="{{ url_for('static', path='uploads/camiseta.png') }}" alt="Camisa Branca">
+          <h3>Camiseta Polo</h3>
+          <p>R$129,99</p>
+        </div>
+        <div class="info_smlnt">
+        <img src="{{ url_for('static', path='uploads/camiseta2.png') }}" alt="Camisa Regata">
+          <h3>Camiseta Vermelha</h3>
+          <p>R$119,89</p>
+        </div>
+        <div class="info_smlnt">
+        <img src="{{ url_for('static', path='uploads/camiseta3.png') }}" alt="Camisa Manga-longa">
+          <h3>Camiseta Branca</h3>
+          <p>R$89,99</p>
+        </div>
+  </section>
+
+  <!-- Footer -->
+  <div class="footer-end">
+    <div class="footer-col">
+      <h4>Zados</h4>
+      <div class="social">
+        <a href="#" class="fcb"><img src="{{ url_for('static', path='uploads/FacebookIcon.png') }}" alt="Facebook" class="fcb"/></a>
+        <a href="#"><img src="{{ url_for('static', path='uploads/IGIcon.png') }}" alt="Instagram"/></a>
+        <a href="#"><img src="{{ url_for('static', path='uploads/YTIcon.png') }}" alt="Youtube"/></a>
+      </div>
+    </div>
+
+    <div class="footer-col">
+      <h4>Camisetas</h4>
+      <ul>
+        <li><a href="#">Oversize</a></li>
+        <li><a href="#">Regata</a></li>
+        <li><a href="#">Manga-longa</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h4>Camisas</h4>
+      <ul>
+        <li><a href="#">Polo</a></li>
+        <li><a href="#">Social</a></li>
+        <li><a href="#">Colarinho longo</a></li>
+        <a href="/sobre" class="saiba_btn">Saiba Mais</a>
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    // Função para adicionar ao carrinho usando localStorage
+    function adicionarAoCarrinho(id, nome, preco, imagem) {
+      let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+      let itemExistente = carrinho.find(item => item.id === id);
+
+      if (itemExistente) {
+        itemExistente.quantidade++;
+      } else {
+        carrinho.push({ id, nome, preco, imagem, quantidade: 1 });
+      }
+
+      localStorage.setItem('carrinho', JSON.stringify(carrinho));
+      alert(`${nome} foi adicionado ao carrinho!`);
+    }
+  </script>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background: #FBF4E6;
+      padding: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    nav {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    nav .nav-item {
+      text-decoration: none;
+      color: #222;
+      font-size: 20px;
+      padding: 8px 8px;
+    }
+
+    .botao_entrar {
+      background: #000;
+      color: #fff;
+      border: none;
+      padding: 15px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-left: 20px;
+      transition: 0.3s;
+      position: relative;
+      top: 18px;
+    }
+
+    .botao_entrar:hover {
+      background: gray;
+      color: white;
+    }
+
+    header h1 {
+      margin: 0;
+      width: 900px;
+      font-size: 50px;
+    }
+
+    .LogoMark {
+      width: 100px;
+      height: 100px;
+      border-radius: 6px;
+      display: flex;
+    }
+
+    nav a {
+      margin: 10px;
+      text-decoration: none;
+      color: black;
+      font-size: 20px;
+    }
+
+    .headerimg img {
+      width: 30px;
+    }
+
+    /* PRODUTO */
+    .produto {
+      display: flex;
+      padding: 30px;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+
+    .produto img {
+      width: 450px;
+      margin-right: 80px;
+      box-shadow: 1px 1px 1rem rgba(128, 128, 128, 0.356);
+      border-radius: 15px;
+    }
+
+    .info p,
+    ul,
+    h4 {
+      color: #00000093;
+    }
+
+    .Tamanhos {
+      background: black;
+      color: white;
+      padding: 5px 30px;
+      cursor: pointer;
+      border-radius: 15px;
+      transition: 0.3s;
+      position: relative;
+    }
+
+    .Tamanhos:hover {
+      background: gray;
+      color: white;
+    }
+
+    .Carrinho {
+      background: black;
+      color: white;
+      padding: 10px;
+      width: 880px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: 0.3s;
+      position: relative;
+      margin-top: 20px;
+      text-decoration: none;
+    }
+
+    .Carrinho:hover {
+      background: gray;
+      color: white;
+    }
+
+    .saibamais {
+      text-decoration: none;
+      color: #000;
+      font-size: 15px;
+    }
+
+    .cor_azul {
+      position: relative;
+      border-color: mediumblue;
+      background-color: mediumblue;
+      margin-top: 15px;
+      width: 40px;
+      height: 40px;
+      border-radius: 50px;
+      cursor: pointer;
+    }
+
+    .cor_cinza {
+      position: relative;
+      background-color: gray;
+      border-color: gray;
+      margin-top: 30px;
+      width: 40px;
+      height: 40px;
+      cursor: pointer;
+      border-radius: 50px;
+    }
+
+    .cor_branca {
+      border-radius: 50px;
+      color: black;
+      border-color: #000;
+      position: relative;
+      margin-top: 30px;
+      width: 40px;
+      height: 40px;
+      cursor: pointer;
+      background: white;
+    }
+
+    /* PRODUTOS SEMELHANTES */
+    .h1semelhantes {
+      margin-top: 100px;
+      font-size: 45px;
+    }
+
+    .semelhantes {
+      display: inline-flex;
+      justify-content: center;
+      margin: 50px;
+      position: relative;
+      left: 300px;
+    }
+
+    .info_smlnt h3 {
+      font-size: 30px;
+    }
+
+    .info_smlnt {
+      column-gap: 500PX;
+    }
+
+    .semelhantes img{
+      display: inline-flex;
+      width: 400px;
+      height: auto;
+    }
+
+    /* FOOTER END */
+    .footer-end {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 40px;
+      background: linear-gradient(to right, #f3e9d9, #e2c8a9, #f3e9d9);
+      padding: 50px 60px;
+    }
+
+    .footer-col h4 {
+      font-size: 20px;
+      margin-bottom: 15px;
+    }
+
+    .footer-col ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .footer-col ul li {
+      margin: 6px 0;
+    }
+
+    .footer-col ul li a {
+      text-decoration: none;
+      color: #000;
+      font-size: 16px;
+    }
+
+    .footer-col .social img {
+      width: 30px;
+      margin-top: 90px;
+    }
+
+    .footer-col .social .fcb img {
+      width: 28px;
+      margin-top: 86px;
+    }
+
+    .saiba_btn {
+      font-size: 16x;
+      padding: 10px 5px;
+      margin-top: 20px;
+      height: 35px;
+      background-color: rgba(255, 255, 255, 0);
+      cursor: pointer;
+      border-color: #00000000;
+      border-radius: 2px;
+      box-shadow: 1px 1px 1rem #3333334d;
+      position: relative;
+    }
+  </style>
+
+</body>
+
+</html>
