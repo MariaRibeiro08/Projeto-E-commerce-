@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Zados - Seu Carrinho</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="icon" href="{{ url_for('static', path='uploads/Logo_SF_Branca.PNG') }}" type="image/x-icon">
+  <style>
+    /* RESET */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #fff;
+      color: #000;
+      line-height: 1.6;
+    }
+
+    html, body {
+      overflow-x: hidden;
+    }
+
+    /* HEADER */
+    header {
+      width: 100%;
+      top: 0;
+      background: #FBF4E6;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 100;
+    }
+
+    header h1 {
+      font-size: 50px;
+      margin-left: -650px;
+    }
+
+    .LogoMark {
+      width: 100px;
+      height: 100px;
+      border-radius: 6px;
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    nav a {
+      text-decoration: none;
+      color: #000;
+      font-size: 20px;
+      margin: 0 10px;
+    }
+
+    .headerimg img {
+      width: 30px;
+      vertical-align: middle;
+    }
+
+    .botao_entrar {
+      background: #000;
+      color: #fff;
+      border: none;
+      padding: 12px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .botao_entrar:hover {
+      background: gray;
+    }
+
+    /* BARRA ESTÁTICA DE ETAPAS */
+    .checkout-bar {
+      display: flex;
+      justify-content: center;
+      margin: 40px 0 30px 0;
+      padding: 0 16px;
+    }
+
+    .checkout-bar__inner {
+      display: flex;
+      width: min(950px, 100%);
+      background: #FBF4E6;          /* Bege suave do site */
+      border: 2px solid #d9cdb7;    /* Contorno delicado */
+      border-radius: 12px;
+      overflow: hidden;
+      text-align: center;
+      font-family: "Inter", sans-serif;
+    }
+
+    .checkout-bar__inner .step {
+      flex: 1;
+      padding: 14px 0;
+      font-weight: 600;
+      color: #222;
+      font-size: 15px;
+      border-right: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .checkout-bar__inner .step:last-child {
+      border-right: none;
+    }
+
+    /* Etapa atual (ex: carrinho) */
+    .checkout-bar__inner .step.current {
+      background: #000;
+      color: #fff;
+    }
+
+    /* Responsividade: empilha em telas menores */
+    @media (max-width: 600px) {
+      .checkout-bar__inner {
+        flex-direction: column;
+        border-radius: 10px;
+      }
+
+      .checkout-bar__inner .step {
+        border-right: none;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      }
+
+      .checkout-bar__inner .step:last-child {
+        border-bottom: none;
+      }
+    }
+
+    /* CARRINHO */
+    .carrinho {
+      max-width: 950px;
+      margin: auto;
+      text-align: center;
+      padding: 20px;
+    }
+    .produto {
+      display: grid;
+      grid-template-columns: 120px 1fr 160px 120px 40px;
+      align-items: center;
+      background: #fff;
+      border-radius: 10px;
+      padding: 18px;
+      margin-bottom: 18px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+      border: 1px solid #e6e6e6;
+    }
+    .produto img {
+      width: 100px;
+      height: auto;
+      border-radius: 8px;
+      object-fit: cover;
+    }
+    .produto .info p { margin: 4px 0; color: #333; font-size: 14px; }
+    .quantidade button {
+      border: 1px solid #000;
+      padding: 6px 12px;
+      cursor: pointer;
+      background: none;
+      border-radius: 6px;
+    }
+    .quantidade span { margin: 0 10px; font-weight: 600; }
+    .valor { font-weight: 700; color: #111; }
+    .delete { background: none; border: none; cursor: pointer; color: #333; font-size: 18px; }
+
+    /* RESUMO */
+    .resumo {
+      background: #fff;
+      border-radius: 8px;
+      padding: 18px;
+      margin-top: 28px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+      text-align: left;
+      border: 1px solid #e6e6e6;
+    }
+    .resumo p { 
+      display:flex; 
+      justify-content:space-between; 
+      margin: 8px 0; 
+      color:#333; 
+    }
+    .resumo hr { 
+      border: none; 
+      border-top: 1px solid #eee; 
+      margin: 12px 0; 
+    }
+
+    /* BOTÃO */
+    .continuar {
+      background: #000;
+      color: #fff;
+      padding: 14px 26px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+      margin-top: 20px;
+    }
+
+    .fale { display:block; margin-top:14px; color:#000; text-decoration:none; font-weight:600; }
+
+    /* FOOTER */
+    .footer-end {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 40px;
+      background: url("{{ url_for('static', path='uploads/Footer-home.PNG') }}") no-repeat center/cover;
+      padding: 50px 60px;
+      margin-top: 60px;
+    }
+    .footer-col h4 { 
+      font-size: 18px; 
+      margin-bottom: 12px; 
+    }
+    .footer-col ul { 
+      list-style: none; 
+      padding:0; 
+      margin:0; 
+    }
+    .footer-col ul li { 
+      margin: 6px 0; 
+    }
+    .footer-col ul li a { 
+      text-decoration:none; 
+      color:#000; 
+      font-size:14px;
+    }
+    .footer-col .social img { 
+      width: 30px; 
+      margin-top: 12px; 
+    }
+    @media (max-width: 820px) {
+      .produto { 
+        grid-template-columns: 100px 1fr 110px 100px 40px; 
+        gap:8px; 
+      }
+      .carrinho { 
+        padding: 10px; 
+      }
+      .header { 
+        padding: 10px 16px; 
+      }
+      .footer-end { 
+        padding: 30px; 
+        grid-template-columns: 1fr; 
+      }
+    }
+
+    .saiba_btn{
+      font-size: 16x;
+      margin-top: 20px; 
+      height: 20px;
+      background-color: rgba(255, 255, 255, 0);
+      cursor: pointer;
+      border-color: #00000000;
+      border-radius: 2px;
+      box-shadow: 1px 1px 1rem #3333334d;
+      color: #000;
+      text-decoration: none;
+    }  
+    .loading { 
+      text-align: center; 
+      padding: 40px; 
+      color: #666; 
+    }
+    .error { 
+      background: #fee; 
+      color: #c33; 
+      padding: 15px; 
+      border-radius: 6px; 
+      margin: 20px 0; 
+    }
+    .btn-disabled { 
+      background: #ccc !important; 
+      cursor: not-allowed; 
+    } 
+  </style>
+</head>
+
+<body>
+<!-- HEADER -->
+  <header>
+    <img class="LogoMark" src="{{ url_for('static', path='uploads/Logo.png') }}" alt="Logo_Zados">
+    <h1>ZADOS</h1>
+    <nav>
+      <a href="/" class="nav_item">CATÁLOGO</a>
+      <a href="/" class="headerimg"><img src="{{ url_for('static', path='uploads/loja.png') }}" alt="catalogo"></a>
+      <a href="/home" class="nav_item">HOME</a>
+      <a href="/home" class="headerimg"><img src="{{ url_for('static', path='uploads/casa.png') }}" alt="home"></a>
+
+      
+      {% if usuario %}
+        <a href="/logout" class="botao_entrar">SAIR ({{ usuario.nome }})</a>
+      {% else %}
+        <a href="/login" class="botao_entrar">ENTRAR</a>
+      {% endif %}
+    </nav>
+  </header>
+
+<!-- BARRA DE ETAPAS -->
+  <div class="checkout-bar">
+    <div class="checkout-bar__inner">
+      <div class="step current">1 CARRINHO</div>
+      <div class="step">2 IDENTIFICAÇÃO</div>
+      <div class="step">3 PAGAMENTO</div>
+    </div>
+  </div>
+
+  <!-- CARRINHO -->
+  <section class="carrinho">
+    <h1>Seu Carrinho</h1>
+
+    <div id="loading" class="loading">Carregando seu carrinho...</div>
+    <div id="error-message" class="error" style="display: none;"></div>
+
+    <div id="lista-produtos"></div>
+
+    <div class="resumo">
+      <h3>Resumo do pedido</h3>
+      <p><span>Subtotal:</span><span id="subtotal">R$ 0,00</span></p>
+      <p><span>Frete:</span><span>Grátis</span></p>
+      <hr>
+      <p><strong>Total:</strong><strong id="total">R$ 0,00</strong></p>
+    </div>
+
+    <button class="continuar" id="btn-continuar" onclick="irParaCheckout()">Continuar para Checkout</button>
+    <a class="fale" href="/">← Voltar à loja</a>
+  </section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-end">
+    <div class="footer-col">
+      <h4>Zados</h4>
+      <div class="social">
+        <a href="#"><img src="{{ url_for('static', path='uploads/FacebookIcon.png') }}" alt="Facebook"/></a>
+        <a href="#"><img src="{{ url_for('static', path='uploads/IGIcon.png') }}" alt="Instagram"/></a>
+        <a href="#"><img src="{{ url_for('static', path='uploads/YTIcon.png') }}" alt="Youtube"/></a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Camisetas</h4>
+      <ul>
+        <li><a href="#">Oversize</a></li>
+        <li><a href="#">Regata</a></li>
+        <li><a href="#">Manga-longa</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Camisas</h4>
+      <ul>
+        <li><a href="#">Polo</a></li>
+        <li><a href="#">Social</a></li>
+        <li><a href="#">Colarinho longo</a></li>
+        <a class="saiba_btn" href="/sobre">Saiba Mais</a>
+      </ul>
+    </div>
+  </div>
+</footer>
+
+  <script>
+    // ✅ FUNÇÃO PRINCIPAL - CARREGA CARRINHO DO BACKEND
+    async function carregarCarrinhoBackend() {
+      const loading = document.getElementById('loading');
+      const errorMsg = document.getElementById('error-message');
+      const lista = document.getElementById('lista-produtos');
+      
+      try {
+        loading.style.display = 'block';
+        errorMsg.style.display = 'none';
+        
+        const response = await fetch('/api/carrinho/dados');
+        const data = await response.json();
+        
+        if (!response.ok) throw new Error('Erro ao carregar carrinho');
+        
+        loading.style.display = 'none';
+        
+        if (!data.autenticado) {
+          // Usuário não logado
+          lista.innerHTML = `
+            <div class="error">
+              <p>⚠️ Você precisa estar logado para ver o carrinho</p>
+              <a href="/login" class="nav-btn">Fazer Login</a>
+            </div>
+          `;
+          document.getElementById('btn-continuar').disabled = true;
+          document.getElementById('btn-continuar').classList.add('btn-disabled');
+          return;
+        }
+        
+        if (data.itens_carrinho.length === 0) {
+          // Carrinho vazio
+          lista.innerHTML = '<p>Seu carrinho está vazio 😢</p>';
+          document.getElementById('btn-continuar').disabled = true;
+          document.getElementById('btn-continuar').classList.add('btn-disabled');
+        } else {
+          // Carrinho com itens
+          exibirItensCarrinho(data.itens_carrinho);
+          atualizarResumo(data.total_geral);
+          document.getElementById('btn-continuar').disabled = false;
+          document.getElementById('btn-continuar').classList.remove('btn-disabled');
+        }
+        
+      } catch (error) {
+        console.error('Erro:', error);
+        loading.style.display = 'none';
+        errorMsg.style.display = 'block';
+        errorMsg.innerHTML = `
+          <p>❌ Erro ao carregar carrinho: ${error.message}</p>
+          <a href="/login" class="nav-btn">Tentar novamente</a>
+        `;
+      }
+    }
+
+    // ✅ EXIBIR ITENS DO CARRINHO
+    function exibirItensCarrinho(itens) {
+      const lista = document.getElementById('lista-produtos');
+      lista.innerHTML = '';
+      
+      itens.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'produto';
+        div.innerHTML = `
+          <img src="${item.imagem}" alt="${item.nome}" onerror="this.src='/static/default.png'">
+          <div class="info">
+            <p><strong>${item.nome}</strong></p>
+            <p>Quantidade: ${item.quantidade}</p>
+            <p>Preço unitário: R$ ${item.preco.toFixed(2)}</p>
+          </div>
+          <div class="quantidade">
+            <button onclick="alterarQuantidade(${item.id}, -1)">-</button>
+            <span>${item.quantidade}</span>
+            <button onclick="alterarQuantidade(${item.id}, 1)">+</button>
+          </div>
+          <div class="valor">R$ ${item.subtotal.toFixed(2)}</div>
+          <button class="delete" onclick="removerItem(${item.id})" title="Remover item">✖</button>
+        `;
+        lista.appendChild(div);
+      });
+    }
+
+    // ✅ ATUALIZAR RESUMO
+    function atualizarResumo(total) {
+      document.getElementById('subtotal').textContent = `R$ ${total.toFixed(2)}`;
+      document.getElementById('total').textContent = `R$ ${total.toFixed(2)}`;
+    }
+
+    // ✅ FUNÇÃO CORRIGIDA - ALTERAR QUANTIDADE (SOLUÇÃO ROBUSTA)
+    async function alterarQuantidade(itemId, delta) {
+        try {
+            // Busca dados atualizados do carrinho
+            const response = await fetch('/api/carrinho/dados');
+            const carrinhoData = await response.json();
+            
+            if (!carrinhoData.autenticado) {
+                alert('⚠️ Você precisa estar logado');
+                window.location.href = '/login';
+                return;
+            }
+
+            const item = carrinhoData.itens_carrinho.find(item => item.id === itemId);
+            if (!item) {
+                alert('Item não encontrado no carrinho');
+                return;
+            }
+
+            const novaQuantidade = item.quantidade + delta;
+            
+            // Verifica se a quantidade será zero ou negativa
+            if (novaQuantidade < 1) {
+                await removerItem(itemId);
+                return;
+            }
+
+            // Tenta primeiro usar endpoint de atualização se existir
+            try {
+                const responseUpdate = await fetch(`/api/carrinho/atualizar/${itemId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        quantidade: novaQuantidade
+                    })
+                });
+
+                if (responseUpdate.ok) {
+                    carregarCarrinhoBackend();
+                    return;
+                }
+            } catch (e) {
+                console.log('Endpoint de atualização não disponível, usando método alternativo');
+            }
+
+            // MÉTODO ALTERNATIVO: Remove e readiciona com nova quantidade
+            if (delta < 0) {
+                // Para diminuir: remove completamente e readiciona com quantidade correta
+                await fetch(`/api/carrinho/remover/${itemId}`, { method: 'POST' });
+                
+                if (novaQuantidade > 0) {
+                    await fetch('/api/carrinho/adicionar', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            produto_id: item.produto_id,
+                            quantidade: novaQuantidade
+                        })
+                    });
+                }
+            } else {
+                // Para aumentar: usa o endpoint normal de adicionar
+                await fetch('/api/carrinho/adicionar', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        produto_id: item.produto_id,
+                        quantidade: delta
+                    })
+                });
+            }
+
+            // Recarrega o carrinho
+            carregarCarrinhoBackend();
+            
+        } catch (error) {
+            console.error('Erro ao alterar quantidade:', error);
+            alert('❌ Erro de conexão ao alterar quantidade');
+        }
+    }
+
+    // ✅ REMOVER ITEM MELHORADA
+    async function removerItem(itemId) {
+        if (!confirm('Tem certeza que deseja remover este item do carrinho?')) {
+            return;
+        }
+        
+        try {
+            const response = await fetch(`/api/carrinho/remover/${itemId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+            
+            if (response.ok) {
+                // Feedback visual antes de recarregar
+                const produtos = document.querySelectorAll('.produto');
+                produtos.forEach(produto => {
+                    const deleteBtn = produto.querySelector(`[onclick*="${itemId}"]`);
+                    if (deleteBtn) {
+                        const itemElement = deleteBtn.closest('.produto');
+                        itemElement.style.opacity = '0.5';
+                        itemElement.style.transition = 'opacity 0.3s';
+                    }
+                });
+                
+                setTimeout(() => {
+                    carregarCarrinhoBackend();
+                }, 300);
+                
+            } else {
+                const errorData = await response.json();
+                throw new Error(errorData.detail || 'Erro ao remover item');
+            }
+        } catch (error) {
+            console.error('Erro:', error);
+            alert(`Erro ao remover item: ${error.message}`);
+        }
+    }
+
+    function irParaCheckout() {
+      window.location.href = '/checkout';
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      carregarCarrinhoBackend();
+    });
+  </script>
+</body>
+</html>

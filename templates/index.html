@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="{{ url_for('static', path='uploads/Logo_SF_Branca.PNG') }}" type="image/x-icon">
+<title>Zados - Catálogo</title>
+
+<style>
+/* RESET E ESTILOS EXISTENTES DO CATÁLOGO */
+* {margin:0; padding:0; box-sizing:border-box;}
+body {font-family:'Inter', sans-serif; background:#fff; color:#000; line-height:1.6; overflow-x:hidden;}
+
+/* HEADER - Mantido do catálogo */
+header {
+    position: relative;
+    background: url("{{ url_for('static', path='uploads/INIC.PNG') }}") no-repeat center/cover;
+    padding: 150px 60px 50px 60px;
+    text-align: center;
+    color: #fff;
+    height: 700px;
+}
+
+.logo{
+    position:absolute;
+    top:20px;
+    left:20px;
+    width:170px;
+}
+
+nav {
+    position:absolute;
+    top:20px;
+    right:40px;
+    display:flex;
+    align-items:center;
+    gap: 30px;
+    margin: 20px;
+}
+
+nav a {
+    text-decoration:none;
+    color:#fff;
+    font-size:18px;
+    padding:6px 8px;
+    transition:0.3s;
+}
+
+nav a:hover {
+    color:#ccc;
+}
+
+.headerimg img {
+    width:45px;
+}
+
+.botao_entrar {
+    background:#fff; 
+    color:#000; 
+    border:none; 
+    padding:10px 20px; 
+    border-radius:6px; 
+    cursor:pointer; 
+    transition:0.3s;
+    height: 50px;
+}
+.botao_entrar:hover {
+    background:#000; 
+    color:#fff;
+}
+
+.ttl h1 {
+    font-size:60px; 
+    margin-top:50px;
+}
+.meio {
+    margin-top:20px; 
+    font-size:24px;
+}
+.meio a {
+    padding:15px 25px; 
+    font-size:18px; border:none; 
+    border-radius:6px; 
+    cursor:pointer; 
+    background:#fff; 
+    color:#000; 
+    transition:0.3s;
+    text-decoration: none;
+}
+    
+.meio a:hover {
+    background:#000; 
+    color:#fff;
+}
+
+/* SISTEMA DE FILTRO DA PÁGINA DE BUSCA */
+.filtro {
+    background-color: #fff;
+    padding: 20px 25px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    margin: 30px auto;
+    display: flex;
+    gap: 25px;
+    align-items: center;
+    flex-wrap: wrap;
+    max-width: 1200px;
+}
+
+.item_filtro {
+    display: inline-flex;
+    flex-direction: column;
+    min-width: 200px;
+}
+
+.item_filtro label {
+    margin-bottom: 8px;
+    font-weight: 600;
+    font-size: 14px;
+    color: #2c3e50;
+}
+
+.item_filtro select {
+    padding: 10px 12px;
+    border: 1px solid #dcdfe6;
+    border-radius: 6px;
+    background-color: #fff;
+    font-size: 14px;
+    color: #333;
+    cursor: pointer;
+    transition: border-color 0.3s;
+    width: 100%;
+}
+
+.item_filtro select:hover {
+    border-color: #c0c4cc;
+}
+
+.item_filtro select:focus {
+    outline: none;
+    border-color: #409eff;
+}
+
+/* PRODUTOS - Estilo do catálogo com sistema de filtro */
+.produtos {
+    max-width:1200px; 
+    margin:60px auto; 
+    padding:0 20px;
+}
+.produtos h2 {
+    text-align:center; 
+    font-size:40px; 
+    margin-bottom:40px;
+}
+.produtos-grid {
+    display:grid; 
+    grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); 
+    gap:30px;
+}
+.produto-card {
+    background:#fff; 
+    border-radius:10px; 
+    box-shadow:0 2px 8px rgba(0,0,0,0.1); 
+    overflow:hidden; 
+    text-align:center; 
+    padding-bottom:15px; 
+    transition:0.3s;
+}
+.produto-card:hover {
+    transform:translateY(-4px);
+}
+.produto-card img {
+    width:100%; 
+    height:300px; 
+    object-fit:cover;
+}
+.produto-info {
+    padding:10px;
+}
+.produto-info h3 {
+    font-size:20px; 
+    margin:10px 0;
+}
+.produto-info p {
+    font-size:16px; 
+    color:gray; 
+    margin-bottom:10px;
+}
+.produto-info span {
+    font-weight:bold; 
+    font-size:18px;
+}
+
+/* CORES DISPONÍVEIS */
+.cores-disponiveis {
+    display:flex; 
+    justify-content:center; 
+    gap:8px; 
+    margin:10px 0;
+    flex-wrap: wrap;
+}
+
+.cor-bolinha {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 2px solid #ddd;
+    cursor: pointer;
+    transition: transform 0.15s ease, border-color 0.15s;
+    display: inline-block;
+}
+
+.cor-bolinha:hover {    
+    transform: scale(1.15);
+    border-color: #000;
+}
+
+.cor-bolinha.ativa {
+    border-color: #0078ff;
+    transform: scale(1.1);
+}
+
+.cores-label {
+    font-size: 12px;
+    color: #666;
+    margin-bottom: 5px;
+    text-align: center;
+}
+
+.btn_ver{
+    padding:14px; 
+    background:#000; 
+    color:#fff; 
+    border:none; 
+    border-radius:6px; 
+    cursor:pointer; 
+    text-decoration:none;
+    transition: 0.3s;
+    margin-top: 10px;
+    display: inline-block;
+}
+
+.btn_ver:hover {
+    background:#ccc; 
+    color:#000;
+}
+
+/* SEÇÕES DO CATÁLOGO */
+.colecao, .alt_tec {
+    display:flex; 
+    align-items:center; 
+    justify-content:space-between; 
+    margin:60px auto; 
+    max-width:1200px; 
+    flex-wrap:wrap;
+}
+.colecao img, .alt_tec img {
+    width:550px; 
+    border-radius:8px; 
+    margin:20px;
+}
+.clc_txt h3, .alt_txt h3 {
+    font-size:40px; 
+    margin-bottom:15px;
+}
+.clc_txt p, .alt_txt p {
+    font-size:20px; 
+    color:gray; 
+    margin-bottom:20px;
+}
+.btns {
+    display:flex; 
+    gap:15px;
+}
+.btn_clc, .btn_clc1, .btn_alt {
+    padding:15px 30px; 
+    border:none; 
+    border-radius:6px; 
+    cursor:pointer; 
+    font-size:18px; 
+    transition:0.3s;
+}
+.btn_clc {
+    background:#000; 
+    color:#fff;
+}
+.btn_clc1 {
+    background:#d8d8d8; 
+    color:#000;
+}
+.btn_alt {
+    background:#000; 
+    color:#fff;
+    text-decoration: none;
+}
+.btn_clc:hover {
+    background:#555;
+}
+.btn_clc1:hover {
+    background:#bbb;
+}
+.btn_alt:hover {
+    background:#555;
+}
+
+/* VER MAIS */
+.ver_mais {
+    text-align:center; 
+    margin:40px;
+}
+.ver_mais button {
+    padding:15px 30px; 
+    font-size:18px; 
+    border:none; 
+    border-radius:6px; 
+    background:#e6e6e6; 
+    cursor:pointer;
+}
+.ver_mais button:hover {
+    background:#ccc;
+}
+
+/* FOOTER */
+footer {
+    margin-top:60px;
+}
+.footer-end {
+    display:grid; 
+    grid-template-columns:repeat(3,1fr); 
+    gap:40px; 
+    background:#f5f5f5; 
+    padding:50px 60px;
+}
+.footer-col h4 {
+    font-size:20px; 
+    margin-bottom:15px;
+}
+.footer-col ul {
+    list-style:none; 
+    padding:0;
+}
+.footer-col ul li {
+    margin:6px 0;
+}
+.footer-col ul li a {
+    text-decoration:none; 
+    color:#000;
+}
+.footer-col .social img {
+    width:30px; 
+    margin-top:10px;
+}
+.saiba_btn {
+    background:transparent; 
+    border:none; 
+    cursor:pointer; 
+    font-size:16px;
+    color: #000;
+    text-decoration: none;
+}
+.footer-end{
+    background: url("{{ url_for('static', path='uploads/Footer-home.png') }}") no-repeat center/cover;  
+}
+.saiba_btn{
+    font-size: 16x;
+    margin-top: 20px; 
+    height: 20px;
+    background-color: rgba(255, 255, 255, 0);
+    cursor: pointer;
+    border-color: #00000000;
+    border-radius: 2px;
+    box-shadow: 1px 1px 1rem #3333334d;
+}
+
+/* RESPONSIVIDADE */
+@media (max-width: 1024px) {
+    .produtos-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .filtro {
+        flex-direction: column;
+        gap: 15px;
+    }
+    .item_filtro {
+        width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .produtos-grid {
+        grid-template-columns: 1fr;
+    }
+    .colecao, .alt_tec {
+        flex-direction: column;
+        text-align: center;
+    }
+    .colecao img, .alt_tec img {
+        width: 100%;
+        max-width: 400px;
+    }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+    <img class="logo" src="{{ url_for('static', path='uploads/Logo_SF_Branca.png') }}" alt="Logo_Zados">
+    <nav>
+      <a href="/home" class="nav_item">HOME</a>
+      <a href="/home" class="headerimg"><img src="{{ url_for('static', path='uploads/casa_branca.png') }}" alt="home"></a>
+      <a href="/carrinho" class="nav_item">CARRINHO</a>
+      <a href="/carrinho" class="headerimg"><img src="{{ url_for('static', path='uploads/carrinho_branco.png') }}" alt="carrinho"></a>
+        {% if is_admin %}
+            <a href="/lista_adm">Área Admin</a>
+        {% endif %}
+        
+        {% if usuario %}
+            <a href="/logout" class="botao_entrar">SAIR</a>
+        {% else %}
+            <a class="botao_entrar" href="/login">ENTRAR</a>
+        {% endif %}
+    </nav>
+    <div class="ttl"><h1>ZADOS</h1></div>
+    <div class="meio"><p>Trazendo para você a melhor solução</p><br></div>
+</header>
+
+<!-- SISTEMA DE FILTRO INTEGRADO -->
+<section class="filtro">
+    <div class="item_filtro">
+        <label for="product-type">Tipo de Produto</label>
+        <select id="product-type">
+            <option value="">Todos</option>
+            <option value="camisa">Camisa</option>
+            <option value="camiseta">Camiseta</option>
+            <!-- Adicione mais opções conforme suas categorias -->
+        </select>
+    </div>
+
+    <div class="item_filtro">
+        <label for="gender">Gênero</label>
+        <select id="genero">
+            <option value="">Todos</option>
+            <option value="masculino">Masculino</option>
+            <option value="feminino">Feminino</option>
+        </select>
+    </div>
+
+    <div class="item_filtro">
+        <label for="tamanho">Tamanho</label>
+        <select id="tamanho">
+            <option value="">Todos</option>
+            <option value="p">P</option>
+            <option value="m">M</option>
+            <option value="g">G</option>
+            <option value="gg">GG</option>
+        </select>
+    </div>
+
+    <div class="item_filtro">
+        <label for="cor">Cor</label>
+        <select id="cor">
+            <option value="">Todas</option>
+            <option value="preto">Preto</option>
+            <option value="branco">Branco</option>
+            <!-- Adicione mais cores conforme disponível -->
+        </select>
+    </div>
+
+    <div class="item_filtro">
+        <label for="ordem">ORDENAR POR</label>
+        <select id="ordem">
+            <option value="relevancia">Relevância</option>
+            <option value="menor-preco">Menor Preço</option>
+            <option value="maior-preco">Maior Preço</option>
+            <option value="nome">Nome</option>
+        </select>
+    </div>
+</section>
+
+<!-- PRODUTOS COM SISTEMA DE FILTRO -->
+<section class="produtos">
+    <h2>PRODUTOS</h2>
+    <div class="produtos-grid" id="produtos-grid">
+        {% for produto in produtos %}
+        <div class="produto-card" 
+             data-categoria="{{ produto.categoria|lower if produto.categoria else '' }}" 
+             data-genero="{{ produto.genero|lower if produto.genero else '' }}" 
+             data-tamanho="{{ produto.tamanho|lower if produto.tamanho else '' }}" 
+             data-cor="{{ produto.cor|lower if produto.cor else '' }}" 
+             data-preco="{{ produto.preco }}">
+            <img src="{{ url_for('static', path='uploads/' + produto.imagem) if produto.imagem else url_for('static', path='default.png') }}" 
+                 alt="{{ produto.nome }}" 
+                 onerror="this.src='{{ url_for('static', path='default.png') }}'">
+            <div class="produto-info">
+                <h3>{{ produto.nome }}</h3>
+                
+                <!-- CORES DISPONÍVEIS -->
+                <div class="cores-label">Cores Disponíveis:</div>
+                <div class="cores-disponiveis">
+                    <div class="cor-bolinha ativa" 
+                         data-cor="{{ produto.cor }}"
+                         title="{{ produto.cor }}">
+                    </div>
+                    
+                    {% if produto.outras_cores %}
+                        {% for cor in produto.outras_cores %}
+                        <div class="cor-bolinha" 
+                             data-cor="{{ cor }}"
+                             title="{{ cor }}"></div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+
+                <p>{{ produto.descricao[:100] }}{% if produto.descricao and produto.descricao|length > 100 %}...{% endif %}</p>
+                <span>R$ {{ "%.2f"|format(produto.preco) }}</span><br>
+                
+                {% if produto.categoria %}
+                <small style="color: #666; font-size: 12px;">Categoria: {{ produto.categoria.nome }}</small><br>
+                {% endif %}
+                
+                <a href="/produtos/{{ produto.id }}" class="btn_ver">Ver mais</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% if produtos|length > 6 %}
+    <div class="ver_mais">
+        <button id="verMaisBtn" onclick="verMaisProdutos()">Ver Mais</button>
+    </div>
+    {% endif %}
+</section>
+
+<!-- SEÇÕES RESTANTES DO CATÁLOGO -->
+<section class="colecao">
+    <div class="clc_txt">
+        <h3>Nova Coleção</h3>
+        <p>Explore nossa nova coleção de camisas nesse verão.</p>
+        <div class="btns">
+            <button class="btn_clc" onclick="window.location.href='/'">Comprar peças</button>
+            <button class="btn_clc1" onclick="window.location.href='/carrinho'">Adicionar carrinho</button>
+        </div>
+    </div>
+    <img src="{{ url_for('static', path='uploads/Nova Coleção Catalogo.PNG') }}" alt="Nova_Coleção"/>
+</section>
+
+<section class="alt_tec">
+    <img src="{{ url_for('static', path='uploads/Alta tecnologia catalogo.PNG') }}" alt="Alta_Tecnologia"/>
+    <div class="alt_txt">
+        <h3>Alta Tecnologia</h3>
+        <p>Peças feitas visando o seu conforto</p>
+        <a class="btn_alt" href="/busca">Ver Produtos</a>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+    <div class="footer-end">
+        <div class="footer-col">
+            <h4>Zados</h4>
+            <div class="social">
+                <a href="#"><img src="{{ url_for('static', path='uploads/FacebookIcon.png') }}" alt="Facebook"/></a>
+                <a href="#"><img src="{{ url_for('static', path='uploads/IGIcon.png') }}" alt="Instagram"/></a>
+                <a href="#"><img src="{{ url_for('static', path='uploads/YTIcon.png') }}" alt="Youtube"/></a>
+            </div>
+        </div>
+        <div class="footer-col">
+            <h4>Camisetas</h4>
+            <ul>
+                <li><a href="/categoria/1">Oversize</a></li>
+                <li><a href="/categoria/2">Regata</a></li>
+                <li><a href="/categoria/3">Manga-longa</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h4>Camisas</h4>
+            <ul>
+                <li><a href="/categoria/4">Polo</a></li>
+                <li><a href="/categoria/5">Social</a></li>
+                <li><a href="/categoria/6">Colarinho longo</a></li>
+                <a class="saiba_btn" href="/sobre">Saiba Mais</a>
+            </ul>
+        </div>
+    </div>
+</footer>
+
+<script>
+    // Mapa de cores para CSS
+    const mapaCores = {
+        'preto': '#000000',
+        'branco': '#ffffff', 
+        'vermelho': '#ff0000',
+        'azul': '#0000ff',
+        'verde': '#008000',
+        'cinza': '#808080',
+        'bege': '#f5f5dc',
+        'rosa': '#ff69b4',
+        'amarelo': '#ffff00',
+        'laranja': '#ffa500',
+        'roxo': '#800080',
+        'marrom': '#8b4513'
+    };
+
+    // SISTEMA DE FILTRO
+    document.addEventListener('DOMContentLoaded', function() {
+        const filtros = document.querySelectorAll('.filtro select');
+        const produtos = document.querySelectorAll('.produto-card');
+        
+        // Aplica cores às bolinhas
+        document.querySelectorAll('.cor-bolinha').forEach(bolinha => {
+            const corTitle = bolinha.getAttribute('title');
+            if (corTitle) {
+                const corLower = corTitle.toLowerCase().split(' ')[0];
+                const corCSS = mapaCores[corLower] || '#cccccc';
+                bolinha.style.backgroundColor = corCSS;
+            }
+        });
+        
+        // Sistema de filtro
+        filtros.forEach(filtro => {
+            filtro.addEventListener('change', function() {
+                const tipo = document.getElementById('product-type').value;
+                const genero = document.getElementById('genero').value;
+                const tamanho = document.getElementById('tamanho').value;
+                const cor = document.getElementById('cor').value;
+                const ordem = document.getElementById('ordem').value;
+                
+                // Primeiro aplica os filtros
+                let produtosVisiveis = [];
+                
+                produtos.forEach(produto => {
+                    const prodTipo = produto.getAttribute('data-categoria');
+                    const prodGenero = produto.getAttribute('data-genero');
+                    const prodTamanho = produto.getAttribute('data-tamanho');
+                    const prodCor = produto.getAttribute('data-cor');
+                    
+                    const mostraProduto = 
+                        (!tipo || prodTipo.includes(tipo)) &&
+                        (!genero || prodGenero === genero) &&
+                        (!tamanho || prodTamanho === tamanho) &&
+                        (!cor || prodCor === cor);
+                    
+                    if (mostraProduto) {
+                        produto.style.display = 'block';
+                        produtosVisiveis.push(produto);
+                    } else {
+                        produto.style.display = 'none';
+                    }
+                });
+                
+                // Depois aplica a ordenação nos produtos visíveis
+                ordenarProdutos(produtosVisiveis, ordem);
+            });
+        });
+        
+        function ordenarProdutos(produtosArray, ordem) {
+            const container = document.querySelector('.produtos-grid');
+            
+            // Remove todos os produtos do container
+            produtos.forEach(produto => {
+                if (produto.parentNode === container) {
+                    container.removeChild(produto);
+                }
+            });
+            
+            // Ordena o array conforme a opção selecionada
+            switch(ordem) {
+                case 'menor-preco':
+                    produtosArray.sort((a, b) => {
+                        const precoA = parseFloat(a.getAttribute('data-preco'));
+                        const precoB = parseFloat(b.getAttribute('data-preco'));
+                        return precoA - precoB;
+                    });
+                    break;
+                    
+                case 'maior-preco':
+                    produtosArray.sort((a, b) => {
+                        const precoA = parseFloat(a.getAttribute('data-preco'));
+                        const precoB = parseFloat(b.getAttribute('data-preco'));
+                        return precoB - precoA;
+                    });
+                    break;
+                    
+                case 'nome':
+                    produtosArray.sort((a, b) => {
+                        const nomeA = a.querySelector('h3').textContent;
+                        const nomeB = b.querySelector('h3').textContent;
+                        return nomeA.localeCompare(nomeB);
+                    });
+                    break;
+                    
+                // 'relevancia' mantém a ordem original
+            }
+            
+            // Adiciona os produtos ordenados de volta ao container
+            produtosArray.forEach(produto => container.appendChild(produto));
+        }
+    });
+
+    // Ver mais produtos
+    function verMaisProdutos() {
+        const produtos = document.querySelectorAll('.produto-card');
+        produtos.forEach(produto => {
+            produto.style.display = 'block';
+        });
+        document.getElementById('verMaisBtn').style.display = 'none';
+    }
+</script>
+    
+</body>
+</html>
