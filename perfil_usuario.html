@@ -1,0 +1,1461 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Perfil - Zados</title>
+    <link rel="icon" href="{{ url_for('static', path='uploads/Logo_SF_Branca.PNG') }}" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* ==== RESET E ESTILOS GERAIS ==== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f8f9fa;
+            color: #333;
+            line-height: 1.5;
+            overflow-x: hidden;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* ==== HEADER RESPONSIVO ==== */
+        .dashboard-header {
+            background: #FBF4E6;
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 0;
+        }
+
+        .LogoMark {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            object-fit: contain;
+            flex-shrink: 0;
+        }
+
+        .logo-section h1 {
+            font-size: 20px;
+            color: #000;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Menu do usuário responsivo */
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 10px;
+            width: 100%;
+            justify-content: center;
+            order: 3;
+        }
+
+        .user-info {
+            display: none;
+            text-align: right;
+        }
+
+        .user-name {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .user-email {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .nav-btn {
+            background: #000;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 12px;
+            transition: background 0.3s;
+            white-space: nowrap;
+        }
+
+        .nav-btn:hover {
+            background: #333;
+        }
+
+        /* ==== LAYOUT DO PERFIL RESPONSIVO ==== */
+        .profile-container {
+            padding: 20px 16px;
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Sidebar do perfil (mobile-first) */
+        .profile-sidebar {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            width: 100%;
+            order: 2;
+        }
+
+        /* Avatar do perfil */
+        .profile-avatar {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .avatar-container {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+
+        .avatar-img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #000;
+        }
+
+        .avatar-placeholder {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: #000;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: bold;
+            border: 4px solid #000;
+        }
+
+        .change-avatar-btn {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            background: #000;
+            color: white;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .change-avatar-btn:hover {
+            background: #333;
+            transform: scale(1.1);
+        }
+
+        .profile-name {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .profile-email {
+            color: #666;
+            font-size: 14px;
+        }
+
+        /* Menu do perfil */
+        .profile-menu {
+            list-style: none;
+            margin-top: 20px;
+        }
+
+        .profile-menu li {
+            margin-bottom: 6px;
+        }
+
+        .profile-menu a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 15px;
+            text-decoration: none;
+            color: #333;
+            border-radius: 8px;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+
+        .profile-menu a:hover {
+            background: #f5f5f5;
+        }
+
+        .profile-menu a.active {
+            background: #000;
+            color: white;
+        }
+
+        .menu-icon {
+            font-size: 16px;
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Conteúdo principal */
+        .profile-content {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            width: 100%;
+            order: 1;
+        }
+
+        .section-title {
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: #000;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        /* Seções */
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        /* Formulários */
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            color: #333;
+            font-size: 14px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: border 0.3s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: #000;
+            outline: none;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 18px;
+        }
+
+        /* Botões */
+        .btn-primary {
+            background: #000;
+            color: white;
+            border: none;
+            padding: 14px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 600;
+            transition: background 0.3s;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .btn-primary:hover {
+            background: #333;
+        }
+
+        .btn-secondary {
+            background: #666;
+            color: white;
+            border: none;
+            padding: 14px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 15px;
+            transition: background 0.3s;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .btn-secondary:hover {
+            background: #555;
+        }
+
+        .btn-danger {
+            background: transparent;
+            color: #ff4444;
+            border: 1px solid #ff4444;
+            padding: 14px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 15px;
+            transition: all 0.3s;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .btn-danger:hover {
+            background: #ff4444;
+            color: white;
+        }
+
+        /* Botões lado a lado */
+        .button-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            flex-direction: column;
+        }
+
+        .button-group .btn-primary,
+        .button-group .btn-secondary {
+            margin-top: 0;
+            width: 100%;
+        }
+
+        /* Endereços salvos */
+        .addresses-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+
+        .address-card {
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 18px;
+            position: relative;
+            transition: all 0.3s;
+        }
+
+        .address-card:hover {
+            border-color: #000;
+        }
+
+        .address-card.default {
+            border-color: #000;
+            background: #f8f9fa;
+        }
+
+        .address-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .address-title {
+            font-weight: 600;
+            font-size: 16px;
+            color: #000;
+        }
+
+        .default-badge {
+            background: #000;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .address-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-edit {
+            background: #007bff;
+            color: white;
+        }
+
+        .btn-edit:hover {
+            background: #0056b3;
+        }
+
+        .btn-delete {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background: #c82333;
+        }
+
+        .btn-set-default {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-set-default:hover {
+            background: #218838;
+        }
+
+        /* Cupons */
+        .coupons-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 18px;
+        }
+
+        .coupon-card {
+            border: 2px dashed #ddd;
+            border-radius: 8px;
+            padding: 18px;
+            text-align: center;
+            background: #f8f9fa;
+        }
+
+        .coupon-code {
+            font-size: 16px;
+            font-weight: bold;
+            color: #000;
+            margin-bottom: 8px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .coupon-description {
+            color: #666;
+            margin-bottom: 12px;
+            font-size: 13px;
+        }
+
+        .coupon-expiry {
+            color: #999;
+            font-size: 11px;
+        }
+
+        /* Estado vazio */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #666;
+        }
+
+        .empty-state img {
+            width: 80px;
+            opacity: 0.5;
+            margin-bottom: 15px;
+        }
+
+        .empty-state h3 {
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: #444;
+        }
+
+        .empty-state p {
+            font-size: 14px;
+            color: #777;
+        }
+
+        /* Excluir conta */
+        .delete-warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 18px;
+            margin-bottom: 20px;
+        }
+
+        .delete-warning h4 {
+            color: #856404;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .delete-warning p {
+            color: #856404;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        /* Mensagens */
+        .mensagem {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-size: 14px;
+            display: none;
+        }
+
+        .mensagem-sucesso {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .mensagem-erro {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        /* ==== ANIMAÇÕES ==== */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .profile-sidebar,
+        .profile-content {
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        /* ==== MEDIA QUERIES ==== */
+
+        /* Tablet (768px+) */
+        @media (min-width: 768px) {
+            .dashboard-header {
+                padding: 15px 30px;
+                flex-wrap: nowrap;
+            }
+
+            .LogoMark {
+                width: 60px;
+                height: 60px;
+            }
+
+            .logo-section h1 {
+                font-size: 24px;
+            }
+
+            .user-menu {
+                width: auto;
+                margin-top: 0;
+                order: 2;
+                justify-content: flex-end;
+            }
+
+            .user-info {
+                display: block;
+            }
+
+            .nav-btn {
+                padding: 10px 20px;
+                font-size: 14px;
+            }
+
+            .profile-container {
+                flex-direction: row;
+                padding: 30px;
+                gap: 30px;
+                align-items: flex-start;
+            }
+
+            .profile-sidebar {
+                flex: 0 0 280px;
+                order: 1;
+            }
+
+            .profile-content {
+                flex: 1;
+                order: 2;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .button-group {
+                flex-direction: row;
+            }
+
+            .button-group .btn-primary,
+            .button-group .btn-secondary {
+                width: auto;
+                min-width: 120px;
+            }
+
+            .addresses-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .coupons-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .btn-danger {
+                width: auto;
+                min-width: 200px;
+            }
+        }
+
+        /* Desktop (1024px+) */
+        @media (min-width: 1024px) {
+            .dashboard-header {
+                padding: 15px 40px;
+            }
+
+            .logo-section h1 {
+                font-size: 28px;
+            }
+
+            .profile-container {
+                padding: 40px;
+                gap: 40px;
+            }
+
+            .profile-sidebar {
+                flex: 0 0 300px;
+            }
+
+            .section-title {
+                font-size: 24px;
+            }
+
+            .form-group label {
+                font-size: 15px;
+            }
+
+            .form-group input,
+            .form-group select,
+            .form-group textarea {
+                font-size: 16px;
+            }
+
+            .btn-primary,
+            .btn-secondary,
+            .btn-danger {
+                padding: 14px 25px;
+                font-size: 16px;
+            }
+
+            .addresses-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .coupons-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        /* Telas muito pequenas (até 480px) */
+        @media (max-width: 480px) {
+            .dashboard-header {
+                padding: 10px 12px;
+            }
+
+            .LogoMark {
+                width: 40px;
+                height: 40px;
+            }
+
+            .logo-section h1 {
+                font-size: 18px;
+            }
+
+            .nav-btn {
+                padding: 6px 10px;
+                font-size: 11px;
+            }
+
+            .profile-container {
+                padding: 15px 12px;
+            }
+
+            .profile-sidebar,
+            .profile-content {
+                padding: 15px;
+            }
+
+            .avatar-img,
+            .avatar-placeholder {
+                width: 80px;
+                height: 80px;
+                font-size: 24px;
+            }
+
+            .change-avatar-btn {
+                width: 28px;
+                height: 28px;
+                font-size: 12px;
+            }
+
+            .profile-name {
+                font-size: 16px;
+            }
+
+            .section-title {
+                font-size: 18px;
+            }
+
+            .address-card {
+                padding: 15px;
+            }
+
+            .btn-small {
+                padding: 4px 8px;
+                font-size: 11px;
+            }
+        }
+
+        /* ==== MELHORIAS DE ACESSIBILIDADE ==== */
+        button:focus,
+        a:focus,
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: 2px solid #000;
+            outline-offset: 2px;
+        }
+
+        /* ==== ESTILOS PARA MENSAGENS DINÂMICAS ==== */
+        .erro-campo {
+            color: #dc3545;
+            font-size: 12px;
+            margin-top: 5px;
+            display: block;
+        }
+
+        .campo-erro {
+            border-color: #dc3545 !important;
+            background: #fff5f5;
+        }
+
+        /* ==== SCROLL SMOOTH ==== */
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body>
+    <!-- HEADER -->
+    <header class="dashboard-header">
+        <div class="logo-section">
+            <img class="LogoMark" src="{{ url_for('static', path='uploads/Logo.png') }}" alt="Zados">
+            <h1>ZADOS</h1>
+        </div>
+        
+        <div class="user-menu">
+            <div class="user-info">
+                <div class="user-name">Olá, {{ usuario.nome }}!</div>
+                <div class="user-email">{{ usuario.email }}</div>
+            </div>
+            <a href="/" class="nav-btn">Loja</a>
+            <a href="/dashboard" class="nav-btn">Dashboard</a>
+            <a href="/logout" class="nav-btn">Sair</a>
+        </div>
+    </header>
+
+    <!-- CONTAINER DO PERFIL -->
+    <div class="profile-container">
+        <!-- SIDEBAR -->
+        <div class="profile-sidebar">
+            <div class="profile-avatar">
+                <div class="avatar-container">
+                    {% if usuario.foto %}
+                    <img src="{{ usuario.foto }}" alt="Foto de perfil" class="avatar-img" id="avatarImage">
+                    {% else %}
+                    <div class="avatar-placeholder" id="avatarPlaceholder">
+                        {{ usuario.nome[0]|upper if usuario.nome else 'U' }}
+                    </div>
+                    {% endif %}
+                    <button class="change-avatar-btn" onclick="document.getElementById('avatarInput').click()" 
+                            aria-label="Alterar foto de perfil">
+                        📷
+                    </button>
+                    <input type="file" id="avatarInput" accept="image/*" style="display: none;" onchange="alterarFoto(event)">
+                </div>
+                <div class="profile-name">{{ usuario.nome if usuario else 'Usuário' }}</div>
+                <div class="profile-email">{{ usuario.email if usuario else 'email@exemplo.com' }}</div>
+            </div>
+
+            <ul class="profile-menu">
+                <li><a href="#" class="active" onclick="mostrarSecao('informacoes')">
+                    <span class="menu-icon"></span> Informações Pessoais
+                </a></li>
+                <li><a href="#" onclick="mostrarSecao('enderecos')">
+                    <span class="menu-icon"></span> Endereços Salvos
+                </a></li>
+                <li><a href="#" onclick="mostrarSecao('cupons')">
+                    <span class="menu-icon"></span> Meus Cupons
+                </a></li>
+                <li><a href="#" onclick="mostrarSecao('excluir')">
+                    <span class="menu-icon"></span> Excluir Conta
+                </a></li>
+            </ul>
+        </div>
+
+        <!-- CONTEÚDO PRINCIPAL -->
+        <div class="profile-content">
+            <!-- INFORMAÇÕES PESSOAIS -->
+            <div class="section active" id="informacoes">
+                <h2 class="section-title">Informações Pessoais</h2>
+                
+                <form id="formInformacoes">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="nome">Nome Completo *</label>
+                            <input type="text" id="nome" name="nome" required 
+                                   value="{{ usuario.nome if usuario else '' }}"
+                                   placeholder="Seu nome completo">
+                        </div>
+                        <div class="form-group">
+                            <label for="email">E-mail *</label>
+                            <input type="email" id="email" name="email" required
+                                   value="{{ usuario.email if usuario else '' }}"
+                                   placeholder="seu@email.com">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="telefone">Telefone *</label>
+                            <input type="tel" id="telefone" name="telefone" required
+                                   value="{{ usuario.telefone if usuario else '' }}"
+                                   placeholder="(11) 99999-9999"
+                                   oninput="formatarTelefone(this)">
+                        </div>
+                        <div class="form-group">
+                            <label for="cpf">CPF</label>
+                            <input type="text" id="cpf" name="cpf" 
+                                   value="{{ usuario.cpf if usuario else '' }}"
+                                   placeholder="000.000.000-00"
+                                   oninput="formatarCPF(this)">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="data_nascimento">Data de Nascimento</label>
+                            <input type="date" id="data_nascimento" name="data_nascimento"
+                                   value="{{ usuario.data_nascimento if usuario else '' }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="genero">Gênero</label>
+                            <select id="genero" name="genero">
+                                <option value="">Selecione...</option>
+                                <option value="masculino" {% if usuario and usuario.genero == 'masculino' %}selected{% endif %}>Masculino</option>
+                                <option value="feminino" {% if usuario and usuario.genero == 'feminino' %}selected{% endif %}>Feminino</option>
+                                <option value="outro" {% if usuario and usuario.genero == 'outro' %}selected{% endif %}>Outro</option>
+                                <option value="prefiro_nao_informar" {% if usuario and usuario.genero == 'prefiro_nao_informar' %}selected{% endif %}>Prefiro não informar</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Mensagens de status -->
+                    <div class="mensagem mensagem-sucesso" id="msgSucessoInfo">
+                        ✅ Informações salvas com sucesso!
+                    </div>
+                    
+                    <div class="mensagem mensagem-erro" id="msgErroInfo">
+                        ❌ Erro ao salvar informações.
+                    </div>
+
+                    <div class="button-group">
+                        <button type="submit" class="btn-primary">Salvar Alterações</button>
+                        <button type="button" class="btn-secondary" onclick="limparFormulario()">↺ Cancelar</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- ENDEREÇOS SALVOS -->
+            <div class="section" id="enderecos">
+                <h2 class="section-title">Endereços Salvos</h2>
+                
+                <div class="addresses-grid" id="listaEnderecos">
+                    <!-- Endereços serão carregados via JavaScript -->
+                </div>
+
+                <button class="btn-primary" onclick="abrirModalEndereco()" style="margin-top: 0;">
+                    Adicionar Novo Endereço
+                </button>
+
+                <!-- FORMULÁRIO DE ENDEREÇO (modal) -->
+                <div class="section" id="formEndereco" style="display: none; margin-top: 30px;">
+                    <h3 class="section-title">Adicionar Endereço</h3>
+                    
+                    <form id="formNovoEndereco">
+                        <div class="form-group">
+                            <label for="apelido">Apelido do Endereço *</label>
+                            <input type="text" id="apelido" name="apelido" required placeholder="Ex: Casa, Trabalho">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="cep_endereco">CEP *</label>
+                            <input type="text" id="cep_endereco" name="cep" required 
+                                   placeholder="00000-000"
+                                   oninput="formatarCEP(this)" onblur="buscarEndereco(this.value)">
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="logradouro">Logradouro *</label>
+                                <input type="text" id="logradouro" name="logradouro" required placeholder="Rua, Avenida">
+                            </div>
+                            <div class="form-group">
+                                <label for="numero">Número *</label>
+                                <input type="text" id="numero" name="numero" required placeholder="123">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="complemento">Complemento</label>
+                                <input type="text" id="complemento" name="complemento" placeholder="Apto 45, Bloco B">
+                            </div>
+                            <div class="form-group">
+                                <label for="bairro">Bairro *</label>
+                                <input type="text" id="bairro" name="bairro" required placeholder="Seu bairro">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="cidade_endereco">Cidade *</label>
+                                <input type="text" id="cidade_endereco" name="cidade" required placeholder="Sua cidade">
+                            </div>
+                            <div class="form-group">
+                                <label for="estado_endereco">Estado *</label>
+                                <select id="estado_endereco" name="estado" required>
+                                    <option value="">Selecione...</option>
+                                    <option value="SP">São Paulo</option>
+                                    <option value="RJ">Rio de Janeiro</option>
+                                    <option value="MG">Minas Gerais</option>
+                                    <option value="RS">Rio Grande do Sul</option>
+                                    <!-- Outros estados -->
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label style="display: flex; align-items: center; gap: 8px;">
+                                <input type="checkbox" id="endereco_principal" name="principal">
+                                Definir como endereço principal
+                            </label>
+                        </div>
+
+                        <!-- Mensagens de status -->
+                        <div class="mensagem mensagem-sucesso" id="msgSucessoEndereco">
+                            ✅ Endereço salvo com sucesso!
+                        </div>
+                        
+                        <div class="mensagem mensagem-erro" id="msgErroEndereco">
+                            ❌ Erro ao salvar endereço.
+                        </div>
+
+                        <div class="button-group">
+                            <button type="submit" class="btn-primary"> Salvar Endereço</button>
+                            <button type="button" class="btn-secondary" onclick="fecharModalEndereco()">↺ Cancelar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- CUPONS -->
+            <div class="section" id="cupons">
+                <h2 class="section-title"> Meus Cupons</h2>
+                
+                <div class="coupons-grid" id="listaCupons">
+                    <div class="empty-state">
+                        <div style="font-size: 48px; margin-bottom: 15px;">🎁</div>
+                        <h3>Nenhum cupom disponível</h3>
+                        <p>Fique atento às nossas promoções! Novos cupons serão disponibilizados em breve.</p>
+                        <button class="btn-primary" style="margin-top: 15px; width: auto;" onclick="verPromocoes()">
+                            Ver Promoções
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- EXCLUIR CONTA -->
+            <div class="section" id="excluir">
+                <h2 class="section-title"> Excluir Minha Conta</h2>
+                
+                <div class="delete-warning">
+                    <h4>⚠️ Atenção: Esta ação é irreversível!</h4>
+                    <p>Ao excluir sua conta, todos os seus dados, pedidos e histórico serão permanentemente removidos. Esta ação não pode ser desfeita.</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmacao">Digite "EXCLUIR" para confirmar:</label>
+                    <input type="text" id="confirmacao" name="confirmacao" placeholder="EXCLUIR">
+                </div>
+
+                <div class="form-group">
+                    <label for="motivo_exclusao">Motivo da exclusão (opcional):</label>
+                    <select id="motivo_exclusao" name="motivo_exclusao">
+                        <option value="">Selecione o motivo...</option>
+                        <option value="nao_uso">Não uso mais o serviço</option>
+                        <option value="problemas">Problemas técnicos</option>
+                        <option value="privacidade">Preocupações com privacidade</option>
+                        <option value="outro">Outro motivo</option>
+                    </select>
+                </div>
+
+                <button class="btn-danger" onclick="excluirConta()">
+                    Excluir Minha Conta Permanentemente
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ✅ FUNÇÕES DE NAVEGAÇÃO
+        function mostrarSecao(secao) {
+            // Esconde todas as seções
+            document.querySelectorAll('.section').forEach(section => {
+                section.style.display = 'none';
+            });
+            
+            // Remove classe active de todos os links
+            document.querySelectorAll('.profile-menu a').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            // Mostra a seção selecionada e ativa o link
+            document.getElementById(secao).style.display = 'block';
+            event.currentTarget.classList.add('active');
+            
+            // Fechar formulário de endereço se estiver aberto
+            if (secao !== 'enderecos') {
+                fecharModalEndereco();
+            }
+        }
+
+        // ✅ FUNÇÕES DA FOTO DE PERFIL
+        function alterarFoto(event) {
+            const file = event.target.files[0];
+            if (file) {
+                // Validação do tipo de arquivo
+                if (!file.type.match('image.*')) {
+                    alert('⚠️ Por favor, selecione uma imagem.');
+                    return;
+                }
+                
+                // Validação do tamanho (max 5MB)
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('⚠️ A imagem deve ter no máximo 5MB.');
+                    return;
+                }
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    // Cria elemento de imagem se não existir
+                    let avatarImg = document.getElementById('avatarImage');
+                    const avatarPlaceholder = document.getElementById('avatarPlaceholder');
+                    
+                    if (!avatarImg) {
+                        avatarImg = document.createElement('img');
+                        avatarImg.id = 'avatarImage';
+                        avatarImg.className = 'avatar-img';
+                        avatarPlaceholder.parentNode.replaceChild(avatarImg, avatarPlaceholder);
+                    }
+                    
+                    avatarImg.src = e.target.result;
+                    
+                    // Aqui você pode adicionar a lógica para salvar a foto no backend
+                    console.log('Foto alterada:', file.name);
+                    
+                    // Feedback visual
+                    mostrarMensagem('✅ Foto alterada com sucesso!', 'sucesso');
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // ✅ FUNÇÕES DE FORMATAÇÃO
+        function formatarCPF(input) {
+            let cpf = input.value.replace(/\D/g, '');
+            
+            if (cpf.length > 3) {
+                cpf = cpf.substring(0, 3) + '.' + cpf.substring(3, 6);
+            }
+            if (cpf.length > 7) {
+                cpf = cpf.substring(0, 7) + '.' + cpf.substring(7, 10);
+            }
+            if (cpf.length > 11) {
+                cpf = cpf.substring(0, 11) + '-' + cpf.substring(11, 13);
+            }
+            
+            input.value = cpf;
+        }
+
+        function formatarTelefone(input) {
+            let valor = input.value.replace(/\D/g, '');
+            
+            if (valor.length > 11) valor = valor.substring(0, 11);
+            
+            if (valor.length <= 11) {
+                if (valor.length <= 2) {
+                    valor = valor.replace(/^(\d{0,2})/, '($1');
+                } else if (valor.length <= 7) {
+                    valor = valor.replace(/^(\d{2})(\d{0,5})/, '($1) $2');
+                } else {
+                    valor = valor.replace(/^(\d{2})(\d{5})(\d{0,4})/, '($1) $2-$3');
+                }
+            }
+            
+            input.value = valor;
+        }
+
+        function formatarCEP(input) {
+            let cep = input.value.replace(/\D/g, '');
+            
+            if (cep.length > 5) {
+                cep = cep.substring(0, 5) + '-' + cep.substring(5, 8);
+            }
+            
+            input.value = cep;
+        }
+
+        // ✅ FUNÇÕES DE ENDEREÇO
+        function abrirModalEndereco() {
+            document.getElementById('formEndereco').style.display = 'block';
+            document.getElementById('listaEnderecos').style.display = 'none';
+            document.getElementById('apelido').focus();
+        }
+
+        function fecharModalEndereco() {
+            document.getElementById('formEndereco').style.display = 'none';
+            document.getElementById('listaEnderecos').style.display = 'grid';
+            document.getElementById('formNovoEndereco').reset();
+            esconderMensagensEndereco();
+        }
+
+        function buscarEndereco(cep) {
+            const cepLimpo = cep.replace(/\D/g, '');
+            
+            if (cepLimpo.length === 8) {
+                // Simulação de busca de CEP
+                console.log(' Buscando CEP:', cepLimpo);
+                
+                // Mostrar loading
+                document.getElementById('logradouro').value = 'Buscando...';
+                document.getElementById('bairro').value = 'Buscando...';
+                document.getElementById('cidade_endereco').value = 'Buscando...';
+                
+                // Simulação de API (substituir por chamada real)
+                setTimeout(() => {
+                    // Dados de exemplo
+                    document.getElementById('logradouro').value = 'Rua das Flores';
+                    document.getElementById('bairro').value = 'Jardim Paulista';
+                    document.getElementById('cidade_endereco').value = 'São Paulo';
+                    document.getElementById('estado_endereco').value = 'SP';
+                }, 1000);
+            }
+        }
+
+        // ✅ CARREGAR ENDEREÇOS EXISTENTES
+        function carregarEnderecos() {
+            // Dados de exemplo (substituir por API real)
+            const enderecos = [
+                {
+                    id: 1,
+                    apelido: 'Casa',
+                    logradouro: 'Rua das Flores, 123',
+                    complemento: 'Apto 45',
+                    bairro: 'Jardim Paulista',
+                    cidade: 'São Paulo',
+                    estado: 'SP',
+                    cep: '01415-001',
+                    principal: true
+                },
+                {
+                    id: 2,
+                    apelido: 'Trabalho',
+                    logradouro: 'Av. Paulista, 1000',
+                    complemento: 'Sala 1204',
+                    bairro: 'Bela Vista',
+                    cidade: 'São Paulo',
+                    estado: 'SP',
+                    cep: '01310-100',
+                    principal: false
+                }
+            ];
+
+            const container = document.getElementById('listaEnderecos');
+            
+            if (enderecos.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state" style="grid-column: 1 / -1;">
+                        <div style="font-size: 48px; margin-bottom: 15px;">📍</div>
+                        <h3>Nenhum endereço cadastrado</h3>
+                        <p>Adicione seu primeiro endereço para facilitar suas compras!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = '';
+
+            enderecos.forEach(endereco => {
+                const card = document.createElement('div');
+                card.className = `address-card ${endereco.principal ? 'default' : ''}`;
+                card.innerHTML = `
+                    <div class="address-header">
+                        <div class="address-title">${endereco.apelido}</div>
+                        ${endereco.principal ? '<span class="default-badge"> Principal</span>' : ''}
+                    </div>
+                    <p><strong> Endereço:</strong> ${endereco.logradouro}</p>
+                    ${endereco.complemento ? `<p><strong> Complemento:</strong> ${endereco.complemento}</p>` : ''}
+                    <p><strong> Bairro:</strong> ${endereco.bairro}</p>
+                    <p><strong> Cidade:</strong> ${endereco.cidade} - ${endereco.estado}</p>
+                    <p><strong> CEP:</strong> ${endereco.cep}</p>
+                    <div class="address-actions">
+                        ${!endereco.principal ? 
+                            `<button class="btn-small btn-set-default" onclick="definirPrincipal(${endereco.id})">
+                                 Tornar Principal
+                            </button>` : ''
+                        }
+                        <button class="btn-small btn-edit" onclick="editarEndereco(${endereco.id})">
+                             Editar
+                        </button>
+                        <button class="btn-small btn-delete" onclick="excluirEndereco(${endereco.id})">
+                             Excluir
+                        </button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function definirPrincipal(enderecoId) {
+            if (confirm(' Deseja definir este endereço como principal?')) {
+                // Simulação de API
+                console.log(`Definindo endereço ${enderecoId} como principal...`);
+                mostrarMensagem('✅ Endereço definido como principal!', 'sucesso');
+                setTimeout(() => carregarEnderecos(), 500);
+            }
+        }
+
+        function editarEndereco(enderecoId) {
+            // Implementar edição
+            console.log(`Editando endereço ${enderecoId}...`);
+            alert(' Funcionalidade de edição será implementada em breve!');
+        }
+
+        function excluirEndereco(enderecoId) {
+            if (confirm(' Tem certeza que deseja excluir este endereço?')) {
+                // Simulação de API
+                console.log(`Excluindo endereço ${enderecoId}...`);
+                mostrarMensagem('✅ Endereço excluído!', 'sucesso');
+                setTimeout(() => carregarEnderecos(), 500);
+            }
+        }
+
+        // ✅ EXCLUIR CONTA
+        function excluirConta() {
+            const confirmacao = document.getElementById('confirmacao').value;
+            
+            if (confirmacao !== 'EXCLUIR') {
+                alert('⚠️ Por favor, digite "EXCLUIR" para confirmar a exclusão da conta.');
+                document.getElementById('confirmacao').focus();
+                return;
+            }
+
+            if (confirm('⚠️ ATENÇÃO: Esta ação é permanente e irreversível. Tem certeza que deseja excluir sua conta?')) {
+                // Simulação de API
+                console.log('Excluindo conta...');
+                
+                // Mostrar loading
+                const btn = event.target;
+                const originalText = btn.textContent;
+                btn.textContent = ' Excluindo...';
+                btn.disabled = true;
+                
+                setTimeout(() => {
+                    alert('✅ Conta excluída com sucesso! Redirecionando...');
+                    window.location.href = '/';
+                }, 2000);
+            }
+        }
+
+        // ✅ FUNÇÕES AUXILIARES
+        function mostrarMensagem(texto, tipo) {
+            const mensagem = document.createElement('div');
+            mensagem.className = `mensagem mensagem-${tipo}`;
+            mensagem.textContent = texto;
+            mensagem.style.position = 'fixed';
+            mensagem.style.top = '20px';
+            mensagem.style.right = '20px';
+            mensagem.style.zIndex = '1000';
+            mensagem.style.animation = 'slideIn 0.3s ease';
+            
+            document.body.appendChild(mensagem);
+            
+            setTimeout(() => {
+                mensagem.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => mensagem.remove(), 300);
+            }, 3000);
+        }
+
+        function esconderMensagensEndereco() {
+            document.getElementById('msgSucessoEndereco').style.display = 'none';
+            document.getElementById('msgErroEndereco').style.display = 'none';
+        }
+
+        function limparFormulario() {
+            document.getElementById('formInformacoes').reset();
+            // Restaurar valores originais se necessário
+        }
+
+        function verPromocoes() {
+            window.location.href = '/promocoes';
+        }
+
+        // ✅ INICIALIZAÇÃO
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log(' Página de Perfil carregada');
+            
+            // Carregar dados iniciais
+            carregarEnderecos();
+            
+            // Formatar dados existentes
+            if (document.getElementById('telefone').value) {
+                formatarTelefone(document.getElementById('telefone'));
+            }
+            
+            if (document.getElementById('cpf').value) {
+                formatarCPF(document.getElementById('cpf'));
+            }
+            
+            // Configurar submissão dos formulários
+            document.getElementById('formInformacoes').addEventListener('submit', function(event) {
+                event.preventDefault();
+                
+                // Validação básica
+                const nome = document.getElementById('nome').value.trim();
+                const email = document.getElementById('email').value.trim();
+                const telefone = document.getElementById('telefone').value.trim();
+                
+                if (!nome || !email || !telefone) {
+                    mostrarMensagem('⚠️ Preencha todos os campos obrigatórios.', 'erro');
+                    return;
+                }
+                
+                // Simulação de salvamento
+                console.log('Salvando informações...');
+                mostrarMensagem('✅ Informações salvas com sucesso!', 'sucesso');
+            });
+            
+            document.getElementById('formNovoEndereco').addEventListener('submit', function(event) {
+                event.preventDefault();
+                
+                // Validação básica
+                const campos = ['apelido', 'cep_endereco', 'logradouro', 'numero', 'bairro', 'cidade_endereco'];
+                let valido = true;
+                
+                campos.forEach(id => {
+                    const campo = document.getElementById(id);
+                    if (!campo.value.trim()) {
+                        campo.classList.add('campo-erro');
+                        valido = false;
+                    } else {
+                        campo.classList.remove('campo-erro');
+                    }
+                });
+                
+                if (!valido) {
+                    mostrarMensagem('⚠️ Preencha todos os campos obrigatórios.', 'erro');
+                    return;
+                }
+                
+                // Simulação de salvamento
+                console.log('Salvando endereço...');
+                mostrarMensagem('✅ Endereço salvo com sucesso!', 'sucesso');
+                
+                setTimeout(() => {
+                    fecharModalEndereco();
+                    carregarEnderecos();
+                }, 1000);
+            });
+            
+            // Foco no primeiro campo ao abrir modal de endereço
+            document.addEventListener('click', function(e) {
+                if (e.target && e.target.classList.contains('change-avatar-btn')) {
+                    document.getElementById('avatarInput').click();
+                }
+            });
+        });
+
+        // ✅ ANIMAÇÕES
+        const estilosAnimacao = `
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes slideOut {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
+        }
+        `;
+
+        // Adicionar estilos de animação
+        const styleSheet = document.createElement('style');
+        styleSheet.textContent = estilosAnimacao;
+        document.head.appendChild(styleSheet);
+    </script>
+</body>
+</html>

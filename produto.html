@@ -1,0 +1,1367 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ produto.nome }} - Zados</title>
+  <link rel="icon" href="{{ url_for('static', path='uploads/Logo_SF_Branca.PNG') }}" type="image/x-icon">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* ==== RESET E ESTILOS GERAIS ==== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #fff;
+      color: #000;
+      line-height: 1.5;
+      overflow-x: hidden;
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+    }
+
+    /* ==== HEADER RESPONSIVO ==== */
+    header {
+      background: #FBF4E6;
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .logo-section {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .LogoMark {
+      width: 50px;
+      height: 50px;
+      border-radius: 6px;
+      object-fit: contain;
+      flex-shrink: 0;
+    }
+
+    .logo-section h1 {
+      font-size: 20px;
+      margin: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Navegação */
+    nav {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav_item {
+      display: none;
+      text-decoration: none;
+      color: #000;
+    }
+
+    .headerimg {
+      display: flex;
+      align-items: center;
+      padding: 4px;
+    }
+
+    .headerimg img {
+      width: 24px;
+      height: 24px;
+      object-fit: contain;
+    }
+
+    .botao_entrar {
+      background: #000;
+      color: #fff;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: 0.3s;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.875rem;
+      font-weight: 500;
+      min-height: 36px;
+      white-space: nowrap;
+    }
+
+    .botao_entrar:hover {
+      background: #333;
+    }
+
+    /* ÍCONE DO USUÁRIO */
+    .user-icon-header {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #000;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 1rem;
+      transition: all 0.3s;
+      border: 2px solid #000;
+      flex-shrink: 0;
+    }
+
+    .user-icon-header:hover {
+      background: #fff;
+      color: #000;
+    }
+
+    /* ==== BARRA LATERAL DO USUÁRIO ==== */
+    .sidebar-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      display: none;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .sidebar-overlay.active { 
+      display: block; 
+      opacity: 1; 
+    }
+
+    .user-sidebar {
+      position: fixed;
+      top: 0;
+      right: -100%;
+      width: 70%;
+      max-width: 380px;
+      height: 100vh;
+      background: #fff;
+      box-shadow: -5px 0 25px rgba(0, 0, 0, 0.1);
+      transition: right 0.3s ease;
+      z-index: 1001;
+      padding: 20px;
+      overflow-y: auto;
+    }
+
+    .user-sidebar.active { 
+      right: 0; 
+    }
+
+    .sidebar-header {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 25px;
+      padding-bottom: 20px;
+      border-bottom: 2px solid #f0f0f0;
+    }
+
+    .user-avatar {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: #000;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: bold;
+      border: 3px solid #000;
+      flex-shrink: 0;
+    }
+
+    .user-info-sidebar h3 { 
+      font-size: 18px; 
+      margin-bottom: 5px; 
+      color: #000; 
+    }
+    .user-info-sidebar p { 
+      color: #666; 
+      font-size: 14px; 
+      overflow: hidden; 
+      text-overflow: ellipsis; 
+    }
+
+    .sidebar-menu {
+      list-style: none;
+      margin-bottom: 25px;
+    }
+
+    .sidebar-menu li { 
+      margin-bottom: 8px; 
+    }
+    .sidebar-menu a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 15px;
+      text-decoration: none;
+      color: #333;
+      border-radius: 8px;
+      transition: all 0.3s;
+      font-size: 15px;
+    }
+
+    .sidebar-menu a:hover { 
+      background: #f5f5f5; 
+      color: #000; 
+    }
+    .sidebar-menu a.active { 
+      background: #000; 
+      color: #fff; 
+    }
+
+    .btn-sair {
+      background: #ff4444;
+      color: #fff;
+      border: none;
+      padding: 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      width: 100%;
+      font-size: 15px;
+      transition: background 0.3s;
+      margin-top: 20px;
+    }
+
+    .btn-sair:hover { 
+      background: #cc0000; 
+    }
+
+    /* ==== SEÇÃO DO PRODUTO ==== */
+    .produto {
+      display: flex;
+      flex-direction: column;
+      padding: 20px 16px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* Imagem do produto */
+    .produto-imagem-container {
+      width: 100%;
+      margin-bottom: 30px;
+    }
+
+    #produto-imagem {
+      width: 100%;
+      max-width: 500px;
+      border-radius: 15px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      display: block;
+      margin: 0 auto;
+      transition: transform 0.3s;
+    }
+
+    #produto-imagem:hover {
+      transform: scale(1.02);
+    }
+
+    /* Informações do produto */
+    .info {
+      width: 100%;
+    }
+
+    .info h2 {
+      font-size: 24px;
+      margin-bottom: 10px;
+      color: #000;
+    }
+
+    .info > p {
+      color: #666;
+      font-size: 16px;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    .info h3 {
+      font-size: 28px;
+      color: #000;
+      margin: 20px 0;
+    }
+
+    /* Lista de informações */
+    .infoPrincipal {
+      list-style: none;
+      padding: 0;
+      margin: 20px 0;
+    }
+
+    .infoPrincipal li {
+      margin: 8px 0;
+      font-size: 14px;
+      color: #666;
+    }
+
+    .infoPrincipal strong {
+      color: #000;
+    }
+
+    /* Estoque dinâmico */
+    .estoque-dinamico {
+      font-weight: bold;
+      margin: 15px 0;
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 15px;
+    }
+
+    .estoque-disponivel {
+      background: #e8f5e8;
+      color: #2e7d32;
+    }
+
+    .estoque-baixo {
+      background: #fff3cd;
+      color: #856404;
+    }
+
+    .estoque-esgotado {
+      background: #f8d7da;
+      color: #721c24;
+    }
+
+    /* Cores disponíveis */
+    .cores-container {
+      margin: 20px 0;
+    }
+
+    .cores-container h4 {
+      margin-bottom: 10px;
+      font-size: 16px;
+    }
+
+    .cores {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .cor-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 3px solid #ddd;
+      transition: all 0.3s ease;
+      padding: 0;
+      position: relative;
+    }
+
+    .cor-btn.selecionada {
+      border-color: #0078ff;
+      transform: scale(1.1);
+    }
+
+    .cor-btn.indisponivel {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    /* Tamanhos disponíveis */
+    .Tamanho {
+      margin: 20px 0;
+    }
+
+    .Tamanho p {
+      margin-bottom: 10px;
+      font-size: 16px;
+    }
+
+    #tamanhos-container {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .Tamanhos {
+      background: #000;
+      color: white;
+      padding: 8px 16px;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: all 0.3s;
+      border: 2px solid #000;
+      font-size: 14px;
+      min-width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .Tamanhos:hover {
+      background: #333;
+    }
+
+    .Tamanhos.selecionado {
+      background: #0078ff;
+      border-color: #0078ff;
+    }
+
+    .Tamanhos.indisponivel {
+      background: #ccc;
+      color: #666;
+      cursor: not-allowed;
+      border-color: #ccc;
+    }
+
+    /* Informação dinâmica */
+    .info-dinamica {
+      margin: 20px 0;
+      padding: 15px;
+      background: #f9f9f9;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+
+    /* Botões principais */
+    .Carrinho {
+        background: #000;
+        color: white;
+        padding: 16px;
+        width: 100%;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.3s;
+        margin: 20px 0;
+        border: none;
+        font-size: 16px;
+        font-weight: 600;
+        min-height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .Carrinho:hover {
+      background: #333;
+    }
+
+    .Carrinho:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+
+    .Carrinho.selecionado {
+      background: #28a745;
+    }
+
+    /* Botões secundários */
+    .saibamais {
+      display: inline-block;
+      text-decoration: none;
+      color: #000;
+      font-size: 15px;
+      margin: 10px 0;
+      padding: 8px 0;
+    }
+
+    .voltar-catalogo {
+      background: #666;
+      color: white;
+      padding: 12px;
+      width: 100%;
+      border-radius: 8px;
+      text-decoration: none;
+      text-align: center;
+      display: block;
+      margin: 10px 0;
+      font-size: 15px;
+      transition: background 0.3s;
+    }
+
+    .voltar-catalogo:hover {
+      background: #555;
+    }
+
+    /* Admin actions */
+    .admin-actions {
+      margin: 20px 0;
+      padding: 15px;
+      background: #f8f9fa;
+      border-radius: 8px;
+      border: 1px solid #e9ecef;
+    }
+
+    .admin-actions a {
+      color: #007bff;
+      text-decoration: none;
+      margin: 0 10px;
+      font-size: 14px;
+    }
+
+    .admin-actions a:hover {
+      text-decoration: underline;
+    }
+
+    /* ==== FOOTER ==== */
+    .footer-end {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 30px;
+      background: linear-gradient(to right, #f3e9d9, #e2c8a9, #f3e9d9);
+      padding: 40px 20px;
+      margin-top: 40px;
+    }
+
+    .footer-col {
+      text-align: center;
+    }
+
+    .footer-col h4 {
+      font-size: 18px;
+      margin-bottom: 15px;
+      color: #000;
+    }
+
+    .footer-col ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .footer-col li {
+      margin: 8px 0;
+    }
+
+    .footer-col a {
+      text-decoration: none;
+      color: #000;
+      font-size: 14px;
+      transition: color 0.3s;
+    }
+
+    .footer-col a:hover {
+      color: #333;
+      text-decoration: underline;
+    }
+
+    .social {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 15px;
+    }
+
+    .social img {
+      width: 28px;
+      height: 28px;
+      transition: transform 0.3s;
+    }
+
+    .social img:hover {
+      transform: scale(1.1);
+    }
+
+    .saiba_btn {
+      background: transparent;
+      color: #000;
+      border: 1px solid #000;
+      padding: 8px 16px;
+      border-radius: 6px;
+      text-decoration: none;
+      display: inline-block;
+      margin-top: 15px;
+      font-size: 14px;
+      transition: all 0.3s;
+    }
+
+    .saiba_btn:hover {
+      background: #000;
+      color: #fff;
+    }
+
+    /* ==== MEDIA QUERIES ==== */
+    @media (min-width: 768px) {
+      header {
+        padding: 15px 24px;
+      }
+
+      .LogoMark {
+        width: 60px;
+        height: 60px;
+      }
+
+      .logo-section h1 {
+        font-size: 24px;
+      }
+
+      .nav_item {
+        display: inline-block;
+        font-size: 1rem;
+      }
+
+      .headerimg img {
+        width: 28px;
+        height: 28px;
+      }
+
+      .botao_entrar {
+        padding: 10px 16px;
+        font-size: 0.9375rem;
+      }
+
+      .user-icon-header {
+        width: 44px;
+        height: 44px;
+        font-size: 1.125rem;
+      }
+
+      .produto {
+        flex-direction: row;
+        padding: 40px 30px;
+        gap: 50px;
+        align-items: flex-start;
+      }
+
+      .produto-imagem-container {
+        flex: 1;
+        margin-bottom: 0;
+      }
+
+      .info {
+        flex: 1;
+      }
+
+      .info h2 {
+        font-size: 28px;
+      }
+
+      .info h3 {
+        font-size: 32px;
+      }
+
+      .cores {
+        gap: 15px;
+      }
+
+      .cor-btn {
+        width: 40px;
+        height: 40px;
+      }
+
+      .Tamanhos {
+        padding: 10px 20px;
+        font-size: 15px;
+      }
+
+      .footer-end {
+        grid-template-columns: repeat(3, 1fr);
+        padding: 50px 40px;
+      }
+
+      .footer-col {
+        text-align: left;
+      }
+
+      .social {
+        justify-content: flex-start;
+      }
+      .Carrinho {
+        max-width: 400px;
+        min-width: 250px;
+        padding: 18px;
+      }
+      .voltar-catalogo {
+        max-width: 400px;
+        min-width: 250px;
+        padding: 15px;
+      }
+    }
+
+    /* Desktop (1024px+) */
+    @media (min-width: 1024px) {
+      header {
+        padding: 20px 40px;
+      }
+
+      .LogoMark {
+        width: 100px;
+        height: 100px;
+      }
+
+      .logo-section h1 {
+        font-size: 32px;
+      }
+
+      nav {
+        gap: 20px;
+      }
+
+      .nav_item {
+        font-size: 1.125rem;
+      }
+
+      .produto {
+        padding: 50px 40px;
+        gap: 80px;
+      }
+
+      .info h2 {
+        font-size: 32px;
+      }
+
+      .info > p {
+        font-size: 17px;
+      }
+
+      .infoPrincipal li {
+        font-size: 15px;
+      }
+
+      .cor-btn {
+        width: 44px;
+        height: 44px;
+      }
+
+      .Carrinho {
+        max-width: 400px;
+      }
+
+      .footer-end {
+        padding: 60px 60px;
+      }
+    }
+
+    /* Telas muito pequenas (até 360px) */
+    @media (max-width: 360px) {
+      header {
+        padding: 10px 12px;
+      }
+
+      .LogoMark {
+        width: 40px;
+        height: 40px;
+      }
+
+      .logo-section h1 {
+        font-size: 18px;
+      }
+
+      .nav_item {
+        display: none;
+      }
+
+      .botao_entrar {
+        padding: 6px 10px;
+        font-size: 11px;
+      }
+
+      .user-icon-header {
+        width: 32px;
+        height: 32px;
+        font-size: 13px;
+      }
+
+      .produto {
+        padding: 15px 12px;
+      }
+
+      .info h2 {
+        font-size: 22px;
+      }
+
+      .info h3 {
+        font-size: 24px;
+      }
+
+      .cor-btn {
+        width: 32px;
+        height: 32px;
+      }
+
+      .Tamanhos {
+        padding: 6px 12px;
+        font-size: 13px;
+        min-width: 40px;
+        height: 40px;
+      }
+
+      .footer-end {
+        padding: 30px 20px;
+      }
+    }
+
+    /* Melhorias de acessibilidade */
+    button:focus,
+    a:focus,
+    input:focus,
+    select:focus {
+      outline: 2px solid #0078ff;
+      outline-offset: 2px;
+    }
+
+    /* Estilos para mensagens */
+    #mensagem-carrinho {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #28a745;
+      color: white;
+      padding: 15px 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      z-index: 2000;
+      font-weight: bold;
+      animation: slideIn 0.3s ease;
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes slideOut {
+      from {
+        transform: translateX(0);
+        opacity: 1;
+      }
+      to {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+    }
+    
+    /* Loading */
+    .loading {
+      opacity: 0.7;
+      pointer-events: none;
+    }
+    /* Adicione ao seu CSS existente */
+    .cor-btn {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        cursor: pointer;
+        border: 3px solid #ddd;
+        transition: all 0.3s ease;
+        padding: 0;
+        position: relative;
+        background-color: #cccccc; /* Cor padrão */
+    }
+
+    /* Cores específicas via atributos data */
+    .cor-btn[data-cor*="PRETA"], 
+    .cor-btn[data-cor*="preto"], 
+    .cor-btn[data-cor*="Preto"] {
+        background-color: #000000 !important;
+    }
+
+    .cor-btn[data-cor*="BRANCA"], 
+    .cor-btn[data-cor*="branco"], 
+    .cor-btn[data-cor*="Branco"] {
+        background-color: #ffffff !important;
+        border-color: #999;
+    }
+
+    .cor-btn[data-cor*="CINZA"], 
+    .cor-btn[data-cor*="cinza"], 
+    .cor-btn[data-cor*="Cinza"] {
+        background-color: #808080 !important;
+    }
+
+    .cor-btn[data-cor*="AZUL"], 
+    .cor-btn[data-cor*="azul"], 
+    .cor-btn[data-cor*="Azul"] {
+        background-color: #0000ff !important;
+    }
+
+    .cor-btn[data-cor*="VERMELHA"], 
+    .cor-btn[data-cor*="vermelho"], 
+    .cor-btn[data-cor*="Vermelho"] {
+        background-color: #ff0000 !important;
+    }
+
+    .cor-btn[data-cor*="VERDE"], 
+    .cor-btn[data-cor*="verde"], 
+    .cor-btn[data-cor*="Verde"] {
+        background-color: #008000 !important;
+    }
+
+    .cor-btn[data-cor*="BEGE"], 
+    .cor-btn[data-cor*="bege"], 
+    .cor-btn[data-cor*="Bege"] {
+        background-color: #f5f5dc !important;
+    }
+
+    .cor-btn[data-cor*="ROSA"], 
+    .cor-btn[data-cor*="rosa"], 
+    .cor-btn[data-cor*="Rosa"] {
+        background-color: #ff69b4 !important;
+    }
+
+    .cor-btn.selecionada {
+        border-color: #0078ff;
+        transform: scale(1.1);
+    }
+
+    .cor-btn.indisponivel {
+        opacity: 0.4;
+        cursor: not-allowed;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- HEADER -->
+  <header>
+    <div class="logo-section">
+      <img class="LogoMark" src="{{ url_for('static', path='uploads/Logo.png') }}" alt="Logo_Zados">
+      <h1>ZADOS</h1>
+    </div>
+    <nav>
+      <a href="/" class="nav_item">CATÁLOGO</a>
+      <a href="/" class="headerimg"><img src="{{ url_for('static', path='uploads/loja.png') }}" alt="catalogo"></a>
+      <a href="/home" class="nav_item">HOME</a>
+      <a href="/home" class="headerimg"><img src="{{ url_for('static', path='uploads/casa.png') }}" alt="home"></a>
+      
+      {% if usuario %}
+        <div class="user-icon-header" onclick="toggleUserSidebar()">
+          {{ usuario.nome[0]|upper if usuario.nome else 'U' }}
+        </div>
+      {% else %}
+        <a href="/login" class="botao_entrar">ENTRAR</a>
+      {% endif %}
+    </nav>
+  </header>
+
+  <!-- BARRA LATERAL DO USUÁRIO -->
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleUserSidebar()"></div>
+  
+  <div class="user-sidebar" id="userSidebar">
+    <div class="sidebar-header">
+      <div class="user-avatar">
+        {{ usuario.nome[0]|upper if usuario.nome else 'U' }}
+      </div>
+      <div class="user-info-sidebar">
+        <h3>{{ usuario.nome if usuario else 'Usuário' }}</h3>
+        <p>{{ usuario.email if usuario else 'email@exemplo.com' }}</p>
+      </div>
+    </div>
+
+    <ul class="sidebar-menu">
+      <li><a href="/dashboard">Dashboard</a></li>
+      <li><a href="/dashboard/perfil">Meu Perfil</a></li>
+      <li><a href="/carrinho">Meu Carrinho</a></li>
+      <li><a href="/">Continuar Comprando</a></li>
+    </ul>
+
+    <button class="btn-sair" onclick="window.location.href='/logout'">Sair da Conta</button>
+  </div>
+
+  <!-- SEÇÃO DO PRODUTO -->
+  <section class="produto">
+    <div class="produto-imagem-container">
+      <img id="produto-imagem" 
+           src="{{ url_for('static', path='uploads/' + produto.imagem) if produto.imagem else url_for('static', path='default.png') }}" 
+           alt="{{ produto.nome }}" 
+           loading="lazy"
+           onerror="this.src='{{ url_for('static', path='default.png') }}'">
+    </div>
+
+    <div class="info">
+      <h2 id="produto-nome">{{ produto.nome }}</h2>
+      
+      {% if produto.descricao %}
+        <p id="produto-descricao">{{ produto.descricao }}</p>
+      {% else %}
+        <p id="produto-descricao">Peça essencial e versátil. Confeccionada em algodão macio, com modelagem regular e gola careca. Ideal para o dia a dia ou composições estilosas.</p>
+      {% endif %}
+      
+      <h3 id="produto-preco">R$ {{ "%.2f"|format(produto.preco) }}</h3>
+
+      <ul class="infoPrincipal">
+        <li><strong id="cor-info">Cor:</strong> <span id="cor-atual">{{ produto.cor }}</span></li>
+        <li><strong>Tamanho:</strong> <span id="tamanho-atual">{{ produto.tamanho }}</span></li>
+        {% if produto.categoria %}
+        <li><strong>Categoria:</strong> {{ produto.categoria.nome }}</li>
+        {% endif %}
+        <li><strong>Tecido:</strong> 100% algodão</li>
+        <li><strong>Características:</strong> Confortável • Unissex • Durável</li>
+      </ul>
+
+      <!-- ESTOQUE DINÂMICO -->
+      <div class="estoque-dinamico estoque-disponivel" id="estoque-info">
+        Quantidade em estoque: <span id="estoque-quantidade">{{ produto.quantidade }}</span>
+      </div>
+      <!-- CORES DISPONÍVEIS (VERSÃO SIMPLIFICADA) -->
+      <div class="cores-container">
+          <h4>Cores disponíveis:</h4>
+          <div class="cores" id="cores-container">
+              <!-- Cores iniciais do backend -->
+              {% if cores_disponiveis %}
+                  {% for cor in cores_disponiveis %}
+                      {% set cor_ativa = (cor == produto.cor) %}
+                      <button class="cor-btn {% if cor_ativa %}selecionada{% endif %}" 
+                              data-cor="{{ cor }}"
+                              title="{{ cor }}">
+                          <span style="display:none;">{{ cor }}</span>
+                      </button>
+                  {% endfor %}
+              {% else %}
+                  <!-- Se não houver cores disponíveis, mostra apenas a cor atual -->
+                  {% if produto.cor %}
+                      <button class="cor-btn selecionada" 
+                              data-cor="{{ produto.cor }}"
+                              title="{{ produto.cor }}">
+                          <span style="display:none;">{{ produto.cor }}</span>
+                      </button>
+                  {% endif %}
+              {% endif %}
+          </div>
+      </div>
+
+      <!-- TAMANHOS DISPONÍVEIS (VERSÃO SIMPLIFICADA) -->
+      <div class="Tamanho">
+          <h4>Tamanhos disponíveis:</h4>
+          <div id="tamanhos-container">
+              {% if tamanhos_disponiveis %}
+                  {% for tamanho in tamanhos_disponiveis %}
+                      {% set tamanho_ativo = (tamanho == produto.tamanho) %}
+                      <button class="Tamanhos {% if tamanho_ativo %}selecionado{% endif %}" 
+                              data-tamanho="{{ tamanho }}">
+                          {{ tamanho }}
+                      </button>
+                  {% endfor %}
+              {% else %}
+                  <!-- Se não houver tamanhos disponíveis, mostra apenas o tamanho atual -->
+                  {% if produto.tamanho %}
+                      <button class="Tamanhos selecionado" data-tamanho="{{ produto.tamanho }}">
+                          {{ produto.tamanho }}
+                      </button>
+                  {% endif %}
+              {% endif %}
+          </div>
+      </div>
+          
+
+      <!-- INFO DINÂMICA -->
+      <div class="info-dinamica" id="info-dinamica" style="display: none;">
+        <p id="variacao-info">Buscando produto correspondente...</p>
+      </div>
+
+      <!-- BOTÃO ADICIONAR AO CARRINHO -->
+      <button onclick="adicionarAoCarrinho()" class="Carrinho" id="btn-carrinho">
+        Adicionar ao Carrinho
+      </button>
+
+      <!-- AÇÕES DE ADMIN -->
+      {% if is_admin %}
+      <div class="admin-actions">
+        <a href="/editar/{{ produto.id }}">Editar</a> |
+        <a href="/deletar/{{ produto.id }}">Deletar</a>
+      </div>
+      {% endif %}
+
+      <!-- LINKS SECUNDÁRIOS -->
+      <a href="/sobre" class="saibamais">Saiba Mais sobre a Zados</a>
+      
+      <a href="/" class="voltar-catalogo">
+        Voltar ao Catálogo
+      </a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <div class="footer-end">
+    <div class="footer-col">
+      <h4>Zados</h4>
+      <div class="social">
+        <a href="#" aria-label="Facebook">
+          <img src="{{ url_for('static', path='uploads/FacebookIcon.png') }}" alt="Facebook">
+        </a>
+        <a href="#" aria-label="Instagram">
+          <img src="{{ url_for('static', path='uploads/IGIcon.png') }}" alt="Instagram">
+        </a>
+        <a href="#" aria-label="YouTube">
+          <img src="{{ url_for('static', path='uploads/YTIcon.png') }}" alt="YouTube">
+        </a>
+      </div>
+    </div>
+
+    <div class="footer-col">
+      <h4>Camisetas</h4>
+      <ul>
+        <li><a href="/">Oversize</a></li>
+        <li><a href="/">Regata</a></li>
+        <li><a href="/">Manga-longa</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h4>Camisas</h4>
+      <ul>
+        <li><a href="/">Polo</a></li>
+        <li><a href="/">Social</a></li>
+        <li><a href="/">Colarinho longo</a></li>
+        <a href="/sobre" class="saiba_btn">Saiba Mais</a>
+      </ul>
+    </div>
+  </div>
+
+<script>
+    // ✅ SOLUÇÃO SIMPLES: Todas combinações são possíveis!
+    
+    // Dados do produto
+    const produtoId = {{ produto.id }};
+    let corSelecionada = "{{ produto.cor }}";
+    let tamanhoSelecionado = "{{ produto.tamanho }}";
+    
+    // ✅ INICIALIZAÇÃO SIMPLES
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('Página carregada - Modo simples ativado');
+        
+        // Aplica cores dinamicamente
+        aplicarCores();
+        
+        // Configura eventos simples
+        configurarEventosSimples();
+    });
+    
+    // ✅ APLICAR CORES SIMPLES
+    function aplicarCores() {
+        const mapaCores = {
+            'PRETA': '#000000',
+            'BRANCA': '#ffffff', 
+            'BRANCO': '#ffffff',
+            'CINZA': '#808080',
+            'AZUL': '#0000ff',
+            'VERMELHA': '#ff0000',
+            'VERMELHO': '#ff0000',
+            'VERDE': '#008000',
+            'BEGE': '#f5f5dc',
+            'ROSA': '#ff69b4',
+            'AMARELA': '#ffff00',
+            'AMARELO': '#ffff00',
+            'LARANJA': '#ffa500',
+            'ROXA': '#800080',
+            'ROXO': '#800080',
+            'MARROM': '#8b4513'
+        };
+        
+        document.querySelectorAll('.cor-btn').forEach(btn => {
+            const cor = btn.getAttribute('data-cor') || '';
+            const corUpper = cor.toUpperCase();
+            
+            // Procura a cor no mapa
+            let corEncontrada = null;
+            for (const [key, value] of Object.entries(mapaCores)) {
+                if (corUpper.includes(key)) {
+                    corEncontrada = value;
+                    break;
+                }
+            }
+            
+            // Aplica a cor ou usa padrão
+            btn.style.backgroundColor = corEncontrada || '#cccccc';
+            
+            // Se for branco, ajusta borda
+            if (corUpper.includes('BRANCA') || corUpper.includes('BRANCO')) {
+                btn.style.borderColor = '#999';
+            }
+        });
+    }
+    
+    // ✅ CONFIGURAR EVENTOS SIMPLES
+    function configurarEventosSimples() {
+        // Eventos para cores - SEM VERIFICAÇÃO
+        document.querySelectorAll('.cor-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const novaCor = this.getAttribute('data-cor');
+                if (novaCor) {
+                    corSelecionada = novaCor;
+                    
+                    // Atualiza visual
+                    document.querySelectorAll('.cor-btn').forEach(b => {
+                        b.classList.remove('selecionada');
+                    });
+                    this.classList.add('selecionada');
+                    
+                    // Atualiza display
+                    atualizarDisplaySimples();
+                }
+            });
+        });
+        
+        // Eventos para tamanhos - SEM VERIFICAÇÃO
+        document.querySelectorAll('.Tamanhos').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const novoTamanho = this.getAttribute('data-tamanho');
+                if (novoTamanho) {
+                    tamanhoSelecionado = novoTamanho;
+                    
+                    // Atualiza visual
+                    document.querySelectorAll('.Tamanhos').forEach(b => {
+                        b.classList.remove('selecionado');
+                    });
+                    this.classList.add('selecionado');
+                    
+                    // Atualiza display
+                    atualizarDisplaySimples();
+                }
+            });
+        });
+    }
+    
+    // ✅ ATUALIZAR DISPLAY SIMPLES
+    function atualizarDisplaySimples() {
+        console.log(`Selecionado: ${corSelecionada} - ${tamanhoSelecionado}`);
+        
+        // Atualiza informações na tela
+        document.getElementById('cor-atual').textContent = corSelecionada;
+        document.getElementById('tamanho-atual').textContent = tamanhoSelecionado;
+        
+        // Mostra info dinâmica (opcional)
+        const infoDinamica = document.getElementById('info-dinamica');
+        const variacaoInfo = document.getElementById('variacao-info');
+        
+        infoDinamica.style.display = 'block';
+        variacaoInfo.textContent = `Selecionado: ${corSelecionada} - Tamanho ${tamanhoSelecionado}`;
+        
+        // Botão sempre habilitado
+        const btnCarrinho = document.getElementById('btn-carrinho');
+        btnCarrinho.disabled = false;
+        btnCarrinho.textContent = 'Adicionar ao Carrinho';
+        btnCarrinho.className = 'Carrinho';
+    }
+    
+    // ✅ ADICIONAR AO CARRINHO (SEMPRE FUNCIONAL)
+    async function adicionarAoCarrinho() {
+        const btnCarrinho = document.getElementById('btn-carrinho');
+        const originalText = btnCarrinho.textContent;
+        
+        // Sempre permite adicionar!
+        try {
+            // Mostrar loading
+            btnCarrinho.disabled = true;
+            btnCarrinho.textContent = 'Adicionando...';
+            
+            // Dados para o carrinho
+            const dadosCarrinho = {
+                produto_id: produtoId,
+                quantidade: 1
+            };
+            
+            console.log('Enviando para carrinho:', dadosCarrinho);
+            
+            // Fazer requisição
+            const response = await fetch('/api/carrinho/adicionar', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(dadosCarrinho)
+            });
+            
+            const resultado = await response.json();
+            
+            if (response.ok) {
+                // SUCESSO
+                btnCarrinho.textContent = 'Adicionado!';
+                btnCarrinho.className = 'Carrinho selecionado';
+                
+                // Mensagem de sucesso
+                mostrarMensagemSucesso('Produto adicionado ao carrinho!');
+                
+                // Restaurar botão
+                setTimeout(() => {
+                    btnCarrinho.disabled = false;
+                    btnCarrinho.textContent = originalText;
+                    btnCarrinho.className = 'Carrinho';
+                }, 2000);
+                
+            } else {
+                throw new Error(resultado.detail || 'Erro ao adicionar');
+            }
+            
+        } catch (error) {
+            console.error('Erro:', error);
+            
+            // Restaurar botão
+            btnCarrinho.disabled = false;
+            btnCarrinho.textContent = originalText;
+            btnCarrinho.className = 'Carrinho';
+            
+            // Tratar erros
+            if (error.message.includes('autenticado')) {
+                alert('Faça login para adicionar ao carrinho');
+                window.location.href = '/login';
+            } else if (error.message.includes('Estoque')) {
+                alert(error.message);
+            } else {
+                alert('Erro ao adicionar produto');
+            }
+        }
+    }
+    
+    // ✅ MOSTRAR MENSAGEM DE SUCESSO
+    function mostrarMensagemSucesso(mensagem) {
+        const mensagemAnterior = document.getElementById('mensagem-carrinho');
+        if (mensagemAnterior) {
+            mensagemAnterior.remove();
+        }
+        
+        const mensagemDiv = document.createElement('div');
+        mensagemDiv.id = 'mensagem-carrinho';
+        mensagemDiv.textContent = mensagem;
+        document.body.appendChild(mensagemDiv);
+        
+        setTimeout(() => {
+            mensagemDiv.style.animation = 'slideOut 0.3s ease';
+            setTimeout(() => mensagemDiv.remove(), 300);
+        }, 3000);
+    }
+    
+    // ✅ FUNÇÕES DA BARRA LATERAL (mantém)
+    function toggleUserSidebar() {
+        const sidebar = document.getElementById('userSidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        
+        sidebar.classList.toggle('active');
+        overlay.classList.toggle('active');
+        document.body.style.overflow = sidebar.classList.contains('active') ? 'hidden' : '';
+    }
+    
+    // Fechar sidebar com ESC
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+            const sidebar = document.getElementById('userSidebar');
+            if (sidebar.classList.contains('active')) {
+                toggleUserSidebar();
+            }
+        }
+    });
+</script>
+</body>
+</html>

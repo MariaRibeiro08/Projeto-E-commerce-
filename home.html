@@ -1,0 +1,1220 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="{{ url_for('static', path='uploads/Logo_SF_Branca.PNG') }}" type="image/x-icon">
+  <title>Zados - Camisas e Camisetas</title>
+  <style>
+    /* RESET E BASE */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #fff;
+      color: #000;
+      line-height: 1.6;
+      animation: fadeIn 0.5s ease-in;
+    }
+
+    /* Animação de entrada */
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* Evita rolagem horizontal */
+    html, body {
+        overflow-x: hidden;
+        width: 100%;
+    }
+
+    /* ===== HEADER PADRONIZADO ===== */
+    header {
+      width: 100%;
+      background: #FBF4E6;
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 100;
+      position: sticky;
+      top: 0;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      animation: slideDown 0.4s ease-out;
+    }
+
+    @keyframes slideDown {
+      from {
+        transform: translateY(-100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .logo-section {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .LogoMark {
+      width: 60px;
+      height: 60px;
+      border-radius: 6px;
+      object-fit: contain;
+      transition: transform 0.3s ease;
+    }
+
+    .LogoMark:hover {
+      transform: scale(1.05) rotate(2deg);
+    }
+
+    .logo-section h1 {
+      font-size: 1.5rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin: 0;
+    }
+
+    /* ===== NAV PADRONIZADA ===== */
+    nav {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav_item {
+      display: none;
+      text-decoration: none;
+      color: #000;
+      font-weight: 500;
+      position: relative;
+      transition: color 0.3s ease;
+    }
+
+    .nav_item:hover {
+      color: #555;
+    }
+
+    .headerimg {
+      display: flex;
+      align-items: center;
+      padding: 4px;
+      transition: transform 0.3s ease;
+    }
+
+    .headerimg:hover {
+      transform: translateY(-2px);
+    }
+
+    .headerimg img {
+      width: 24px;
+      height: 24px;
+      object-fit: contain;
+    }
+
+    .botao_entrar {
+      background: #000;
+      color: #fff;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.875rem;
+      font-weight: 500;
+      min-height: 36px;
+      white-space: nowrap;
+    }
+
+    .botao_entrar:hover {
+      background: #333;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+
+    /* ÍCONE DO USUÁRIO */
+    .user-icon-header {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #000;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      border: 2px solid #000;
+      flex-shrink: 0;
+      animation: pulse 2s infinite;
+    }
+
+    .user-icon-header:hover {
+      background: #fff;
+      color: #000;
+      transform: scale(1.1);
+      animation: none;
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(0,0,0,0.2); }
+      70% { box-shadow: 0 0 0 6px rgba(0,0,0,0); }
+      100% { box-shadow: 0 0 0 0 rgba(0,0,0,0); }
+    }
+
+    /* ===== BARRA LATERAL ===== */
+    .sidebar-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 1000;
+      display: none;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      animation: fadeInOverlay 0.3s ease;
+    }
+
+    @keyframes fadeInOverlay {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .sidebar-overlay.active {
+      display: block;
+      opacity: 1;
+    }
+
+    .user-sidebar {
+      position: fixed;
+      top: 0;
+      right: -100%;
+      width: 100%;
+      max-width: 380px;
+      height: 100vh;
+      background: #fff;
+      box-shadow: -5px 0 25px rgba(0, 0, 0, 0.1);
+      transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 1001;
+      padding: 20px;
+      overflow-y: auto;
+      animation: slideInRight 0.4s ease;
+    }
+
+    @keyframes slideInRight {
+      from { transform: translateX(30px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    .user-sidebar.active {
+      right: 0;
+    }
+
+    .sidebar-header {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 25px;
+      padding-bottom: 20px;
+      border-bottom: 2px solid #f0f0f0;
+      animation: fadeInUp 0.5s ease 0.1s both;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .user-avatar {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: #000;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: bold;
+      border: 3px solid #000;
+      flex-shrink: 0;
+      transition: transform 0.3s ease;
+    }
+
+    .user-avatar:hover {
+      transform: scale(1.05);
+    }
+
+    .user-info-sidebar h3 {
+      font-size: 18px;
+      margin-bottom: 5px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .user-info-sidebar p {
+      color: #666;
+      font-size: 14px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .sidebar-menu {
+      list-style: none;
+      margin-bottom: 25px;
+    }
+
+    .sidebar-menu li {
+      margin-bottom: 8px;
+      animation: fadeInUp 0.5s ease both;
+    }
+
+    .sidebar-menu li:nth-child(1) { animation-delay: 0.1s; }
+    .sidebar-menu li:nth-child(2) { animation-delay: 0.2s; }
+    .sidebar-menu li:nth-child(3) { animation-delay: 0.3s; }
+    .sidebar-menu li:nth-child(4) { animation-delay: 0.4s; }
+
+    .sidebar-menu a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 15px;
+      text-decoration: none;
+      color: #333;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      font-size: 15px;
+    }
+
+    .sidebar-menu a:hover {
+      background: #f5f5f5;
+      color: #000;
+      transform: translateX(5px);
+    }
+
+    .sidebar-menu a.active {
+      background: #000;
+      color: #fff;
+    }
+
+    .btn-sair {
+      background: #ff4444;
+      color: #fff;
+      border: none;
+      padding: 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      width: 100%;
+      font-size: 15px;
+      transition: all 0.3s ease;
+      margin-top: 20px;
+      animation: fadeInUp 0.5s ease 0.5s both;
+    }
+
+    .btn-sair:hover {
+      background: #cc0000;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(255, 68, 68, 0.3);
+    }
+
+    /* HERO SECTION */
+    .inic {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 160px 40px 60px;
+      background: #fff;
+      margin-top: 0;
+      animation: fadeInUp 0.8s ease 0.2s both;
+    }
+
+    .inic-text {
+      flex: 1;
+      max-width: 50%;
+    }
+
+    .inic-text h1 {
+      font-size: 56px;
+      margin-bottom: 20px;
+      font-weight: 700;
+      line-height: 1.1;
+    }
+
+    .inic-text p {
+      font-size: 28px;
+      margin-bottom: 30px;
+      color: #444;
+      line-height: 1.4;
+    }
+
+    .inic-img {
+      flex: 1;
+      max-width: 50%;
+      transition: transform 0.5s ease;
+    }
+
+    .inic-img:hover {
+      transform: translateY(-10px);
+    }
+
+    .inic-img img {
+      border-radius: 12px;
+      width: 100%;
+      max-width: 800px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+      transition: transform 0.5s ease;
+    }
+
+    .inic-img:hover img {
+      transform: scale(1.02);
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 20px 40px;
+      background: black;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      font-size: 18px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      animation: pulseBtn 2s infinite;
+    }
+
+    .btn:hover {
+      background: #333;
+      transform: translateY(-3px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+      animation: none;
+    }
+
+    @keyframes pulseBtn {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.02); }
+      100% { transform: scale(1); }
+    }
+
+    /* ENCONTRE SEU ESTILO */
+    .estilo {
+      padding: 80px 20px;
+      opacity: 0;
+      animation: fadeIn 0.8s ease 0.4s forwards;
+    }
+
+    .estilo h2 {
+      font-size: 48px;
+      margin-bottom: 40px;
+      text-align: center;
+      font-weight: 700;
+    }
+    
+    .estilo h3 {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+    
+    .estilo p {
+      font-size: 18px;
+    }
+
+    .cards {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      flex-wrap: wrap;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      width: 300px;
+      text-align: center;
+      transition: all 0.4s ease;
+      margin: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeInUp 0.6s ease forwards;
+    }
+
+    .card:nth-child(1) { animation-delay: 0.1s; }
+    .card:nth-child(2) { animation-delay: 0.2s; }
+    .card:nth-child(3) { animation-delay: 0.3s; }
+
+    .card:hover {
+      transform: translateY(-10px) scale(1.02);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    }
+
+    .card img {
+      width: 100%;
+      height: 300px;
+      object-fit: cover;
+      border-radius: 8px 8px 0 0;
+      margin-bottom: 15px;
+      transition: transform 0.5s ease;
+    }
+
+    .card:hover img {
+      transform: scale(1.05);
+    }
+
+    .card-content {
+      padding: 20px;
+    }
+
+    /* ESTAMOS COM VOCÊ */
+    .com-voce {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 80px 40px;
+      background: #fafafa;
+      flex-wrap: wrap;
+      opacity: 0;
+      animation: fadeIn 0.8s ease 0.6s forwards;
+    }
+
+    .cv-text {
+      flex: 1;
+      min-width: 300px;
+    }
+
+    .cv-text ul {
+      margin-left: 0;
+      position: relative;
+      padding-left: 0;
+    }
+
+    .cv-text h2 {
+      font-size: 48px;
+      margin-bottom: 30px;
+      font-weight: 700;
+    }
+
+    .cv-text h4 {
+      font-size: 28px;
+      margin-bottom: 15px;
+      font-weight: 600;
+    }
+
+    .cv-text p {
+      font-size: 20px;
+      margin-bottom: 25px;
+      color: #555;
+      line-height: 1.5;
+    }
+
+    .cv-img {
+      flex: 1;
+      min-width: 300px;
+      text-align: center;
+      transition: transform 0.5s ease;
+    }
+
+    .cv-img:hover {
+      transform: translateY(-5px);
+    }
+
+    .cv-img img {
+      width: 100%;
+      max-width: 600px;
+      height: auto;
+      border-radius: 12px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+      transition: transform 0.5s ease;
+    }
+
+    .cv-img:hover img {
+      transform: scale(1.02);
+    }
+
+    /* ESPECIALIDADES */
+    .especialidades {
+      text-align: center;
+      padding: 80px 20px;
+      opacity: 0;
+      animation: fadeIn 0.8s ease 0.8s forwards;
+    }
+
+    .especialidades h2 {
+      font-size: 48px;
+      margin-bottom: 50px;
+      font-weight: 700;
+    }
+
+    .esp-cards {
+      display: flex;
+      justify-content: center;
+      gap: 70px;
+      flex-wrap: wrap;
+      margin-top: 20px;
+    }
+
+    .esp-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 30px;
+      width: 100%;
+      max-width: 600px;
+      text-align: center;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+      transition: all 0.4s ease;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeInUp 0.6s ease forwards;
+    }
+
+    .esp-card:nth-child(1) { animation-delay: 0.2s; }
+    .esp-card:nth-child(2) { animation-delay: 0.4s; }
+
+    .esp-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 25px 45px rgba(0,0,0,0.15);
+    }
+
+    .esp-card img {
+      width: 100%;
+      height: 400px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      transition: transform 0.5s ease;
+    }
+
+    .esp-card:hover img {
+      transform: scale(1.05);
+    }
+
+    .esp-card h3 {
+      font-size: 32px;
+      margin-bottom: 15px;
+      font-weight: 600;
+    }
+
+    .esp-card p {
+      font-size: 20px;
+      color: #555;
+      line-height: 1.6;
+    }
+
+    /* FEEDBACKS */
+    .feedbacks {
+      text-align: center;
+      padding: 80px 20px;
+      opacity: 0;
+      animation: fadeIn 0.8s ease 1s forwards;
+    }
+
+    .feedbacks h2 {
+      font-size: 48px;
+      margin-bottom: 50px;
+      font-weight: 700;
+    }
+
+    .fb-cards {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      flex-wrap: wrap;
+    }
+
+    .fb-card {
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      padding: 30px;
+      width: 250px;
+      font-style: italic;
+      transition: all 0.3s ease;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeInUp 0.6s ease forwards;
+    }
+
+    .fb-card:nth-child(1) { animation-delay: 0.1s; }
+    .fb-card:nth-child(2) { animation-delay: 0.2s; }
+    .fb-card:nth-child(3) { animation-delay: 0.3s; }
+
+    .fb-card:hover {
+      transform: translateY(-5px);
+      border-color: #000;
+      box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+    }
+
+    .fb-card p {
+      font-size: 18px;
+      color: #333;
+      margin-bottom: 15px;
+      line-height: 1.6;
+    }
+
+    .fb-card span {
+      font-size: 16px;
+      font-weight: 600;
+      color: #000;
+      font-style: normal;
+    }
+
+    /* FOOTER - ESTILO ORIGINAL DO SITE */
+    .footer-top {
+        gap: 20px;
+        background: #f1f1f1;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 40px 60px;
+        opacity: 0;
+        animation: fadeIn 0.8s ease 1.2s forwards;
+    }
+
+    .footer-top h3 {
+        font-size: 50px;
+        text-align: left;
+        margin-bottom: 0;
+        margin-top: 0;
+    }
+
+    .footer-top .btn-ft {
+        padding: 15px 40px;
+        background: black;
+        color: white;
+        text-decoration: none;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        font-size: 25px;
+        margin-top: 0;
+        height: auto;
+        display: inline-block;
+    }
+
+    .footer-top .btn-ft:hover {
+        background: #444;
+        transform: translateY(-2px);
+    }
+
+    .footer-end {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr); 
+      gap: 40px;
+      background: url("{{ url_for('static', path='uploads/Footer-home.png') }}") no-repeat center/cover; 
+      padding: 50px 60px;
+      min-height: 300px;
+      opacity: 0;
+      animation: fadeIn 0.8s ease 1.4s forwards;
+    }
+
+    .footer-col h4 {
+      font-size: 20px;
+      margin-bottom: 15px;
+      color: #000;
+    }
+
+    .footer-col ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .footer-col ul li {
+      margin: 6px 0;
+      transition: transform 0.3s ease;
+    }
+
+    .footer-col ul li:hover {
+      transform: translateX(5px);
+    }
+
+    .footer-col ul li a {
+      text-decoration: none;
+      color: #000;
+      font-size: 16px;
+      transition: color 0.3s;
+    }
+
+    .footer-col ul li a:hover {
+      color: #555;
+    }
+
+    .social {
+        display: flex;
+        gap: 10px;
+        margin-top: 10px;
+    }
+
+    .social img {
+        width: 45px;
+        height: 45px;
+        transition: transform 0.3s ease;
+    }
+
+    .social img:hover {
+        transform: scale(1.1) rotate(5deg);
+    }
+
+    .social .fcb img {
+        width: 40px;
+        position: relative;
+        top: -5px;
+    }
+
+    .saiba_btn {
+        font-size: 16px;
+        margin-top: 20px;
+        padding: 10px 20px;
+        background-color: rgba(255, 255, 255, 0);
+        cursor: pointer;
+        border: 2px solid #000;
+        border-radius: 4px;
+        color: #000;
+        text-decoration: none;
+        display: inline-block;
+        transition: all 0.3s;
+    }
+
+    .saiba_btn:hover {
+        background-color: #000;
+        color: #fff;
+        transform: translateY(-2px);
+    }
+
+    /* ========== RESPONSIVIDADE ========== */
+
+    /* TABLET */
+    @media (min-width: 768px) {
+      .nav_item {
+        display: inline-block;
+        font-size: 1rem;
+      }
+      
+      .headerimg img {
+        width: 28px;
+        height: 28px;
+      }
+      
+      .botao_entrar {
+        padding: 10px 16px;
+        font-size: 0.9375rem;
+      }
+      
+      .user-icon-header {
+        width: 44px;
+        height: 44px;
+        font-size: 1.125rem;
+      }
+      
+      .logo-section h1 {
+        font-size: 2rem;
+      }
+      
+      .LogoMark {
+        width: 80px;
+        height: 80px;
+      }
+      
+      nav {
+        gap: 15px;
+      }
+    }
+
+    /* DESKTOP */
+    @media (min-width: 1024px) {
+      header {
+        padding: 20px 40px;
+      }
+      
+      .LogoMark {
+        width: 100px;
+        height: 100px;
+      }
+      
+      .logo-section h1 {
+        font-size: 2.5rem;
+      }
+      
+      nav {
+        gap: 20px;
+      }
+      
+      .nav_item {
+        font-size: 1.125rem;
+      }
+    }
+
+    /* MOBILE */
+    @media (max-width: 767px) {
+      .inic {
+        padding: 100px 20px 40px;
+        flex-direction: column;
+        text-align: center;
+      }
+      
+      .inic-text {
+        max-width: 100%;
+        margin-bottom: 40px;
+      }
+      
+      .inic-text h1 {
+        font-size: 36px;
+      }
+      
+      .inic-text p {
+        font-size: 20px;
+      }
+      
+      .inic-img {
+        max-width: 100%;
+      }
+      
+      .com-voce {
+        flex-direction: column;
+        text-align: center;
+        padding: 50px 20px;
+      }
+      
+      .footer-top {
+        padding: 30px 20px;
+        flex-direction: column;
+        text-align: center;
+        gap: 25px;
+      }
+      
+      .footer-top h3 {
+        font-size: 36px;
+      }
+      
+      .btn-ft {
+        padding: 12px 30px;
+        font-size: 20px;
+      }
+      
+      .footer-end {
+        grid-template-columns: 1fr;
+        gap: 30px;
+        padding: 30px 20px;
+        text-align: center;
+      }
+    }
+
+    /* MOBILE PEQUENO */
+    @media (max-width: 480px) {
+      header {
+        padding: 10px 12px;
+      }
+      
+      .logo-section h1 {
+        font-size: 1.25rem;
+      }
+      
+      .LogoMark {
+        width: 50px;
+        height: 50px;
+      }
+      
+      .inic-text h1 {
+        font-size: 28px;
+      }
+      
+      .inic-text p {
+        font-size: 18px;
+      }
+      
+      .btn {
+        padding: 16px 32px;
+        font-size: 16px;
+      }
+    }
+
+    /* Melhorias de acessibilidade */
+    button:focus,
+    input:focus,
+    select:focus,
+    textarea:focus,
+    a:focus {
+      outline: 2px solid #000;
+      outline-offset: 3px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER PADRONIZADO -->
+  <header>
+    <div class="logo-section">
+      <img class="LogoMark" src="{{ url_for('static', path='uploads/Logo.png') }}" alt="Logo_Zados">
+      <h1>ZADOS</h1>
+    </div>
+    
+    <nav>
+      <a href="/" class="nav_item">CATÁLOGO</a>
+      <a href="/" class="headerimg"><img src="{{ url_for('static', path='uploads/loja.png') }}" alt="catalogo"></a>
+      <a href="/carrinho" class="nav_item">CARRINHO</a>
+      <a href="/carrinho" class="headerimg"><img src="{{ url_for('static', path='uploads/carrinho.png') }}" alt="carrinho"></a>
+      
+      {% if usuario %}
+        <div class="user-icon-header" onclick="toggleUserSidebar()">
+          {{ usuario.nome[0]|upper if usuario.nome else 'U' }}
+        </div>
+      {% else %}
+        <a href="/login" class="botao_entrar">ENTRAR</a>
+      {% endif %}
+    </nav>
+  </header>
+
+  <!-- BARRA LATERAL DO USUÁRIO -->
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleUserSidebar()"></div>
+  
+  <div class="user-sidebar" id="userSidebar">
+    <div class="sidebar-header">
+      <div class="user-avatar">
+        {{ usuario.nome[0]|upper if usuario.nome else 'U' }}
+      </div>
+      <div class="user-info-sidebar">
+        <h3>{{ usuario.nome if usuario else 'Usuário' }}</h3>
+        <p>{{ usuario.email if usuario else 'email@exemplo.com' }}</p>
+      </div>
+    </div>
+
+    <ul class="sidebar-menu">
+      <li><a href="/dashboard">Dashboard</a></li>
+      <li><a href="/dashboard/perfil">Meu Perfil</a></li>
+      <li><a href="/carrinho">Meu Carrinho</a></li>
+      <li><a href="/">Continuar Comprando</a></li>
+    </ul>
+
+    <button class="btn-sair" onclick="window.location.href='/logout'">Sair da Conta</button>
+  </div>
+
+  <!-- HERO SECTION -->
+  <section class="inic">
+    <div class="inic-text">
+      <h1>Veja nossas novas coleções</h1>
+      <p>Coleções feitas para cada ocasião do seu dia, na Zados visamos o seu bem-estar.</p>
+      <a href="/" class="btn">Catálogo</a>
+    </div>
+    <div class="inic-img">
+      <img src="{{ url_for('static', path='uploads/LandImg1.png') }}" alt="Coleção Zados">
+    </div>
+  </section>
+
+  <!-- ENCONTRE SEU ESTILO -->
+  <section class="estilo">
+    <h2>Encontre seu estilo.</h2>
+    <div class="cards">
+      <div class="card">
+        <img src="{{ url_for('static', path='uploads/OversizedHome.png') }}" alt="Oversized">
+        <div class="card-content">
+          <h3>Oversized</h3>
+          <p>Peças com modelagem ampla, que criam um visual mais solto e confortável.</p>
+        </div>
+      </div>
+      <div class="card">
+        <img src="{{ url_for('static', path='uploads/PoloHome.png') }}" alt="Polo">
+        <div class="card-content">
+          <h3>Polo</h3>
+          <p>A camisa polo oferece um equilíbrio perfeito entre conforto e estilo.</p>
+        </div>
+      </div>
+      <div class="card">
+        <img src="{{ url_for('static', path='uploads/SocialHome.png') }}" alt="Social">
+        <div class="card-content">
+          <h3>Social</h3>
+          <p>Peça-chave por sua versatilidade, permite criar looks do formal ao casual.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ESTAMOS COM VOCÊ -->
+  <section class="com-voce">
+    <div class="cv-text">
+      <h2>Estamos com você:</h2>
+      <ul>
+        <h4>No seu dia a dia</h4>
+        <p>Acompanhando você ao longo do seu day, graças a nossa incrível durabilidade nós não te abandonamos.</p>
+        <h4>Em festas</h4>
+        <p>Se solte e explore seus limites, nossa alta tecnologia evita odores indesejados e mantém um bom aroma.</p>
+        <h4>Nas ocasiões especiais</h4>
+        <p>Até nos momentos mais importantes, a Zados não te abandona.</p>
+      </ul>
+    </div>
+    <div class="cv-img">
+      <img src="{{ url_for('static', path='uploads/HomeEstamosComVoce.png') }}" alt="Estamos com você">
+    </div>
+  </section>
+
+  <!-- ESPECIALIDADES -->
+  <section class="especialidades">
+    <h2>Especialidades</h2>
+    <div class="esp-cards">
+      <div class="esp-card">
+        <img src="{{ url_for('static', path='uploads/Camisas-Especialidade.png') }}" alt="Camisas">
+        <h3>Camisas</h3>
+        <p>Feitas sob medida, ajudam você a passar a melhor primeira impressão, seja para seu chefe ou para uma ocasião especial.</p>
+      </div>
+      <div class="esp-card">
+        <img src="{{ url_for('static', path='uploads/Camisetas-Especialidade.png') }}" alt="Camisetas">
+        <h3>Camisetas</h3>
+        <p>Te acompanham no seu dia a dia, passam por todas as suas dificuldades ao seu lado e mesmo assim não perdem sua essência.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEEDBACKS -->
+  <section class="feedbacks">
+    <h2>Feedbacks</h2>
+    <div class="fb-cards">
+      <div class="fb-card">
+        <p>"Incrível!"</p>
+        <span>- Lucas</span>
+      </div>
+      <div class="fb-card">
+        <p>"Melhorou meu estilo e até minha confiança."</p>
+        <span>- Fernanda</span>
+      </div>
+      <div class="fb-card">
+        <p>"Perfeito para ocasiões especiais."</p>
+        <span>- João</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER - ESTILO ORIGINAL -->
+  <footer>
+    <div class="footer-top">
+      <h3>Fale conosco</h3>
+      <a href="/fale_conosco" class="btn-ft">Aqui</a>
+    </div>
+    <div class="footer-end">
+      <div class="footer-col">
+        <h4>Zados</h4>
+        <div class="social">
+          <a href="#" class="fcb"><img src="{{ url_for('static', path='uploads/FacebookIcon.png') }}" alt="Facebook" class="fcb"/></a>
+          <a href="#"><img src="{{ url_for('static', path='uploads/IGIcon.png') }}" alt="Instagram"/></a>
+          <a href="#"><img src="{{ url_for('static', path='uploads/YTIcon.png') }}" alt="Youtube"/></a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Camisetas</h4>
+        <ul>
+          <li><a href="/">Oversize</a></li>
+          <li><a href="/">Regata</a></li>
+          <li><a href="/">Manga-longa</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Camisas</h4>
+        <ul>
+          <li><a href="/">Polo</a></li>
+          <li><a href="/">Social</a></li>
+          <li><a href="/">Colarinho longo</a></li>
+          <a class="saiba_btn" href="/sobre">Saiba Mais</a>
+        </ul>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // FUNÇÕES DA SIDEBAR
+    function toggleUserSidebar() {
+      const sidebar = document.getElementById('userSidebar');
+      const overlay = document.getElementById('sidebarOverlay');
+      
+      sidebar.classList.toggle('active');
+      overlay.classList.toggle('active');
+      
+      // Controlar scroll do body
+      if (sidebar.classList.contains('active')) {
+        document.body.style.overflow = 'hidden';
+      } else {
+        document.body.style.overflow = '';
+      }
+    }
+
+    // Fechar sidebar com ESC
+    document.addEventListener('keydown', function(event) {
+      if (event.key === 'Escape') {
+        const sidebar = document.getElementById('userSidebar');
+        if (sidebar.classList.contains('active')) {
+          toggleUserSidebar();
+        }
+      }
+    });
+
+    // Fechar sidebar ao clicar fora
+    document.getElementById('sidebarOverlay').addEventListener('click', toggleUserSidebar);
+
+    // Animação suave ao rolar para links âncora
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const targetId = this.getAttribute('href');
+        if (targetId === '#') return;
+        
+        const targetElement = document.querySelector(targetId);
+        if (targetElement) {
+          window.scrollTo({
+            top: targetElement.offsetTop - 80,
+            behavior: 'smooth'
+          });
+        }
+      });
+    });
+
+    // Detectar quando elementos entram na viewport
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+        }
+      });
+    }, observerOptions);
+
+    // Observar elementos com animação
+    document.querySelectorAll('.card, .esp-card, .fb-card').forEach(el => {
+      observer.observe(el);
+    });
+
+    // Animar elementos ao carregar a página
+    window.addEventListener('load', () => {
+      document.body.classList.add('loaded');
+    });
+  </script>
+
+</body>
+</html>

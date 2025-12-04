@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Editar Produto - Painel Admin</title>
+  <link rel="icon" href="{{ url_for('static', path='uploads/Logo_SF_Branca.PNG') }}" type="image/x-icon">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #f9f9f9;
+      color: #222;
+      line-height: 1.6;
+    }
+
+    header {
+      background: #FBF4E6;
+      color: #000;
+      padding: 20px 60px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    header img {
+      width: 130px;
+      vertical-align: middle;
+    }
+
+    header h2 {
+      font-size: 40px;
+    }
+
+    header a {
+      color: #000;
+      text-decoration: none;
+      background: #fff;
+      padding: 8px 14px;
+      border-radius: 8px;
+      transition: 0.2s;
+      margin-left: 10px;
+    }
+
+    header a:hover {
+      color: gray;
+      background: #fff;
+    }
+
+    main {
+      max-width: 600px;
+      margin: 40px auto;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+      padding: 30px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 32px;
+      color: #111;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    form label {
+      font-weight: 500;
+      font-size: 16px;
+    }
+
+    form input[type="text"],
+    form input[type="number"],
+    form input[type="file"],
+    form select,
+    form textarea {
+      padding: 10px 12px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+      width: 100%;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    .categoria-section {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      align-items: end;
+    }
+
+    .btn-nova-categoria {
+      background: #6c757d;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      white-space: nowrap;
+    }
+
+    .btn-nova-categoria:hover {
+      background: #545b62;
+    }
+
+    /* CORES */
+    .cores {
+      display: flex;
+      gap: 12px;
+      margin-top: 6px;
+    }
+
+    .cores label {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .cores input[type="radio"] {
+      display: none;
+    }
+
+    .bolinha {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: inline-block;
+      border: 2px solid #aaa;
+      transition: 0.2s;
+    }
+
+    .cores input[type="radio"]:checked + .bolinha {
+      border: 3px solid #0078ff;
+      transform: scale(1.1);
+    }
+
+    /* TAMANHOS */
+    .tamanhos {
+      display: flex;
+      gap: 10px;
+    }
+
+    .tamanhos input[type="radio"] {
+      display: none;
+    }
+
+    .tamanhos label {
+      padding: 8px 14px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .tamanhos input[type="radio"]:checked + label {
+      background-color: #0078ff;
+      color: #fff;
+      border-color: #0078ff;
+    }
+
+    button[type="submit"] {
+      background-color: #0078ff;
+      color: #fff;
+      border: none;
+      padding: 12px 20px;
+      font-size: 18px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: 0.3s;
+      margin-top: 20px;
+    }
+
+    button[type="submit"]:hover {
+      background-color: #0052b1;
+    }
+
+    .voltar {
+      display: inline-block;
+      margin-top: 20px;
+      color: #0078ff;
+      text-decoration: none;
+      font-weight: 500;
+      transition: 0.3s;
+    }
+
+    .voltar:hover {
+      color: #0052b1;
+    }
+
+    .imagem-atual {
+      display: block;
+      margin-top: 5px;
+      margin-bottom: 10px;
+      max-width: 120px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="{{ url_for('static', path='uploads/Logo.PNG') }}" alt="Logo Zados">
+    <h2>Painel Administrativo</h2>
+    <div>
+      <a href="/lista_adm">Voltar à Lista</a>
+      <a href="/logout">Sair</a>
+    </div>
+  </header>
+
+  <main>
+    <h1>Editar Produto</h1>
+
+    <form action="/editar/{{ produto.id }}" method="post" enctype="multipart/form-data">
+      <!-- Dados Básicos do Produto -->
+      <label for="nome">Nome do Produto:</label>
+      <input type="text" name="nome" id="nome" value="{{ produto.nome }}" required>
+
+      <label for="preco">Preço (R$):</label>
+      <input type="number" name="preco" id="preco" step="0.01" min="0" value="{{ produto.preco }}" required>
+
+      <label for="quantidade">Quantidade:</label>
+      <input type="number" name="quantidade" id="quantidade" min="1" value="{{ produto.quantidade }}" required>
+
+      <label for="tamanho">Tamanho:</label>
+      <div class="tamanhos">
+        {% set tamanhos = ['PP', 'P', 'M', 'G', 'GG'] %}
+        {% for tamanho in tamanhos %}
+        <input type="radio" name="tamanho" id="tamanho_{{ tamanho }}" value="{{ tamanho }}" 
+               {% if produto.tamanho == tamanho %}checked{% endif %}>
+        <label for="tamanho_{{ tamanho }}">{{ tamanho }}</label>
+        {% endfor %}
+      </div>
+
+      <label for="cor">Cor:</label>
+      <div class="cores">
+        {% set cores = [
+          ('Preto', 'black'),
+          ('Branco', 'white'),
+          ('Vermelho', 'red'),
+          ('Azul', 'blue'),
+          ('Verde', 'green'),
+          ('Amarelo', 'yellow'),
+          ('Rosa', 'pink'),
+          ('Cinza', 'gray')
+        ] %}
+        {% for cor_nome, cor_valor in cores %}
+        <label>
+          <input type="radio" name="cor" value="{{ cor_nome }}" 
+                 {% if produto.cor == cor_nome %}checked{% endif %}>
+          <span class="bolinha" style="background-color: {{ cor_valor }}; 
+                {% if cor_valor == 'white' %}border: 1px solid #ccc;{% endif %}"></span>
+        </label>
+        {% endfor %}
+      </div>
+
+      <!-- Seção de Categoria -->
+      <label for="categoria_id">Categoria:</label>
+      <div class="categoria-section">
+        <select name="categoria_id" id="categoria_id" required>
+          <option value="">Selecione uma categoria...</option>
+          {% for categoria in categorias %}
+          <option value="{{ categoria.id }}" 
+                  {% if produto.categoria_id == categoria.id %}selected{% endif %}>
+            {{ categoria.nome }}
+          </option>
+          {% endfor %}
+        </select>
+        <button type="button" class="btn-nova-categoria" onclick="abrirModalCategoria()">
+          + Nova Categoria
+        </button>
+      </div>
+
+      <label for="descricao">Descrição:</label>
+      <textarea name="descricao" id="descricao" required>{{ produto.descricao }}</textarea>
+
+      <label for="imagem_atual">Imagem Atual:</label>
+      <img src="{{ url_for('static', path='uploads/' + produto.imagem) if produto.imagem else url_for('static', path='uploads/sem-imagem.png') }}" 
+           alt="Imagem Atual" class="imagem-atual">
+
+      <label for="imagem">Nova Imagem (opcional):</label>
+      <input type="file" name="imagem" id="imagem" accept="image/*">
+
+      <button type="submit">Atualizar Produto</button>
+    </form>
+
+    <a href="/lista_adm" class="voltar">← Voltar para Lista de Produtos</a>
+  </main>
+
+  <!-- Modal para Nova Categoria -->
+  <div id="modalCategoria" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000;">
+    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 30px; border-radius: 8px; width: 400px;">
+      <h3>Nova Categoria</h3>
+      <form id="formCategoria">
+        <label for="nova_categoria">Nome da Categoria:</label>
+        <input type="text" id="nova_categoria" name="nova_categoria" required style="width: 100%; padding: 8px; margin: 10px 0;">
+        <div style="display: flex; gap: 10px; margin-top: 20px;">
+          <button type="button" onclick="fecharModalCategoria()" style="padding: 8px 16px; background: #6c757d; color: white; border: none; border-radius: 4px; cursor: pointer;">Cancelar</button>
+          <button type="button" onclick="criarCategoria()" style="padding: 8px 16px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">Criar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // Funções para categorias
+    function abrirModalCategoria() {
+      document.getElementById('modalCategoria').style.display = 'block';
+    }
+
+    function fecharModalCategoria() {
+      document.getElementById('modalCategoria').style.display = 'none';
+      document.getElementById('nova_categoria').value = '';
+    }
+
+    async function criarCategoria() {
+      const nome = document.getElementById('nova_categoria').value.trim();
+      if (!nome) {
+        alert('Digite um nome para a categoria');
+        return;
+      }
+
+      try {
+        const response = await fetch('/categorias/nova', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: `nome=${encodeURIComponent(nome)}`
+        });
+
+        if (response.ok) {
+          // Recarrega a página para atualizar as categorias
+          location.reload();
+        } else {
+          alert('Erro ao criar categoria');
+        }
+      } catch (error) {
+        alert('Erro ao criar categoria');
+      }
+    }
+  </script>
+</body>
+</html>

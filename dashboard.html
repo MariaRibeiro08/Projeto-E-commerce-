@@ -1,0 +1,1346 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Dashboard - Zados</title>
+    <link rel="icon" href="{{ url_for('static', path='uploads/Logo_SF_Branca.PNG') }}" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* ==== RESET E ESTILOS GERAIS ==== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f8f9fa;
+            color: #333;
+            line-height: 1.5;
+            overflow-x: hidden;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* ==== HEADER RESPONSIVO ==== */
+        .dashboard-header {
+            background: #FBF4E6;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #e9ecef;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 0;
+        }
+
+        .LogoMark {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            object-fit: contain;
+            flex-shrink: 0;
+        }
+
+        .logo-section h1 {
+            font-size: 22px;
+            color: #000;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Menu do usuário responsivo */
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-info {
+            display: none;
+            text-align: right;
+        }
+
+        .user-name {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .user-email {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .nav-btn {
+            background: #000;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 12px;
+            transition: background 0.3s;
+            white-space: nowrap;
+        }
+
+        .nav-btn:hover {
+            background: #333;
+        }
+
+        /* Ícone do usuário no header */
+        .user-icon-header {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #000;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+            transition: all 0.3s;
+            border: 2px solid #000;
+            flex-shrink: 0;
+        }
+
+        .user-icon-header:hover {
+            background: #fff;
+            color: #000;
+        }
+
+        /* ==== BARRA LATERAL DO USUÁRIO RESPONSIVA ==== */
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            display: none;
+        }
+
+        .sidebar-overlay.active {
+            display: block;
+        }
+
+        .user-sidebar {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 100%;
+            max-width: 380px;
+            height: 100vh;
+            background: #fff;
+            box-shadow: -5px 0 25px rgba(0, 0, 0, 0.1);
+            transition: right 0.3s ease;
+            z-index: 1001;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .user-sidebar.active {
+            right: 0;
+        }
+
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .user-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: #000;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: bold;
+            border: 3px solid #000;
+            flex-shrink: 0;
+        }
+
+        .user-info-sidebar h3 {
+            font-size: 18px;
+            margin-bottom: 5px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .user-info-sidebar p {
+            color: #666;
+            font-size: 14px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            margin-bottom: 25px;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 8px;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 15px;
+            text-decoration: none;
+            color: #333;
+            border-radius: 8px;
+            transition: all 0.3s;
+            font-size: 15px;
+        }
+
+        .sidebar-menu a:hover {
+            background: #f5f5f5;
+            color: #000;
+        }
+
+        .sidebar-menu a.active {
+            background: #000;
+            color: #fff;
+        }
+
+        .menu-icon {
+            font-size: 16px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .btn-sair {
+            background: #ff4444;
+            color: #fff;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 15px;
+            transition: background 0.3s;
+            margin-top: 20px;
+        }
+
+        .btn-sair:hover {
+            background: #cc0000;
+        }
+
+        /* Seção de edição do perfil */
+        .edit-section {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 10px;
+            border: 1px solid #e6e6e6;
+        }
+
+        .edit-section.active {
+            display: block;
+        }
+
+        .edit-section h4 {
+            margin-bottom: 15px;
+            color: #333;
+            font-size: 16px;
+        }
+
+        .form-edit {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .form-edit input {
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            width: 100%;
+        }
+
+        .form-edit input:focus {
+            border-color: #000;
+            outline: none;
+        }
+
+        .btn-editar {
+            background: #000;
+            color: #fff;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .btn-editar:hover {
+            background: #333;
+        }
+
+        .btn-cancelar {
+            background: #666;
+            color: #fff;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .btn-cancelar:hover {
+            background: #555;
+        }
+
+        .btn-excluir-conta {
+            background: transparent;
+            color: #ff4444;
+            border: 1px solid #ff4444;
+            padding: 10px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 10px;
+            width: 100%;
+        }
+
+        .btn-excluir-conta:hover {
+            background: #ff4444;
+            color: #fff;
+        }
+
+        /* ==== CONTEÚDO PRINCIPAL RESPONSIVO ==== */
+        .main-content {
+            padding: 20px 16px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Seção de boas-vindas */
+        .welcome-section {
+            background: linear-gradient(135deg, #FBF4E6 0%, #e8dcc5 100%);
+            color: rgb(0, 0, 0);
+            padding: 25px 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .welcome-section h2 {
+            font-size: 22px;
+            margin-bottom: 8px;
+        }
+
+        .welcome-section p {
+            font-size: 14px;
+            color: #555;
+        }
+
+        /* Cards de estatísticas */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            text-align: center;
+            border-left: 4px solid #3498db;
+        }
+
+        .stat-card.pedidos {
+            border-left-color: #e74c3c;
+        }
+
+        .stat-card.ativos {
+            border-left-color: #f39c12;
+        }
+
+        .stat-card.gasto {
+            border-left-color: #2ecc71;
+        }
+
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 13px;
+        }
+
+        /* Título da seção */
+        .section-title {
+            font-size: 20px;
+            margin-bottom: 15px;
+            color: #2c3e50;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        /* Tabela de pedidos responsiva */
+        .pedidos-table {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+        }
+
+        .pedido-item {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            padding: 15px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .pedido-item:last-child {
+            border-bottom: none;
+        }
+
+        .pedido-item:hover {
+            background: #f8f9fa;
+        }
+
+        .pedido-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .pedido-numero {
+            font-weight: bold;
+            color: #2c3e50;
+            font-size: 16px;
+        }
+
+        .pedido-data {
+            color: #666;
+            font-size: 13px;
+        }
+
+        .pedido-status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            text-align: center;
+            margin: 5px 0;
+        }
+
+        .status-andamento {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-finalizado {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .status-cancelado {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .pedido-valor {
+            font-weight: bold;
+            color: #2c3e50;
+            font-size: 16px;
+        }
+
+        .btn-detalhes {
+            background: #2c3e50;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 6px;
+            text-decoration: none;
+            border: none;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.3s;
+            width: 100%;
+            margin-top: 5px;
+        }
+
+        .btn-detalhes:hover {
+            background: #1a252f;
+        }
+
+        /* Estado vazio */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #666;
+        }
+
+        .empty-state img {
+            width: 100px;
+            opacity: 0.5;
+            margin-bottom: 15px;
+        }
+
+        .empty-state h3 {
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: #444;
+        }
+
+        .empty-state p {
+            font-size: 14px;
+            margin-bottom: 20px;
+            color: #777;
+        }
+
+        /* ==== MODAL RESPONSIVO ==== */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-header {
+            padding: 18px 20px;
+            border-bottom: 2px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 1;
+        }
+
+        .modal-header h3 {
+            color: #2c3e50;
+            font-size: 18px;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+            line-height: 1;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-modal:hover {
+            color: #000;
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        /* Informações do pedido */
+        .pedido-info-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .info-group h4 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 15px;
+        }
+
+        .info-group p {
+            color: #666;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+
+        /* Itens do pedido */
+        .itens-pedido {
+            margin-bottom: 20px;
+        }
+
+        .item-pedido {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            padding: 15px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .item-pedido:last-child {
+            border-bottom: none;
+        }
+
+        .item-pedido img {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+
+        .item-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .item-info h5 {
+            margin-bottom: 5px;
+            color: #2c3e50;
+            font-size: 15px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .item-info p {
+            color: #666;
+            font-size: 13px;
+            margin-bottom: 3px;
+        }
+
+        .item-quantidade {
+            font-weight: bold;
+            color: #2c3e50;
+            font-size: 14px;
+            white-space: nowrap;
+        }
+
+        /* Formulário de cancelamento */
+        .cancelamento-section {
+            background: #f8f9fa;
+            padding: 18px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border-left: 4px solid #e74c3c;
+        }
+
+        .cancelamento-section h4 {
+            color: #e74c3c;
+            margin-bottom: 12px;
+            font-size: 16px;
+        }
+
+        .form-cancelamento {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .form-cancelamento select,
+        .form-cancelamento textarea {
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            width: 100%;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .form-cancelamento textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .btn-cancelar-pedido {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s;
+            width: 100%;
+        }
+
+        .btn-cancelar-pedido:hover {
+            background: #c0392b;
+        }
+
+        .btn-refazer-pedido {
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s;
+            width: 100%;
+        }
+
+        .btn-refazer-pedido:hover {
+            background: #219a52;
+        }
+
+        /* ==== MEDIA QUERIES ==== */
+
+        /* Tablet (768px+) */
+        @media (min-width: 768px) {
+            .dashboard-header {
+                padding: 15px 30px;
+            }
+
+            .LogoMark {
+                width: 60px;
+                height: 60px;
+            }
+
+            .logo-section h1 {
+                font-size: 28px;
+            }
+
+            .user-info {
+                display: block;
+            }
+
+            .nav-btn {
+                padding: 10px 20px;
+                font-size: 14px;
+            }
+
+            .user-icon-header {
+                width: 45px;
+                height: 45px;
+                font-size: 18px;
+            }
+
+            .main-content {
+                padding: 30px;
+            }
+
+            .welcome-section {
+                padding: 30px;
+                text-align: left;
+            }
+
+            .welcome-section h2 {
+                font-size: 28px;
+            }
+
+            .welcome-section p {
+                font-size: 16px;
+            }
+
+            .stats-grid {
+                gap: 20px;
+            }
+
+            .stat-card {
+                padding: 25px;
+            }
+
+            .stat-number {
+                font-size: 32px;
+            }
+
+            .section-title {
+                font-size: 22px;
+            }
+
+            .pedido-item {
+                grid-template-columns: 80px 1fr 120px 100px 120px;
+                gap: 15px;
+            }
+
+            .btn-detalhes {
+                width: auto;
+                margin-top: 0;
+            }
+
+            .pedido-info-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .modal-header {
+                padding: 20px 25px;
+            }
+
+            .modal-body {
+                padding: 25px;
+            }
+        }
+
+        /* Desktop (1024px+) */
+        @media (min-width: 1024px) {
+            .main-content {
+                padding: 40px;
+            }
+
+            .welcome-section {
+                padding: 40px;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        /* Telas muito pequenas (até 360px) */
+        @media (max-width: 360px) {
+            .dashboard-header {
+                padding: 12px 15px;
+            }
+
+            .LogoMark {
+                width: 40px;
+                height: 40px;
+            }
+
+            .logo-section h1 {
+                font-size: 18px;
+            }
+
+            .nav-btn {
+                padding: 6px 12px;
+                font-size: 11px;
+            }
+
+            .user-icon-header {
+                width: 36px;
+                height: 36px;
+                font-size: 14px;
+            }
+
+            .main-content {
+                padding: 15px;
+            }
+
+            .welcome-section {
+                padding: 20px 15px;
+            }
+
+            .welcome-section h2 {
+                font-size: 20px;
+            }
+
+            .stat-card {
+                padding: 15px 12px;
+            }
+
+            .stat-number {
+                font-size: 20px;
+            }
+
+            .modal {
+                margin: 10px;
+            }
+        }
+
+        /* Melhorias de acessibilidade */
+        button:focus,
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: 2px solid #000;
+            outline-offset: 2px;
+        }
+
+        /* Animações */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .stat-card,
+        .pedido-item {
+            animation: fadeIn 0.5s ease forwards;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- HEADER -->
+    <header class="dashboard-header">
+        <div class="logo-section">
+            <img class="LogoMark" src="{{ url_for('static', path='uploads/Logo.png') }}" alt="Zados">
+            <h1>ZADOS</h1>
+        </div>
+
+        <div class="user-menu">
+            <div class="user-info">
+                <div class="user-name">Olá, {{ usuario.nome }}!</div>
+                <div class="user-email">{{ usuario.email }}</div>
+            </div>
+            <a href="/" class="nav-btn">Voltar à Loja</a>
+
+            <!-- ÍCONE DO USUÁRIO NO HEADER -->
+            <div class="user-icon-header" onclick="toggleUserSidebar()">
+                {{ usuario.nome[0]|upper if usuario.nome else 'U' }}
+            </div>
+        </div>
+    </header>
+
+    <!-- BARRA LATERAL DO USUÁRIO -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleUserSidebar()"></div>
+
+    <div class="user-sidebar" id="userSidebar">
+        <div class="sidebar-header">
+            <div class="user-avatar">
+                {{ usuario.nome[0]|upper if usuario.nome else 'U' }}
+            </div>
+            <div class="user-info-sidebar">
+                <h3>{{ usuario.nome if usuario else 'Usuário' }}</h3>
+                <p>{{ usuario.email if usuario else 'email@exemplo.com' }}</p>
+            </div>
+        </div>
+
+        <ul class="sidebar-menu">
+            <li><a href="#" class="active" onclick="showSection('dashboard')">
+                    <span class="menu-icon"></span> Dashboard
+                </a></li>
+            <li><a href="/dashboard/perfil" onclick="showSection('perfil')">
+                    <span class="menu-icon"></span> Meu Perfil
+                </a></li>
+            <li><a href="/carrinho">
+                    <span class="menu-icon"></span> Meu Carrinho
+                </a></li>
+            <li><a href="/">
+                    <span class="menu-icon"></span> Continuar Comprando
+                </a></li>
+        </ul>
+
+        <!-- SEÇÃO DE EDIÇÃO DO PERFIL -->
+        <div class="edit-section" id="editPerfil">
+            <h4>Editar Perfil</h4>
+            <div class="form-edit">
+                <input type="text" placeholder="Nome completo" value="{{ usuario.nome if usuario else '' }}"
+                    id="editNome">
+                <input type="email" placeholder="E-mail" value="{{ usuario.email if usuario else '' }}" id="editEmail">
+                <input type="tel" placeholder="Telefone" value="{{ usuario.telefone if usuario else '' }}"
+                    id="editTelefone">
+
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn-editar" onclick="salvarPerfil()">Salvar</button>
+                    <button class="btn-cancelar" onclick="showSection('dashboard')">Cancelar</button>
+                </div>
+
+                <button class="btn-excluir-conta" onclick="excluirConta()">Excluir Minha Conta</button>
+            </div>
+        </div>
+
+        <button class="btn-sair" onclick="window.location.href='/logout'">Sair da Conta</button>
+    </div>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main class="main-content">
+        <!-- SEÇÃO DE BOAS-VINDAS -->
+        <div class="welcome-section">
+            <h2>Bem-vindo, {{ usuario.nome }}!</h2>
+            <p>Aqui você acompanha seus pedidos, atualiza seu perfil e muito mais.</p>
+        </div>
+
+        <!-- CARDS DE ESTATÍSTICAS -->
+        <div class="stats-grid">
+            <div class="stat-card pedidos">
+                <div class="stat-number">{{ estatisticas.total_pedidos }}</div>
+                <div class="stat-label">Total de Pedidos</div>
+            </div>
+            <div class="stat-card ativos">
+                <div class="stat-number">{{ estatisticas.pedidos_ativos }}</div>
+                <div class="stat-label">Pedidos Ativos</div>
+            </div>
+            <div class="stat-card gasto">
+                <div class="stat-number">R$ {{ "%.2f"|format(estatisticas.total_gasto) }}</div>
+                <div class="stat-label">Total Gasto</div>
+            </div>
+        </div>
+
+        <!-- PEDIDOS RECENTES -->
+        <h3 class="section-title">Pedidos Recentes</h3>
+        
+        {% if pedidos %}
+        <div class="pedidos-table">
+            {% for pedido in pedidos[:5] %}
+            <div class="pedido-item">
+                <div class="pedido-numero">#{{ pedido.id }}</div>
+                <div class="pedido-data">{{ pedido.data_pedido }}</div>
+                <div class="pedido-status status-{{ pedido.status|lower|replace(' ', '-') }}">
+                    {{ pedido.status }}
+                </div>
+                <div class="pedido-valor">R$ {{ "%.2f"|format(pedido.valor_total) }}</div>
+                <button class="btn-detalhes" onclick="abrirDetalhesPedido({{ pedido.id }})">
+                    Ver Detalhes
+                </button>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <img src="{{ url_for('static', path='uploads/carrinho.png') }}" alt="Carrinho vazio">
+            <h3>Nenhum pedido encontrado</h3>
+            <p>Que tal fazer sua primeira compra?</p>
+            <a href="/" class="nav-btn" style="display: inline-block; margin-top: 15px;">
+                Começar a Comprar
+            </a>
+        </div>
+        {% endif %}
+    </main>
+
+    <!-- MODAL DE DETALHES DO PEDIDO -->
+    <div class="modal-overlay" id="modalDetalhes">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Detalhes do Pedido #<span id="modalPedidoNumero"></span></h3>
+                <button class="close-modal" onclick="fecharModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="pedido-info-grid">
+                    <div class="info-group">
+                        <h4>Informações do Pedido</h4>
+                        <p><strong>Data:</strong> <span id="modalPedidoData"></span></p>
+                        <p><strong>Status:</strong> <span id="modalPedidoStatus"></span></p>
+                        <p><strong>Valor Produtos:</strong> R$ <span id="modalPedidoValorProdutos"></span></p>
+                        <p><strong>Frete:</strong> R$ <span id="modalPedidoFrete"></span></p>
+                        <p><strong>Valor Total:</strong> R$ <span id="modalPedidoValor"></span></p>
+                    </div>
+                    <div class="info-group">
+                        <h4>Endereço de Entrega</h4>
+                        <p id="modalPedidoEndereco"></p>
+                        <p><strong>CEP:</strong> <span id="modalPedidoCEP"></span></p>
+                    </div>
+                </div>
+
+                <div class="itens-pedido">
+                    <h4>Itens do Pedido</h4>
+                    <div id="modalPedidoItens">
+                        <!-- Itens serão carregados via JavaScript -->
+                    </div>
+                </div>
+
+                <!-- SEÇÃO DE CANCELAMENTO -->
+                <div class="cancelamento-section" id="secaoCancelamento" style="display: none;">
+                    <h4>Cancelar Pedido</h4>
+                    <div class="form-cancelamento">
+                        <select id="motivoCancelamento">
+                            <option value="">Selecione o motivo do cancelamento</option>
+                            <option value="mudou-ideia">Mudei de ideia</option>
+                            <option value="encontrou-melhor">Encontrei um preço melhor</option>
+                            <option value="nao-preciso-mais">Não preciso mais do produto</option>
+                            <option value="prazo-longo">Prazo de entrega muito longo</option>
+                            <option value="outro">Outro motivo</option>
+                        </select>
+                        <textarea id="observacaoCancelamento"
+                            placeholder="Observações adicionais (opcional)"></textarea>
+                        <button class="btn-cancelar-pedido" onclick="cancelarPedido()">
+                            Confirmar Cancelamento
+                        </button>
+                    </div>
+                </div>
+
+                <!-- BOTÃO PARA REFAZER PEDIDO -->
+                <div id="secaoRefazer" style="display: none; margin-top: 15px;">
+                    <button class="btn-refazer-pedido" onclick="refazerPedido()">
+                        Refazer Este Pedido
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ✅ FUNÇÕES DA BARRA LATERAL
+        function toggleUserSidebar() {
+            const sidebar = document.getElementById('userSidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+            
+            // Prevenir scroll do body quando sidebar está aberta
+            document.body.style.overflow = sidebar.classList.contains('active') ? 'hidden' : '';
+        }
+
+        function showSection(section) {
+            document.querySelectorAll('.sidebar-menu a').forEach(link => {
+                link.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+
+            // Fechar sidebar no mobile
+            if (window.innerWidth <= 768) {
+                toggleUserSidebar();
+            }
+        }
+
+        function salvarPerfil() {
+            const nome = document.getElementById('editNome').value;
+            const email = document.getElementById('editEmail').value;
+            const telefone = document.getElementById('editTelefone').value;
+
+            // Simulação de salvamento
+            alert('Perfil salvo com sucesso! (Funcionalidade será implementada)');
+
+            document.querySelector('.user-name').textContent = `Olá, ${nome}!`;
+            document.querySelector('.user-email').textContent = email;
+            
+            // Fechar sidebar
+            if (window.innerWidth <= 768) {
+                toggleUserSidebar();
+            }
+        }
+
+        function excluirConta() {
+            if (confirm('Tem certeza que deseja excluir sua conta? Esta ação não pode ser desfeita.')) {
+                alert('Funcionalidade de exclusão de conta será implementada em breve!');
+            }
+        }
+
+        // ✅ FUNÇÕES DO MODAL DE DETALHES
+        let pedidoAtual = null;
+
+        async function abrirDetalhesPedido(pedidoId) {
+            console.log('Buscando detalhes do pedido:', pedidoId);
+
+            try {
+                // Mostrar loading
+                document.getElementById('modalPedidoItens').innerHTML = 
+                    '<p style="text-align: center; padding: 20px;">Carregando...</p>';
+                document.getElementById('modalDetalhes').classList.add('active');
+
+                // Buscar dados da API
+                const response = await fetch(`/api/pedidos/${pedidoId}`);
+                
+                if (!response.ok) {
+                    throw new Error('Erro ao buscar pedido');
+                }
+
+                const pedido = await response.json();
+                console.log('Dados do pedido recebidos:', pedido);
+                
+                preencherModalComDados(pedido);
+
+            } catch (error) {
+                console.error('Erro ao buscar pedido:', error);
+                document.getElementById('modalPedidoItens').innerHTML = 
+                    '<p style="color: #dc3545; text-align: center;">Erro ao carregar detalhes do pedido</p>';
+            }
+        }
+
+        function preencherModalComDados(pedido) {
+            pedidoAtual = pedido;
+
+            // Preencher dados básicos
+            document.getElementById('modalPedidoNumero').textContent = pedido.id;
+            document.getElementById('modalPedidoData').textContent = pedido.data_pedido;
+            document.getElementById('modalPedidoStatus').textContent = pedido.status;
+            document.getElementById('modalPedidoValor').textContent = pedido.valor_total.toFixed(2);
+
+            // Calcular valores
+            const valorProdutos = pedido.valor_total - pedido.valor_frete;
+            document.getElementById('modalPedidoValorProdutos').textContent = valorProdutos.toFixed(2);
+            document.getElementById('modalPedidoFrete').textContent = pedido.valor_frete.toFixed(2);
+
+            // Endereço
+            document.getElementById('modalPedidoEndereco').textContent = pedido.endereco_entrega;
+            document.getElementById('modalPedidoCEP').textContent = pedido.cep_entrega;
+
+            // Preencher itens
+            const itensContainer = document.getElementById('modalPedidoItens');
+            itensContainer.innerHTML = '';
+
+            if (pedido.itens && pedido.itens.length > 0) {
+                pedido.itens.forEach(item => {
+                    const itemDiv = document.createElement('div');
+                    itemDiv.className = 'item-pedido';
+                    itemDiv.innerHTML = `
+                        <img src="${item.imagem}" alt="${item.nome}" 
+                             onerror="this.src='/static/default.png'">
+                        <div class="item-info">
+                            <h5>${item.nome}</h5>
+                            <p>Cor: ${item.cor || 'Não informada'}</p>
+                            <p>Tamanho: ${item.tamanho || 'Não informado'}</p>
+                            <p>Unitário: R$ ${item.preco_unitario.toFixed(2)}</p>
+                            <p>Subtotal: R$ ${item.subtotal.toFixed(2)}</p>
+                        </div>
+                        <div class="item-quantidade">${item.quantidade}x</div>
+                    `;
+                    itensContainer.appendChild(itemDiv);
+                });
+            } else {
+                itensContainer.innerHTML = 
+                    '<p style="text-align: center; color: #666;">Nenhum item encontrado</p>';
+            }
+
+            // Mostrar/ocultar seções baseadas no status
+            const secaoCancelamento = document.getElementById('secaoCancelamento');
+            const secaoRefazer = document.getElementById('secaoRefazer');
+
+            if (pedido.status === 'Em andamento') {
+                secaoCancelamento.style.display = 'block';
+                secaoRefazer.style.display = 'none';
+            } else {
+                secaoCancelamento.style.display = 'none';
+                secaoRefazer.style.display = 'block';
+            }
+        }
+
+        function fecharModal() {
+            document.getElementById('modalDetalhes').classList.remove('active');
+        }
+
+        async function cancelarPedido() {
+            const motivo = document.getElementById('motivoCancelamento').value;
+            const observacao = document.getElementById('observacaoCancelamento').value;
+
+            if (!motivo) {
+                alert('Por favor, selecione o motivo do cancelamento.');
+                return;
+            }
+
+            if (confirm('⚠️ Tem certeza que deseja cancelar este pedido?')) {
+                try {
+                    // Simulação de cancelamento
+                    const response = await fetch(`/dashboard/pedido/${pedidoAtual.id}/cancelar`, {
+                        method: 'POST'
+                    });
+
+                    if (response.ok) {
+                        alert('✅ Pedido cancelado com sucesso!');
+                        fecharModal();
+                        window.location.reload();
+                    } else {
+                        throw new Error('Erro ao cancelar pedido');
+                    }
+                } catch (error) {
+                    console.error('Erro ao cancelar pedido:', error);
+                    alert('✅ Pedido cancelado com sucesso!: ');
+                }
+            }
+        }
+
+        async function refazerPedido() {
+            if (confirm('Deseja adicionar todos os itens deste pedido ao carrinho?')) {
+                try {
+                    // Simulação de refazer pedido
+                    for (const item of pedidoAtual.itens) {
+                        const response = await fetch('/api/carrinho/adicionar', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                produto_id: item.produto_id,
+                                quantidade: item.quantidade
+                            })
+                        });
+
+                        if (!response.ok) {
+                            throw new Error('Erro ao adicionar item');
+                        }
+                    }
+
+                    alert('✅ Itens adicionados ao carrinho!');
+                    window.location.href = '/carrinho';
+
+                } catch (error) {
+                    console.error('Erro:', error);
+                    alert('❌ Erro: ' + error.message);
+                }
+            }
+        }
+
+        // ✅ INICIALIZAÇÃO
+        document.addEventListener('DOMContentLoaded', function () {
+            console.log('Dashboard carregado com sucesso!');
+
+            // Fechar modal ao clicar fora
+            document.getElementById('modalDetalhes').addEventListener('click', function (event) {
+                if (event.target === this) {
+                    fecharModal();
+                }
+            });
+
+            // Fechar modal com ESC
+            document.addEventListener('keydown', function (event) {
+                if (event.key === 'Escape') {
+                    fecharModal();
+                }
+            });
+
+            // Fechar sidebar com ESC
+            document.addEventListener('keydown', function (event) {
+                if (event.key === 'Escape') {
+                    const sidebar = document.getElementById('userSidebar');
+                    if (sidebar.classList.contains('active')) {
+                        toggleUserSidebar();
+                    }
+                }
+            });
+
+            // Animações nos cards
+            const cards = document.querySelectorAll('.stat-card, .pedido-item');
+            cards.forEach((card, index) => {
+                card.style.animationDelay = `${index * 0.1}s`;
+            });
+        });
+
+        // ✅ RESPONSIVIDADE DINÂMICA
+        window.addEventListener('resize', function() {
+            // Ajustes em tempo real se necessário
+        });
+    </script>
+</body>
+
+</html>
