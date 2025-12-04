@@ -29,8 +29,6 @@ async def dashboard_usuario(
     ).order_by(Pedido.data_pedido.desc()).all()
     
     # Formatar dados dos pedidos
-        # No dashboard_controller.py, dentro da função dashboard_usuario
-# No dashboard_controller.py, dentro da função dashboard_usuario
     pedidos_formatados = []
     for pedido in pedidos:
         itens_pedido = db.query(ItemPedido).filter(ItemPedido.pedido_id == pedido.id).all()
@@ -64,10 +62,15 @@ async def dashboard_usuario(
             'itens': itens_detalhados
         })
     
-    # Estatísticas do usuário
+    # ✅ CORREÇÃO: Calcular estatísticas incluindo o frete
     total_pedidos = len(pedidos)
     pedidos_ativos = len([p for p in pedidos if p.status in ['Em andamento', 'Processando']])
-    total_gasto = sum(float(p.valor_total) for p in pedidos)
+    
+    # ✅ CALCULAR TOTAL GASTO INCLUINDO FRETE
+    total_gasto = 0
+    for pedido in pedidos:
+        valor_frete = float(pedido.valor_frete) if pedido.valor_frete else 0.00
+        total_gasto += float(pedido.valor_total) + valor_frete
     
     return templates.TemplateResponse("dashboard.html", {
         "request": request,
@@ -76,7 +79,7 @@ async def dashboard_usuario(
         "estatisticas": {
             "total_pedidos": total_pedidos,
             "pedidos_ativos": pedidos_ativos,
-            "total_gasto": total_gasto
+            "total_gasto": total_gasto  # ✅ AGORA COM FRETE
         }
     })
 
