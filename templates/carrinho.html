@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Zados - Seu Carrinho</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="icon" href="{{ url_for('static', path='uploads/Logo_SF_Branca.PNG') }}" type="image/x-icon">
+  <style>
+    /* ===== RESET MOBILE-FIRST ===== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #fff;
+      color: #000;
+      line-height: 1.5;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    /* ===== HEADER RESPONSIVO ===== */
+    header {
+      width: 100%;
+      background: #FBF4E6;
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 100;
+      position: sticky;
+      top: 0;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .logo-section {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .LogoMark {
+      width: 60px;
+      height: 60px;
+      border-radius: 6px;
+      object-fit: contain;
+    }
+
+    .logo-section h1 {
+      font-size: 1.5rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin: 0;
+    }
+
+    /* ===== NAV MOBILE ===== */
+    nav {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav_item {
+      display: none;
+      text-decoration: none;
+      color: #000;
+    }
+
+    .headerimg {
+      display: flex;
+      align-items: center;
+      padding: 4px;
+    }
+
+    .headerimg img {
+      width: 24px;
+      height: 24px;
+      object-fit: contain;
+    }
+
+    .botao_entrar {
+      background: #000;
+      color: #fff;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: 0.3s;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.875rem;
+      font-weight: 500;
+      min-height: 36px;
+      white-space: nowrap;
+    }
+
+    .botao_entrar:hover {
+      background: #333;
+    }
+
+    /* ÍCONE DO USUÁRIO MOBILE */
+    .user-icon-header {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #000;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 1rem;
+      transition: all 0.3s;
+      border: 2px solid #000;
+      flex-shrink: 0;
+    }
+
+    .user-icon-header:hover {
+      background: #fff;
+      color: #000;
+    }
+
+    /* ===== BARRA LATERAL RESPONSIVA ===== */
+    .sidebar-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 1000;
+      display: none;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .sidebar-overlay.active {
+      display: block;
+      opacity: 1;
+    }
+
+    .user-sidebar {
+      position: fixed;
+      top: 0;
+      right: -100%;
+      width: 100%;
+      max-width: 380px;
+      height: 100vh;
+      background: #fff;
+      box-shadow: -5px 0 25px rgba(0, 0, 0, 0.1);
+      transition: right 0.3s ease;
+      z-index: 1001;
+      padding: 20px;
+      overflow-y: auto;
+    }
+
+    .user-sidebar.active {
+      right: 0;
+    }
+
+    .sidebar-header {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 25px;
+      padding-bottom: 20px;
+      border-bottom: 2px solid #f0f0f0;
+    }
+
+    .user-avatar {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: #000;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: bold;
+      border: 3px solid #000;
+      flex-shrink: 0;
+    }
+
+    .user-info-sidebar h3 {
+      font-size: 18px;
+      margin-bottom: 5px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .user-info-sidebar p {
+      color: #666;
+      font-size: 14px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .sidebar-menu {
+      list-style: none;
+      margin-bottom: 25px;
+    }
+
+    .sidebar-menu li {
+      margin-bottom: 8px;
+    }
+
+    .sidebar-menu a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 15px;
+      text-decoration: none;
+      color: #333;
+      border-radius: 8px;
+      transition: all 0.3s;
+      font-size: 15px;
+    }
+
+    .sidebar-menu a:hover {
+      background: #f5f5f5;
+      color: #000;
+    }
+
+    .sidebar-menu a.active {
+      background: #000;
+      color: #fff;
+    }
+
+    .btn-sair {
+      background: #ff4444;
+      color: #fff;
+      border: none;
+      padding: 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      width: 100%;
+      font-size: 15px;
+      transition: background 0.3s;
+      margin-top: 20px;
+    }
+
+    .btn-sair:hover {
+      background: #cc0000;
+    }
+
+    /* ===== BARRA DE ETAPAS RESPONSIVA ===== */
+    .checkout-bar {
+      display: flex;
+      justify-content: center;
+      margin: 30px 16px;
+    }
+
+    .checkout-bar__inner {
+      display: flex;
+      width: 100%;
+      max-width: 950px;
+      background: #FBF4E6;
+      border: 2px solid #d9cdb7;
+      border-radius: 10px;
+      overflow: hidden;
+      text-align: center;
+      font-family: "Inter", sans-serif;
+    }
+
+    .checkout-bar__inner .step {
+      flex: 1;
+      padding: 12px 8px;
+      font-weight: 600;
+      color: #222;
+      font-size: 0.8125rem;
+      border-right: 1px solid rgba(0, 0, 0, 0.05);
+      word-break: break-word;
+    }
+
+    .checkout-bar__inner .step:last-child {
+      border-right: none;
+    }
+
+    .checkout-bar__inner .step.current {
+      background: #000;
+      color: #fff;
+    }
+
+    /* ===== CARRINHO RESPONSIVO ===== */
+    .carrinho {
+      max-width: 950px;
+      margin: 0 auto;
+      padding: 0 16px 40px;
+    }
+
+    .carrinho h1 {
+      font-size: 1.75rem;
+      text-align: center;
+      margin-bottom: 25px;
+      padding: 0 16px;
+    }
+
+    /* PRODUTO MOBILE-FIRST */
+    .produto {
+      display: grid;
+      grid-template-columns: 80px 1fr;
+      gap: 12px;
+      background: #fff;
+      border-radius: 10px;
+      padding: 16px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      border: 1px solid #e6e6e6;
+      position: relative;
+    }
+
+    .produto img {
+      width: 100%;
+      height: 80px;
+      border-radius: 6px;
+      object-fit: cover;
+      grid-row: 1 / span 3;
+    }
+
+    .produto .info {
+      grid-column: 2;
+    }
+
+    .produto .info p {
+      margin: 3px 0;
+      color: #333;
+      font-size: 0.875rem;
+      line-height: 1.4;
+    }
+
+    .produto .info p:first-child {
+      font-weight: 600;
+      font-size: 0.9375rem;
+    }
+
+    .quantidade {
+      grid-column: 2;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .quantidade button {
+      border: 1px solid #000;
+      padding: 6px 10px;
+      cursor: pointer;
+      background: none;
+      border-radius: 6px;
+      font-size: 0.875rem;
+      min-width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .quantidade span {
+      margin: 0 8px;
+      font-weight: 600;
+      font-size: 0.9375rem;
+    }
+
+    .valor {
+      font-weight: 700;
+      color: #111;
+      font-size: 1rem;
+      grid-column: 2;
+      margin-top: 8px;
+    }
+
+    .delete {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #888;
+      font-size: 1rem;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+      transition: all 0.3s;
+    }
+
+    .delete:hover {
+      color: #ff4444;
+      background: #fff5f5;
+    }
+
+    /* ===== RESUMO RESPONSIVO ===== */
+    .resumo {
+      background: #fff;
+      border-radius: 8px;
+      padding: 20px;
+      margin-top: 25px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      text-align: left;
+      border: 1px solid #e6e6e6;
+    }
+
+    .resumo h3 {
+      font-size: 1.25rem;
+      margin-bottom: 15px;
+      color: #000;
+    }
+
+    .resumo p {
+      display: flex;
+      justify-content: space-between;
+      margin: 8px 0;
+      color: #333;
+      font-size: 0.9375rem;
+    }
+
+    .resumo hr {
+      border: none;
+      border-top: 1px solid #eee;
+      margin: 12px 0;
+    }
+
+    .resumo p strong {
+      font-size: 1.125rem;
+    }
+
+    /* ===== BOTÕES RESPONSIVOS ===== */
+    .continuar {
+      background: #000;
+      color: #fff;
+      padding: 14px 24px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 600;
+      margin-top: 20px;
+      width: 100%;
+      transition: background 0.3s;
+    }
+
+    .continuar:hover {
+      background: #333;
+    }
+
+    .continuar:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+
+    .fale {
+      display: block;
+      margin-top: 16px;
+      color: #000;
+      text-decoration: none;
+      font-weight: 500;
+      text-align: center;
+      font-size: 0.9375rem;
+      transition: color 0.3s;
+    }
+
+    .fale:hover {
+      color: #666;
+    }
+
+    /* ===== FOOTER RESPONSIVO ===== */
+    .footer-end {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 30px;
+      background: url("{{ url_for('static', path='uploads/Footer-home.PNG') }}") no-repeat center/cover;
+      padding: 40px 24px;
+      margin-top: 60px;
+    }
+
+    .footer-col {
+      text-align: center;
+    }
+
+    .footer-col h4 {
+      font-size: 1.125rem;
+      margin-bottom: 12px;
+      color: #000;
+    }
+
+    .footer-col ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .footer-col ul li {
+      margin: 6px 0;
+    }
+
+    .footer-col ul li a {
+      text-decoration: none;
+      color: #000;
+      font-size: 0.875rem;
+      transition: color 0.3s;
+    }
+
+    .footer-col ul li a:hover {
+      color: #666;
+    }
+
+    .footer-col .social {
+      margin-top: 15px;
+    }
+
+    .footer-col .social img {
+      width: 28px;
+      margin: 0 8px;
+      transition: transform 0.3s;
+    }
+
+    .footer-col .social img:hover {
+      transform: scale(1.1);
+    }
+
+    .saiba_btn {
+      display: inline-block;
+      font-size: 0.875rem;
+      margin-top: 16px;
+      padding: 8px 16px;
+      background-color: #000;
+      color: white;
+      cursor: pointer;
+      border: none;
+      border-radius: 4px;
+      text-decoration: none;
+      transition: background 0.3s;
+    }
+
+    .saiba_btn:hover {
+      background: #333;
+    }
+
+    /* ===== MENSAGENS ===== */
+    .loading {
+      text-align: center;
+      padding: 40px 20px;
+      color: #666;
+      font-size: 0.9375rem;
+    }
+
+    .error {
+      background: #fee;
+      color: #c33;
+      padding: 16px;
+      border-radius: 8px;
+      margin: 20px 0;
+      font-size: 0.9375rem;
+      text-align: center;
+    }
+
+    .error a {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 8px 16px;
+      background: #000;
+      color: white;
+      text-decoration: none;
+      border-radius: 4px;
+      font-size: 0.875rem;
+    }
+
+    /* ===== MEDIA QUERIES PROGRESSIVAS ===== */
+
+    /* Tablet (768px+) */
+    @media (min-width: 768px) {
+      header {
+        padding: 15px 24px;
+      }
+      
+      .LogoMark {
+        width: 80px;
+        height: 80px;
+      }
+      
+      .logo-section h1 {
+        font-size: 2rem;
+      }
+      
+      .nav_item {
+        display: inline-block;
+        font-size: 1rem;
+      }
+      
+      .headerimg img {
+        width: 28px;
+        height: 28px;
+      }
+      
+      .botao_entrar {
+        padding: 10px 16px;
+        font-size: 0.9375rem;
+      }
+      
+      .user-icon-header {
+        width: 44px;
+        height: 44px;
+        font-size: 1.125rem;
+      }
+      
+      .produto {
+        grid-template-columns: 100px 1fr 160px 100px 40px;
+        gap: 16px;
+        align-items: center;
+      }
+      
+      .produto img {
+        width: 100px;
+        height: 100px;
+        grid-row: auto;
+      }
+      
+      .quantidade {
+        grid-column: auto;
+        margin-top: 0;
+      }
+      
+      .valor {
+        grid-column: auto;
+        margin-top: 0;
+      }
+      
+      .delete {
+        position: static;
+        grid-column: auto;
+      }
+      
+      .footer-end {
+        grid-template-columns: repeat(3, 1fr);
+        padding: 50px 40px;
+        text-align: left;
+      }
+      
+      .footer-col {
+        text-align: left;
+      }
+    }
+
+    /* Desktop (1024px+) */
+    @media (min-width: 1024px) {
+      header {
+        padding: 20px 40px;
+      }
+      
+      .LogoMark {
+        width: 100px;
+        height: 100px;
+      }
+      
+      .logo-section h1 {
+        font-size: 2.5rem;
+      }
+      
+      nav {
+        gap: 20px;
+      }
+      
+      .nav_item {
+        font-size: 1.125rem;
+      }
+      
+      .carrinho {
+        padding: 0 32px 60px;
+      }
+      
+      .carrinho h1 {
+        font-size: 2.25rem;
+      }
+      
+      .produto {
+        padding: 20px;
+        margin-bottom: 20px;
+      }
+      
+      .resumo {
+        padding: 24px;
+      }
+    }
+
+    /* Tela muito pequena (até 360px) */
+    @media (max-width: 360px) {
+      .logo-section h1 {
+        font-size: 1.25rem;
+      }
+      
+      .LogoMark {
+        width: 50px;
+        height: 50px;
+      }
+      
+      .user-sidebar {
+        max-width: 200px;
+        padding: 20px 16px;
+      }
+      
+      .produto {
+        grid-template-columns: 70px 1fr;
+        padding: 12px;
+      }
+      
+      .produto img {
+        height: 70px;
+      }
+    }
+
+    /* Melhorias de acessibilidade */
+    button:focus,
+    input:focus,
+    select:focus,
+    textarea:focus {
+      outline: 2px solid #000;
+      outline-offset: 2px;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- HEADER -->
+  <header>
+    <div class="logo-section">
+      <img class="LogoMark" src="{{ url_for('static', path='uploads/Logo.png') }}" alt="Logo_Zados">
+      <h1>ZADOS</h1>
+    </div>
+    <nav>
+      <a href="/" class="nav_item">CATÁLOGO</a>
+      <a href="/" class="headerimg"><img src="{{ url_for('static', path='uploads/loja.png') }}" alt="catalogo"></a>
+      <a href="/home" class="nav_item">HOME</a>
+      <a href="/home" class="headerimg"><img src="{{ url_for('static', path='uploads/casa.png') }}" alt="home"></a>
+      
+      {% if usuario %}
+        <div class="user-icon-header" onclick="toggleUserSidebar()">
+          {{ usuario.nome[0]|upper if usuario.nome else 'U' }}
+        </div>
+      {% else %}
+        <a href="/login" class="botao_entrar">ENTRAR</a>
+      {% endif %}
+    </nav>
+  </header>
+
+  <!-- BARRA LATERAL -->
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleUserSidebar()"></div>
+  
+  <div class="user-sidebar" id="userSidebar">
+    <div class="sidebar-header">
+      <div class="user-avatar">
+        {{ usuario.nome[0]|upper if usuario.nome else 'U' }}
+      </div>
+      <div class="user-info-sidebar">
+        <h3>{{ usuario.nome if usuario else 'Usuário' }}</h3>
+        <p>{{ usuario.email if usuario else 'email@exemplo.com' }}</p>
+      </div>
+    </div>
+
+    <ul class="sidebar-menu">
+      <li><a href="/dashboard">Dashboard</a></li>
+      <li><a href="/dashboard/perfil">Meu Perfil</a></li>
+      <li><a href="/carrinho">Meu Carrinho</a></li>
+      <li><a href="/">Continuar Comprando</a></li>
+    </ul>
+
+    <button class="btn-sair" onclick="window.location.href='/logout'">Sair da Conta</button>
+  </div>
+
+  <!-- BARRA DE ETAPAS -->
+  <div class="checkout-bar">
+    <div class="checkout-bar__inner">
+      <div class="step current">1 CARRINHO</div>
+      <div class="step">2 CHECKOUT</div>
+      <div class="step">3 PAGAMENTO</div>
+    </div>
+  </div>
+
+  <!-- CARRINHO -->
+  <section class="carrinho">
+    <h1>Seu Carrinho</h1>
+
+    <div id="loading" class="loading">Carregando carrinho...</div>
+    <div id="error-message" class="error" style="display: none;"></div>
+
+    <div id="lista-produtos"></div>
+
+    <div class="resumo">
+      <h3>Resumo</h3>
+      <p><span>Subtotal:</span><span id="subtotal">R$ 0,00</span></p>
+      <p><span>Frete:</span><span>Calculado no checkout</span></p>
+      <hr>
+      <p><strong>Total estimado:</strong><strong id="total">R$ 0,00</strong></p>
+    </div>
+
+    <button class="continuar" id="btn-continuar" onclick="irParaCheckout()">Continuar</button>
+    <a class="fale" href="/">← Voltar às compras</a>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-end">
+      <div class="footer-col">
+        <h4>Zados</h4>
+        <div class="social">
+          <a href="#"><img src="{{ url_for('static', path='uploads/FacebookIcon.png') }}" alt="Facebook"/></a>
+          <a href="#"><img src="{{ url_for('static', path='uploads/IGIcon.png') }}" alt="Instagram"/></a>
+          <a href="#"><img src="{{ url_for('static', path='uploads/YTIcon.png') }}" alt="Youtube"/></a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Camisetas</h4>
+        <ul>
+          <li><a href="/">Oversize</a></li>
+          <li><a href="/">Regata</a></li>
+          <li><a href="/">Manga-longa</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Camisas</h4>
+        <ul>
+          <li><a href="/">Polo</a></li>
+          <li><a href="/">Social</a></li>
+          <li><a href="/">Colarinho longo</a></li>
+        </ul>
+        <a class="saiba_btn" href="/sobre">Saiba Mais</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // ✅ FUNÇÕES DA BARRA LATERAL (IGUAL AOS OUTROS TEMPLATES)
+    function toggleUserSidebar() {
+      const sidebar = document.getElementById('userSidebar');
+      const overlay = document.getElementById('sidebarOverlay');
+      
+      sidebar.classList.toggle('active');
+      overlay.classList.toggle('active');
+      
+      if (sidebar.classList.contains('active')) {
+        document.body.style.overflow = 'hidden';
+      } else {
+        document.body.style.overflow = '';
+      }
+    }
+
+    // Fechar sidebar com ESC
+    document.addEventListener('keydown', function(event) {
+      if (event.key === 'Escape') {
+        const sidebar = document.getElementById('userSidebar');
+        if (sidebar.classList.contains('active')) {
+          toggleUserSidebar();
+        }
+      }
+    });
+
+    // ✅ CARREGA CARRINHO
+    async function carregarCarrinhoBackend() {
+      const loading = document.getElementById('loading');
+      const errorMsg = document.getElementById('error-message');
+      const lista = document.getElementById('lista-produtos');
+      
+      try {
+        loading.style.display = 'block';
+        errorMsg.style.display = 'none';
+        
+        const response = await fetch('/api/carrinho/dados');
+        const data = await response.json();
+        
+        if (!response.ok) throw new Error('Erro ao carregar carrinho');
+        
+        loading.style.display = 'none';
+        
+        if (!data.autenticado) {
+          lista.innerHTML = `
+            <div class="error">
+              <p>Faça login para ver seu carrinho</p>
+              <a href="/login">Fazer Login</a>
+            </div>
+          `;
+          document.getElementById('btn-continuar').disabled = true;
+          return;
+        }
+        
+        if (data.itens_carrinho.length === 0) {
+          lista.innerHTML = '<p class="loading">Seu carrinho está vazio</p>';
+          document.getElementById('btn-continuar').disabled = true;
+        } else {
+          exibirItensCarrinho(data.itens_carrinho);
+          atualizarResumo(data.total_geral);
+          document.getElementById('btn-continuar').disabled = false;
+        }
+        
+      } catch (error) {
+        console.error('Erro:', error);
+        loading.style.display = 'none';
+        errorMsg.style.display = 'block';
+        errorMsg.innerHTML = `
+          <p>Erro ao carregar carrinho</p>
+          <a href="/login">Tentar novamente</a>
+        `;
+      }
+    }
+
+    function corrigirCaminhoImagem(nomeImagem) {
+      if (!nomeImagem || nomeImagem === 'default.png') {
+        return '/static/default.png';
+      }
+      if (nomeImagem.startsWith('uploads/')) {
+        return `/static/${nomeImagem}`;
+      }
+      if (!nomeImagem.includes('/')) {
+        return `/static/uploads/${nomeImagem}`;
+      }
+      return `/static/${nomeImagem.replace('static/', '')}`;
+    }
+
+    function exibirItensCarrinho(itens) {
+      const lista = document.getElementById('lista-produtos');
+      lista.innerHTML = '';
+      
+      itens.forEach(item => {
+        const imagemCorrigida = corrigirCaminhoImagem(item.imagem);
+        
+        const div = document.createElement('div');
+        div.className = 'produto';
+        div.innerHTML = `
+          <img src="${imagemCorrigida}" alt="${item.nome}" onerror="this.src='/static/default.png'">
+          <div class="info">
+            <p><strong>${item.nome}</strong></p>
+            <p>Preço: R$ ${item.preco.toFixed(2)}</p>
+          </div>
+          <div class="quantidade">
+            <button onclick="alterarQuantidade(${item.id}, -1)">-</button>
+            <span>${item.quantidade}</span>
+            <button onclick="alterarQuantidade(${item.id}, 1)">+</button>
+          </div>
+          <div class="valor">R$ ${item.subtotal.toFixed(2)}</div>
+          <button class="delete" onclick="removerItem(${item.id})" title="Remover">✖</button>
+        `;
+        lista.appendChild(div);
+      });
+    }
+
+    function atualizarResumo(total) {
+      document.getElementById('subtotal').textContent = `R$ ${total.toFixed(2)}`;
+      document.getElementById('total').textContent = `R$ ${total.toFixed(2)}`;
+    }
+
+    async function alterarQuantidade(itemId, delta) {
+      try {
+        const response = await fetch('/api/carrinho/dados');
+        const carrinhoData = await response.json();
+        
+        if (!carrinhoData.autenticado) {
+          alert('Faça login primeiro');
+          window.location.href = '/login';
+          return;
+        }
+
+        const item = carrinhoData.itens_carrinho.find(item => item.id === itemId);
+        if (!item) return;
+
+        const novaQuantidade = item.quantidade + delta;
+        
+        if (novaQuantidade < 1) {
+          await removerItem(itemId);
+          return;
+        }
+
+        await fetch(`/api/carrinho/remover/${itemId}`, { method: 'POST' });
+        
+        if (novaQuantidade > 0) {
+          await fetch('/api/carrinho/adicionar', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              produto_id: item.produto_id,
+              quantidade: novaQuantidade
+            })
+          });
+        }
+
+        carregarCarrinhoBackend();
+        
+      } catch (error) {
+        console.error('Erro ao alterar quantidade:', error);
+        alert('Erro de conexão');
+      }
+    }
+
+    async function removerItem(itemId) {
+      if (!confirm('Remover este item?')) return;
+      
+      try {
+        await fetch(`/api/carrinho/remover/${itemId}`, { method: 'POST' });
+        
+        const produto = document.querySelector(`[onclick*="${itemId}"]`)?.closest('.produto');
+        if (produto) {
+          produto.style.opacity = '0.5';
+          produto.style.transition = 'opacity 0.3s';
+        }
+        
+        setTimeout(carregarCarrinhoBackend, 300);
+        
+      } catch (error) {
+        console.error('Erro:', error);
+        alert('Erro ao remover item');
+      }
+    }
+
+    function irParaCheckout() {
+      window.location.href = '/checkout';
+    }
+
+    // Inicializar
+    document.addEventListener('DOMContentLoaded', function() {
+      carregarCarrinhoBackend();
+    });
+  </script>
+</body>
+</html>

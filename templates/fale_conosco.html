@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Zados - Fale Conosco</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" href="{{ url_for('static', path='uploads/Logo_SF_Branca.PNG') }}" type="image/x-icon">
+  <style>
+    /* ==== RESET E ESTILOS GERAIS ==== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      background-color: #fff;
+      color: #000;
+      line-height: 1.5;
+      overflow-x: hidden;
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+    }
+
+    /* ==== HEADER RESPONSIVO ==== */
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #FBF4E6;
+      padding: 12px 16px;
+      flex-wrap: wrap;
+    }
+
+    .logo-area {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .logo-img {
+      width: 100px;
+      height: auto;
+    }
+
+    .topbar h1 {
+      font-size: 24px;
+      margin-left: 10px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .sobre-btn {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      font-size: 14px;
+      margin-top: 10px;
+      width: 100%;
+      justify-content: center;
+      order: 3;
+    }
+
+    .sobre-btn a {
+      padding: 8px 16px;
+      background: #000;
+      color: #fff;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 14px;
+      white-space: nowrap;
+    }
+
+    /* ==== MAIN CONTENT RESPONSIVO ==== */
+    .cadastro {
+      display: flex;
+      flex-direction: column;
+      padding: 20px 16px;
+      min-height: calc(100vh - 200px);
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* Formulário de contato */
+    .cadastro-form {
+      width: 100%;
+      margin-top: 20px;
+      order: 2;
+    }
+
+    .cadastro-form h1 {
+      font-size: 32px;
+      margin-bottom: 10px;
+      color: #000;
+    }
+
+    .cadastro-form > p {
+      color: #666;
+      font-size: 16px;
+      line-height: 1.6;
+      margin-bottom: 25px;
+    }
+
+    /* Formulário */
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    label {
+      font-weight: 600;
+      font-size: 14px;
+      color: #333;
+      margin-bottom: 5px;
+      display: block;
+    }
+
+    input, textarea {
+      padding: 14px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 16px;
+      width: 100%;
+      transition: border 0.3s;
+      font-family: 'Inter', sans-serif;
+    }
+
+    input:focus, textarea:focus {
+      outline: none;
+      border-color: #000;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 120px;
+    }
+
+    /* Layout dos campos nome/sobrenome */
+    .alinhar {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    .nomes {
+      width: 100%;
+    }
+
+    .nomes input {
+      margin-top: 8px;
+      width: 100%;
+    }
+
+    /* Botão de envio */
+    .login-button {
+      padding: 16px;
+      background: #000;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 600;
+      transition: background 0.3s;
+      margin-top: 10px;
+      width: 100%;
+    }
+
+    .login-button:hover {
+      background: #333;
+    }
+
+    .login-button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+
+    /* Mensagens de status */
+    .mensagem-sucesso {
+      background: #d4edda;
+      color: #155724;
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 20px;
+      border: 1px solid #c3e6cb;
+      display: none;
+    }
+
+    .mensagem-erro {
+      background: #f8d7da;
+      color: #721c24;
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 20px;
+      border: 1px solid #f5c6cb;
+      display: none;
+    }
+
+    /* Imagem */
+    .cadastro-img {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      order: 1;
+      margin-bottom: 30px;
+    }
+
+    .cadastro-img img {
+      width: 100%;
+      max-width: 500px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    /* ==== FOOTER RESPONSIVO ==== */
+    .footer {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 30px;
+      background: linear-gradient(to right, #f3e9d9, #e2c8a9, #f3e9d9);
+      padding: 40px 20px;
+      margin-top: 40px;
+    }
+
+    .footer-col {
+      text-align: center;
+    }
+
+    .footer-col h3, .footer-col h4 {
+      margin-bottom: 15px;
+      color: #000;
+    }
+
+    .footer-col h3 {
+      font-size: 20px;
+    }
+
+    .footer-col h4 {
+      font-size: 18px;
+    }
+
+    .footer-col ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .footer-col li {
+      margin-bottom: 8px;
+    }
+
+    .footer-col li a {
+      text-decoration: none;
+      color: #000;
+      font-size: 14px;
+      transition: color 0.3s;
+    }
+
+    .footer-col li a:hover {
+      color: #333;
+      text-decoration: underline;
+    }
+
+    .social-icons {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 15px;
+    }
+
+    .social-icons img {
+      width: 32px;
+      height: 32px;
+      transition: transform 0.3s;
+    }
+
+    .social-icons img:hover {
+      transform: scale(1.1);
+    }
+
+    .footer-btn {
+      display: inline-block;
+      background: #000;
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 14px;
+      margin-top: 15px;
+      transition: background 0.3s;
+    }
+
+    .footer-btn:hover {
+      background: #333;
+    }
+
+    /* ==== ANIMAÇÕES ==== */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .cadastro-form, .cadastro-img img {
+      animation: fadeIn 0.6s ease forwards;
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes slideOut {
+      from {
+        transform: translateX(0);
+        opacity: 1;
+      }
+      to {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+    }
+
+    /* ==== MEDIA QUERIES ==== */
+
+    /* Tablet (768px+) */
+    @media (min-width: 768px) {
+      .topbar {
+        padding: 16px 30px;
+        flex-wrap: nowrap;
+      }
+
+      .topbar h1 {
+        font-size: 32px;
+        margin-left: 15px;
+      }
+
+      .sobre-btn {
+        width: auto;
+        margin-top: 0;
+        order: 2;
+        font-size: 16px;
+        gap: 20px;
+      }
+
+      .logo-img {
+        width: 120px;
+      }
+
+      .cadastro {
+        flex-direction: row;
+        padding: 40px 30px;
+        gap: 50px;
+        align-items: center;
+      }
+
+      .cadastro-form {
+        flex: 1;
+        max-width: 600px;
+        margin-top: 0;
+        order: 1;
+      }
+
+      .cadastro-form h1 {
+        font-size: 40px;
+      }
+
+      .cadastro-form > p {
+        font-size: 18px;
+      }
+
+      .alinhar {
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+      }
+
+      .cadastro-img {
+        flex: 1;
+        order: 2;
+        margin-bottom: 0;
+      }
+
+      .cadastro-img img {
+        max-width: 600px;
+      }
+
+      .footer {
+        grid-template-columns: repeat(3, 1fr);
+        padding: 50px 40px;
+      }
+
+      .footer-col {
+        text-align: left;
+      }
+
+      .social-icons {
+        justify-content: flex-start;
+      }
+    }
+
+    /* Desktop (1024px+) */
+    @media (min-width: 1024px) {
+      .topbar {
+        padding: 16px 40px;
+      }
+
+      .topbar h1 {
+        font-size: 50px;
+      }
+
+      .sobre-btn {
+        gap: 40px;
+        font-size: 18px;
+      }
+
+      .sobre-btn a {
+        padding: 10px 20px;
+      }
+
+      .cadastro {
+        padding: 60px 40px;
+        gap: 80px;
+      }
+
+      .cadastro-form h1 {
+        font-size: 50px;
+      }
+
+      .cadastro-img img {
+        max-width: 700px;
+      }
+
+      .footer {
+        padding: 60px 60px;
+      }
+    }
+
+    /* Telas muito pequenas (até 480px) */
+    @media (max-width: 480px) {
+      .topbar {
+        padding: 10px 12px;
+      }
+
+      .logo-img {
+        width: 80px;
+      }
+
+      .topbar h1 {
+        font-size: 20px;
+        margin-left: 8px;
+      }
+
+      .sobre-btn {
+        gap: 10px;
+        font-size: 12px;
+      }
+
+      .sobre-btn a {
+        padding: 6px 12px;
+        font-size: 12px;
+      }
+
+      .cadastro {
+        padding: 15px 12px;
+      }
+
+      .cadastro-form h1 {
+        font-size: 28px;
+      }
+
+      .cadastro-form > p {
+        font-size: 14px;
+      }
+
+      input, textarea {
+        padding: 12px;
+        font-size: 15px;
+      }
+
+      .login-button {
+        padding: 14px;
+        font-size: 15px;
+      }
+
+      .footer {
+        padding: 30px 20px;
+        gap: 25px;
+      }
+
+      .footer-col h4 {
+        font-size: 16px;
+      }
+
+      .footer-col li a {
+        font-size: 13px;
+      }
+    }
+
+    /* Melhorias de acessibilidade */
+    button:focus,
+    a:focus,
+    input:focus,
+    textarea:focus {
+      outline: 2px solid #000;
+      outline-offset: 2px;
+    }
+
+    /* Melhorias para touch em mobile */
+    @media (hover: none) and (pointer: coarse) {
+      .login-button,
+      .sobre-btn a,
+      .footer-btn {
+        min-height: 44px;
+        min-width: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      input, textarea {
+        font-size: 16px; /* Previne zoom automático no iOS */
+      }
+    }
+
+    /* Estados de loading */
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 2px solid #f3f3f3;
+      border-top: 2px solid #000;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-left: 10px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Estilos para suporte de autocomplete */
+    input:-webkit-autofill,
+    input:-webkit-autofill:hover,
+    input:-webkit-autofill:focus,
+    textarea:-webkit-autofill,
+    textarea:-webkit-autofill:hover,
+    textarea:-webkit-autofill:focus {
+      -webkit-box-shadow: 0 0 0px 1000px white inset;
+      box-shadow: 0 0 0px 1000px white inset;
+      transition: background-color 5000s ease-in-out 0s;
+    }
+  </style>
+</head>
+<body>
+  <!-- HEADER -->
+  <header class="topbar">
+    <div class="logo-area">
+      <img src="{{ url_for('static', path='uploads/Logo.png') }}" alt="Logo Zados" class="logo-img"/>
+      <h1>ZADOS</h1>
+    </div>
+    <div class="sobre-btn">
+      <span>Saiba mais aqui:</span>
+      <a href="/sobre">Sobre</a>
+    </div>
+  </header>
+
+  <!-- MAIN -->
+  <main class="cadastro">
+    <section class="cadastro-form">
+      <h1>Fale conosco</h1>
+      <p>Envie sua dúvida, sugestão ou mensagem e retornaremos em breve.</p>
+      
+      <form id="form-contato">
+        <div class="alinhar">
+          <div class="nomes">
+            <label for="nome">Nome *</label>
+            <input type="text" id="nome" name="nome" placeholder="Maria" required 
+                   minlength="2" maxlength="50">
+          </div>
+
+          <div class="nomes">
+            <label for="sobrenome">Sobrenome *</label>
+            <input type="text" id="sobrenome" name="sobrenome" placeholder="Ribeiro" required 
+                   minlength="2" maxlength="50">
+          </div>
+        </div>
+
+        <div>
+          <label for="email">Endereço de e-mail *</label>
+          <input type="email" id="email" name="email" placeholder="mariaribeiro@gmail.com" required 
+                 autocapitalize="off" autocomplete="email">
+        </div>
+
+        <div>
+          <label for="mensagem">Sua mensagem *</label>
+          <textarea id="mensagem" name="mensagem" placeholder="Digite sua pergunta ou mensagem" required 
+                    minlength="10" maxlength="1000"></textarea>
+          <small style="color: #666; font-size: 12px; display: block; margin-top: 5px;">
+            Máximo 1000 caracteres
+          </small>
+        </div>
+
+        <button type="submit" class="login-button" id="btn-enviar">
+          Enviar Mensagem
+        </button>
+      </form>
+
+      <!-- Mensagens de status -->
+      <div class="mensagem-sucesso" id="mensagem-sucesso">
+        ✅ Mensagem enviada com sucesso! Retornaremos em breve.
+      </div>
+      
+      <div class="mensagem-erro" id="mensagem-erro">
+        ❌ Ocorreu um erro ao enviar sua mensagem. Tente novamente.
+      </div>
+    </section>
+
+    <section class="cadastro-img">
+      <img src="{{ url_for('static', path='uploads/dobrada.png') }}" alt="Camisa Zados" loading="lazy"/>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-col">
+      <h3>Zados</h3>
+      <div class="social-icons">
+        <a href="#" aria-label="Facebook">
+          <img src="{{ url_for('static', path='uploads/FacebookIcon.png') }}" alt="Facebook"/>
+        </a>
+        <a href="#" aria-label="Instagram">
+          <img src="{{ url_for('static', path='uploads/IGIcon.png') }}" alt="Instagram"/>
+        </a>
+        <a href="#" aria-label="YouTube">
+          <img src="{{ url_for('static', path='uploads/YTIcon.png') }}" alt="YouTube"/>
+        </a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Camisetas</h4>
+      <ul>
+        <li><a href="/">Oversize</a></li>
+        <li><a href="/">Regata</a></li>
+        <li><a href="/">Manga-longa</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Camisas</h4>
+      <ul>
+        <li><a href="/">Polo</a></li>
+        <li><a href="/">Social</a></li>
+        <li><a href="/">Colarinho-longo</a></li>
+      </ul>
+      <a class="footer-btn" href="/sobre">Sobre nós</a>
+    </div>
+  </footer>
+
+  <script>
+    // ✅ ELEMENTOS DO FORMULÁRIO
+    const form = document.getElementById('form-contato');
+    const btnEnviar = document.getElementById('btn-enviar');
+    const mensagemSucesso = document.getElementById('mensagem-sucesso');
+    const mensagemErro = document.getElementById('mensagem-erro');
+    const mensagemTextarea = document.getElementById('mensagem');
+
+    // ✅ CONTADOR DE CARACTERES
+    mensagemTextarea.addEventListener('input', function() {
+      const maxLength = 1000;
+      const currentLength = this.value.length;
+      const contador = this.parentElement.querySelector('small');
+      
+      if (contador) {
+        contador.textContent = `${currentLength}/${maxLength} caracteres`;
+        
+        // Alerta visual se estiver perto do limite
+        if (currentLength > maxLength * 0.9) {
+          contador.style.color = '#dc3545';
+        } else if (currentLength > maxLength * 0.7) {
+          contador.style.color = '#ffc107';
+        } else {
+          contador.style.color = '#666';
+        }
+      }
+      
+      // Limita o texto ao máximo
+      if (currentLength > maxLength) {
+        this.value = this.value.substring(0, maxLength);
+      }
+    });
+
+    // ✅ VALIDAÇÃO DO FORMULÁRIO
+    form.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      // Limpar mensagens anteriores
+      esconderMensagens();
+      
+      // Validação dos campos
+      if (!validarFormulario()) {
+        return;
+      }
+      
+      // Desabilita botão e mostra loading
+      const textoOriginal = btnEnviar.textContent;
+      btnEnviar.disabled = true;
+      btnEnviar.textContent = 'Enviando...';
+      btnEnviar.innerHTML = 'Enviando... <span class="loading"></span>';
+      
+      try {
+        // Coleta os dados do formulário
+        const dados = {
+          nome: document.getElementById('nome').value.trim(),
+          sobrenome: document.getElementById('sobrenome').value.trim(),
+          email: document.getElementById('email').value.trim(),
+          mensagem: document.getElementById('mensagem').value.trim()
+        };
+        
+        console.log('📤 Enviando dados:', dados);
+        
+        // Simulação de envio (substituir por chamada real à API)
+        await enviarMensagem(dados);
+        
+        // Sucesso
+        mostrarMensagemSucesso();
+        form.reset();
+        
+        // Restaura contador de caracteres
+        const contador = mensagemTextarea.parentElement.querySelector('small');
+        if (contador) {
+          contador.textContent = 'Máximo 1000 caracteres';
+          contador.style.color = '#666';
+        }
+        
+      } catch (error) {
+        console.error('❌ Erro ao enviar:', error);
+        mostrarMensagemErro();
+        
+      } finally {
+        // Restaura botão
+        btnEnviar.disabled = false;
+        btnEnviar.textContent = textoOriginal;
+        btnEnviar.innerHTML = textoOriginal;
+      }
+    });
+
+    // ✅ VALIDAÇÃO DOS CAMPOS
+    function validarFormulario() {
+      let valido = true;
+      
+      // Campos obrigatórios
+      const campos = ['nome', 'sobrenome', 'email', 'mensagem'];
+      
+      campos.forEach(campoId => {
+        const campo = document.getElementById(campoId);
+        const valor = campo.value.trim();
+        
+        if (!valor) {
+          mostrarErroCampo(campo, 'Este campo é obrigatório');
+          valido = false;
+        } else if (campoId === 'email') {
+          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          if (!emailRegex.test(valor)) {
+            mostrarErroCampo(campo, 'Digite um e-mail válido');
+            valido = false;
+          }
+        } else if (campoId === 'mensagem' && valor.length < 10) {
+          mostrarErroCampo(campo, 'A mensagem deve ter pelo menos 10 caracteres');
+          valido = false;
+        } else {
+          limparErroCampo(campo);
+        }
+      });
+      
+      return valido;
+    }
+
+    // ✅ MOSTRAR ERRO NO CAMPO
+    function mostrarErroCampo(campo, mensagem) {
+      // Remove erro anterior
+      limparErroCampo(campo);
+      
+      // Adiciona estilo de erro
+      campo.style.borderColor = '#dc3545';
+      campo.style.backgroundColor = '#fff5f5';
+      
+      // Cria mensagem de erro
+      const erroDiv = document.createElement('div');
+      erroDiv.className = 'erro-campo';
+      erroDiv.textContent = mensagem;
+      erroDiv.style.color = '#dc3545';
+      erroDiv.style.fontSize = '12px';
+      erroDiv.style.marginTop = '5px';
+      
+      campo.parentNode.appendChild(erroDiv);
+    }
+
+    // ✅ LIMPAR ERRO DO CAMPO
+    function limparErroCampo(campo) {
+      campo.style.borderColor = '';
+      campo.style.backgroundColor = '';
+      
+      const erroAnterior = campo.parentNode.querySelector('.erro-campo');
+      if (erroAnterior) {
+        erroAnterior.remove();
+      }
+    }
+
+    // ✅ SIMULAÇÃO DE ENVIO (substituir por API real)
+    function enviarMensagem(dados) {
+      return new Promise((resolve, reject) => {
+        // Simula delay de rede
+        setTimeout(() => {
+          // Aqui você substituiria por uma chamada real à API
+          // Exemplo: fetch('/api/contato', { method: 'POST', body: JSON.stringify(dados) })
+          
+          // Simulação: 90% de chance de sucesso
+          if (Math.random() > 0.1) {
+            resolve({ success: true, message: 'Mensagem enviada com sucesso' });
+          } else {
+            reject(new Error('Erro ao enviar mensagem'));
+          }
+        }, 1500);
+      });
+    }
+
+    // ✅ MOSTRAR MENSAGEM DE SUCESSO
+    function mostrarMensagemSucesso() {
+      esconderMensagens();
+      mensagemSucesso.style.display = 'block';
+      
+      // Esconde após 5 segundos
+      setTimeout(() => {
+        mensagemSucesso.style.display = 'none';
+      }, 5000);
+    }
+
+    // ✅ MOSTRAR MENSAGEM DE ERRO
+    function mostrarMensagemErro() {
+      esconderMensagens();
+      mensagemErro.style.display = 'block';
+    }
+
+    // ✅ ESCONDER TODAS AS MENSAGENS
+    function esconderMensagens() {
+      mensagemSucesso.style.display = 'none';
+      mensagemErro.style.display = 'none';
+    }
+
+    // ✅ INICIALIZAÇÃO
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('📞 Página Fale Conosco carregada');
+      
+      // Foco no primeiro campo
+      document.getElementById('nome').focus();
+      
+      // Validação em tempo real
+      const campos = document.querySelectorAll('input, textarea');
+      campos.forEach(campo => {
+        campo.addEventListener('blur', function() {
+          if (this.value.trim()) {
+            limparErroCampo(this);
+          }
+        });
+      });
+      
+      // Prevenir envio do formulário ao pressionar Enter em campos errados
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA') {
+          e.preventDefault();
+        }
+      });
+    });
+  </script>
+</body>
+</html>
