@@ -1,6 +1,0 @@
-pip install uvicorn fastapi
-pip install sqlalchemy
-pip install mysql.connector
-pip install jinja2
-pip install python-multipart
-
