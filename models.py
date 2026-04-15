@@ -44,9 +44,6 @@ class Pedido(Base):
     status = Column(String(50), default="Em andamento")
     valor_total = Column(DECIMAL(10, 2), default=0.00)
     endereco_entrega = Column(String(255))
-    # ✅ NOVO CAMPO: Valor do frete
-    valor_frete = Column(DECIMAL(10, 2), default=0.00)
-    cep_entrega = Column(String(10))  # ✅ NOVO: CEP de entrega
     usuario = relationship("Usuario", back_populates="pedidos")
     itens = relationship("ItemPedido", back_populates="pedido")
 

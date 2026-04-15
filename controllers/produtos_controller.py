@@ -1,4 +1,11 @@
 from auth_deps import get_usuario_atual  
+def _ensure_image_obj(produto):
+    try:
+        if not getattr(produto, 'imagem', None):
+            produto.imagem = 'static/default.png'
+    except Exception:
+        pass
+
 from fastapi import (
     APIRouter, Request, Form, UploadFile, File,
     Depends, HTTPException, Cookie
@@ -37,29 +44,6 @@ def obter_cor_css(cor_nome):
     }
     return mapa_cores.get(cor_nome.lower().split()[0], '#cccccc')
 # ----------------- FUNÇÕES AUXILIARES ----------------- #
-def _ensure_image_obj(produto):
-    """
-    Garante que o produto tenha uma imagem válida
-    CORREÇÃO SIMPLIFICADA
-    """
-    try:
-        # Se não tem imagem ou está vazia, usa padrão
-        if not produto.imagem or produto.imagem.strip() == "":
-            return 'default.png'
-        
-        # Remove 'static/' se existir
-        if produto.imagem.startswith('static/'):
-            return produto.imagem.replace('static/', '')
-        
-        # Remove 'uploads/' se existir (para evitar duplicação)
-        if produto.imagem.startswith('uploads/'):
-            return produto.imagem.replace('uploads/', '')
-        
-        return produto.imagem
-        
-    except Exception:
-        return 'default.png'
-
 async def salvar_imagem(imagem: UploadFile) -> str:
     if not imagem or imagem.filename == "":
         return ""
@@ -206,211 +190,25 @@ async def listar(request: Request, db: Session = Depends(get_db), is_admin: str 
 @router.get("/produtos/{id_produto}", response_class=HTMLResponse)
 async def detalhe(request: Request, id_produto: int, db: Session = Depends(get_db), is_admin: str = Cookie(default="false"), usuario = Depends(get_usuario_atual)):
     produto = db.query(Produto).filter(Produto.id == id_produto).first()
-    
-    if not produto:
-        raise HTTPException(status_code=404, detail="Produto não encontrado")
-    
     _ensure_image_obj(produto)
     
-    # Buscar categoria do produto
-    categoria = db.query(Categoria).filter(Categoria.id == produto.categoria_id).first() if produto.categoria_id else None
-    
-    # Buscar cores e tamanhos disponíveis
-    if produto.categoria_id:
-        # Busca produtos com mesma categoria
+    # ✅ BUSCA TODOS OS PRODUTOS DA MESMA CATEGORIA (para mostrar cores disponíveis)
+    if produto and produto.categoria_id:
         produtos_mesma_categoria = db.query(Produto).filter(
             Produto.categoria_id == produto.categoria_id
         ).all()
+        produto.cores_disponiveis = list(set([p.cor for p in produtos_mesma_categoria if p.cor]))
+        produto.tamanhos_disponiveis = list(set([p.tamanho for p in produtos_mesma_categoria if p.tamanho]))
     else:
-        produtos_mesma_categoria = [produto]
-    
-    # Extrai cores e tamanhos únicos
-    todas_cores = []
-    todos_tamanhos = []
-    
-    for p in produtos_mesma_categoria:
-        if p.cor:
-            todas_cores.append(p.cor)
-        if p.tamanho:
-            todos_tamanhos.append(p.tamanho)
-    
-    # Remove duplicatas e garante que o produto atual esteja incluído
-    cores_disponiveis = list(set(todas_cores))
-    tamanhos_disponiveis = list(set(todos_tamanhos))
-    
-    # Garante que a cor e tamanho do produto atual estejam na lista
-    if produto.cor and produto.cor not in cores_disponiveis:
-        cores_disponiveis.append(produto.cor)
-    
-    if produto.tamanho and produto.tamanho not in tamanhos_disponiveis:
-        tamanhos_disponiveis.append(produto.tamanho)
-    
-    # Ordena cores por uma ordem específica se quiser
-    ordem_cores = ['BRANCA', 'PRETA', 'CINZA', 'AZUL', 'VERMELHA', 'VERDE', 'BEGE', 'ROSA']
-    cores_disponiveis.sort(key=lambda x: ordem_cores.index(x) if x in ordem_cores else len(ordem_cores))
-    
-    # Ordena tamanhos
-    ordem_tamanhos = ['PP', 'P', 'M', 'G', 'GG']
-    tamanhos_disponiveis.sort(key=lambda x: ordem_tamanhos.index(x) if x in ordem_tamanhos else len(ordem_tamanhos))
+        produto.cores_disponiveis = []
+        produto.tamanhos_disponiveis = []
     
     mostrar_admin = (is_admin == "true")
     return templates.TemplateResponse(
         "produto.html",
-        {
-            "request": request, 
-            "produto": produto, 
-            "is_admin": mostrar_admin, 
-            "usuario": usuario,
-            "cores_disponiveis": cores_disponiveis,
-            "tamanhos_disponiveis": tamanhos_disponiveis,
-            "obter_cor_css": obter_cor_css  # ✅ ADICIONA A FUNÇÃO AQUI
-        }
+        {"request": request, "produto": produto, "is_admin": mostrar_admin, "usuario": usuario}
     )
-@router.get("/api/produto/{produto_id}")
-async def obter_produto_detalhes(produto_id: int, db: Session = Depends(get_db)):
-    """Retorna detalhes completos de um produto"""
-    produto = db.query(Produto).filter(Produto.id == produto_id).first()
-    if not produto:
-        raise HTTPException(status_code=404, detail="Produto não encontrado")
-    
-    categoria = db.query(Categoria).filter(Categoria.id == produto.categoria_id).first() if produto.categoria_id else None
-    
-    return {
-        "id": produto.id,
-        "nome": produto.nome,
-        "descricao": produto.descricao,
-        "preco": float(produto.preco),
-        "quantidade": produto.quantidade,
-        "cor": produto.cor,
-        "tamanho": produto.tamanho,
-        "imagem": produto.imagem,
-        "categoria_id": produto.categoria_id,
-        "categoria": categoria.nome if categoria else None
-    }
-# Adicione esta rota ao produtos_controller.py
-@router.get("/api/produto/buscar-por-cor-tamanho")
-async def buscar_produto_por_cor_tamanho(
-    nome: str,
-    cor: str,
-    tamanho: str,
-    db: Session = Depends(get_db)
-):
-    """
-    Busca um produto pelo nome, cor e tamanho
-    """
-    print(f"Buscando produto: nome={nome}, cor={cor}, tamanho={tamanho}")
-    
-    # Busca produto com mesmo nome, cor e tamanho
-    produto = db.query(Produto).filter(
-        Produto.nome == nome,
-        Produto.cor == cor,
-        Produto.tamanho == tamanho
-    ).first()
-    
-    if produto:
-        return {
-            "id": produto.id,
-            "nome": produto.nome,
-            "cor": produto.cor,
-            "tamanho": produto.tamanho,
-            "preco": float(produto.preco),
-            "quantidade": produto.quantidade,
-            "imagem": produto.imagem
-        }
-    
-    # Se não encontrou, tenta buscar produtos similares
-    produtos_similares = db.query(Produto).filter(
-        Produto.nome == nome,
-        Produto.cor == cor
-    ).all()
-    
-    if produtos_similares:
-        # Retorna o primeiro produto com essa cor (independente do tamanho)
-        produto = produtos_similares[0]
-        return {
-            "id": produto.id,
-            "nome": produto.nome,
-            "cor": produto.cor,
-            "tamanho": produto.tamanho,
-            "preco": float(produto.preco),
-            "quantidade": produto.quantidade,
-            "imagem": produto.imagem
-        }
-    
-    return None
-# Adicione esta rota no produtos_controller.py (antes ou depois das outras rotas de API)
-@router.get("/api/produto/buscar")
-async def buscar_produto_por_cor_tamanho(
-    nome: str,
-    cor: str,
-    tamanho: str,
-    db: Session = Depends(get_db)
-):
-    """
-    Busca um produto pelo nome, cor e tamanho
-    """
-    print(f"Buscando produto: nome={nome}, cor={cor}, tamanho={tamanho}")
-    
-    # Primeiro: busca exata (nome, cor e tamanho)
-    produto = db.query(Produto).filter(
-        Produto.nome == nome,
-        Produto.cor == cor,
-        Produto.tamanho == tamanho
-    ).first()
-    
-    if produto:
-        print(f"Produto encontrado (exato): {produto.id} - {produto.nome}")
-        return {
-            "id": produto.id,
-            "nome": produto.nome,
-            "descricao": produto.descricao,
-            "cor": produto.cor,
-            "tamanho": produto.tamanho,
-            "preco": float(produto.preco),
-            "quantidade": produto.quantidade,
-            "imagem": produto.imagem
-        }
-    
-    # Segundo: busca por nome e cor (qualquer tamanho)
-    produto = db.query(Produto).filter(
-        Produto.nome == nome,
-        Produto.cor == cor
-    ).first()
-    
-    if produto:
-        print(f"Produto encontrado (nome+cor): {produto.id} - {produto.nome}")
-        return {
-            "id": produto.id,
-            "nome": produto.nome,
-            "descricao": produto.descricao,
-            "cor": produto.cor,
-            "tamanho": produto.tamanho,
-            "preco": float(produto.preco),
-            "quantidade": produto.quantidade,
-            "imagem": produto.imagem
-        }
-    
-    # Terceiro: busca por nome e tamanho (qualquer cor)
-    produto = db.query(Produto).filter(
-        Produto.nome == nome,
-        Produto.tamanho == tamanho
-    ).first()
-    
-    if produto:
-        print(f"Produto encontrado (nome+tamanho): {produto.id} - {produto.nome}")
-        return {
-            "id": produto.id,
-            "nome": produto.nome,
-            "descricao": produto.descricao,
-            "cor": produto.cor,
-            "tamanho": produto.tamanho,
-            "preco": float(produto.preco),
-            "quantidade": produto.quantidade,
-            "imagem": produto.imagem
-        }
-    
-    print("Nenhum produto encontrado")
-    return None
+
 # ----------------- LISTA ADMIN ----------------- #
 @router.get("/lista_adm", response_class=HTMLResponse, dependencies=[Depends(admin_cookie_required)])
 async def lista_admin(request: Request, admin_user: str = Cookie(default=""), db: Session = Depends(get_db)):
@@ -426,43 +224,6 @@ async def lista_admin(request: Request, admin_user: str = Cookie(default=""), db
             "admin_user": admin_user  # ✅ PASSA O NOME DO ADMIN
         }
     )
-
-# Adicione esta rota no produtos_controller.py
-@router.get("/api/produto/variacoes")
-async def buscar_variacoes_produto(
-    nome: str,
-    db: Session = Depends(get_db)
-):
-    """
-    Busca todas as variações (cores/tamanhos) de um produto pelo nome
-    """
-    print(f"Buscando variações para produto: {nome}")
-    
-    # Busca todos os produtos com o mesmo nome
-    produtos = db.query(Produto).filter(Produto.nome == nome).all()
-    
-    if not produtos:
-        print("Nenhum produto encontrado com esse nome")
-        return []
-    
-    print(f"Encontrados {len(produtos)} produtos com nome '{nome}'")
-    
-    # Formata os dados para retorno
-    variacoes = []
-    for produto in produtos:
-        variacoes.append({
-            "id": produto.id,
-            "nome": produto.nome,
-            "descricao": produto.descricao or "Peça essencial e versátil. Confeccionada em algodão macio, com modelagem regular e gola careca. Ideal para o dia a dia ou composições estilosas.",
-            "preco": float(produto.preco),
-            "quantidade": produto.quantidade,
-            "cor": produto.cor,
-            "tamanho": produto.tamanho,
-            "imagem": produto.imagem or "default.png",
-            "categoria_id": produto.categoria_id
-        })
-    
-    return variacoes
 # ----------------- LOGIN ADMIN ----------------- #
 @router.get("/login_adm", response_class=HTMLResponse)
 async def login_form(request: Request):
@@ -470,13 +231,13 @@ async def login_form(request: Request):
 
 # Lista de administradores autorizados
 ADMINS_AUTORIZADOS = {
-    "admin": "sodaz",
-    "marlon": "sodaz", 
-    "maria": "sodaz",
-    "thiago": "sodaz",
-    "kayc": "sodaz",
-    "matheus": "sodaz",
-    "sophia": "sodaz"
+    "admin": "1234",
+    "marlon": "1234", 
+    "maria": "1234",
+    "thiago": "1234",
+    "kayc": "1234",
+    "matheus": "1234",
+    "sophia": "1234"
 }
 
 @router.post("/login_adm")
@@ -600,10 +361,10 @@ async def login(request: Request):
     return templates.TemplateResponse("login.html", {"request": request})
 
 @router.get("/carrinho", response_class=HTMLResponse)
-async def mostrar_carrinho(request: Request, usuario: Usuario = Depends(get_usuario_atual)):
+async def mostrar_carrinho(request: Request):
     return templates.TemplateResponse(
         "carrinho.html",
-        {"request": request,"usuario": usuario or None, "produtos": [], "total_itens": 0}
+        {"request": request, "produtos": [], "total_itens": 0}
     )
 
 # ✅ ROTA DO CHECKOUT (adicionar no final do arquivo)
@@ -729,17 +490,3 @@ async def debug_simples(produto_id: int, db: Session = Depends(get_db)):
             } for v in variacoes
         ]
     }
-
-
-@router.get("/sobre", response_class=HTMLResponse)
-async def sobre(request: Request):
-    # Obtém o usuário da sessão (se estiver logado)
-    usuario = request.session.get("usuario")
-    
-    return templates.TemplateResponse(
-        "sobre.html", 
-        {
-            "request": request,
-            "usuario": usuario  # Passa o usuário para o template
-        }
-    )

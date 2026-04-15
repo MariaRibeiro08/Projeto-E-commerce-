@@ -71,3 +71,9 @@ app.include_router(frete_router)  # ✅ NOVO: SISTEMA DE FRETE
 @app.get("/")
 def root():
     return {"status": "Servidor rodando corretamente 🚀"}
+
+# main.py - Adicione no topo com os outros imports
+from api_mobile import router as mobile_router
+
+# Depois de criar o app, adicione (antes de app.include_router dos outros)
+app.include_router(mobile_router)

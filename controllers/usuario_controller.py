@@ -22,7 +22,7 @@ def cadastrar_usuario(
     request: Request,
     nome: str = Form(...),
     email: str = Form(...),
-    telefone: str = Form(...),
+    telefone: int = Form(...),
     senha: str = Form(...),
     db: Session = Depends(get_db)
 ):
@@ -96,5 +96,3 @@ def debug_cookies(request: Request):
         "admin_cookie": is_admin,
         "all_cookies": dict(request.cookies)
     }
-
-

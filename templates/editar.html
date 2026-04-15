@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>Editar Produto - Painel Admin</title>
   <link rel="icon" href="{{ url_for('static', path='uploads/Logo_SF_Branca.PNG') }}" type="image/x-icon">
   <style>
+    /* RESET */
     * {
       margin: 0;
       padding: 0;
@@ -81,7 +82,6 @@
     form input[type="text"],
     form input[type="number"],
     form input[type="file"],
-    form select,
     form textarea {
       padding: 10px 12px;
       border-radius: 6px;
@@ -90,34 +90,50 @@
       width: 100%;
     }
 
-    textarea {
-      resize: vertical;
-      min-height: 80px;
+    form input[type="number"]::-webkit-inner-spin-button,
+    form input[type="number"]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
     }
 
-    .categoria-section {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 10px;
-      align-items: end;
-    }
-
-    .btn-nova-categoria {
-      background: #6c757d;
-      color: white;
+    button[type="submit"] {
+      background-color: #0078ff;
+      color: #fff;
       border: none;
-      padding: 10px 15px;
+      padding: 12px 20px;
+      font-size: 18px;
       border-radius: 6px;
       cursor: pointer;
-      font-size: 14px;
-      white-space: nowrap;
+      transition: 0.3s;
     }
 
-    .btn-nova-categoria:hover {
-      background: #545b62;
+    button[type="submit"]:hover {
+      background-color: #0052b1;
     }
 
-    /* CORES */
+    .voltar {
+      display: inline-block;
+      margin-top: 20px;
+      color: #0078ff;
+      text-decoration: none;
+      font-weight: 500;
+      transition: 0.3s;
+    }
+
+    .voltar:hover {
+      color: #0052b1;
+    }
+
+    .imagem-atual {
+      display: block;
+      margin-top: 5px;
+      margin-bottom: 10px;
+      max-width: 120px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    /* Estilo das cores */
     .cores {
       display: flex;
       gap: 12px;
@@ -149,7 +165,7 @@
       transform: scale(1.1);
     }
 
-    /* TAMANHOS */
+    /* Estilo tamanhos */
     .tamanhos {
       display: flex;
       gap: 10px;
@@ -172,44 +188,6 @@
       color: #fff;
       border-color: #0078ff;
     }
-
-    button[type="submit"] {
-      background-color: #0078ff;
-      color: #fff;
-      border: none;
-      padding: 12px 20px;
-      font-size: 18px;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: 0.3s;
-      margin-top: 20px;
-    }
-
-    button[type="submit"]:hover {
-      background-color: #0052b1;
-    }
-
-    .voltar {
-      display: inline-block;
-      margin-top: 20px;
-      color: #0078ff;
-      text-decoration: none;
-      font-weight: 500;
-      transition: 0.3s;
-    }
-
-    .voltar:hover {
-      color: #0052b1;
-    }
-
-    .imagem-atual {
-      display: block;
-      margin-top: 5px;
-      margin-bottom: 10px;
-      max-width: 120px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-    }
   </style>
 </head>
 <body>
@@ -226,133 +204,61 @@
     <h1>Editar Produto</h1>
 
     <form action="/editar/{{ produto.id }}" method="post" enctype="multipart/form-data">
-      <!-- Dados Básicos do Produto -->
-      <label for="nome">Nome do Produto:</label>
+      <label for="nome">Nome:</label>
       <input type="text" name="nome" id="nome" value="{{ produto.nome }}" required>
 
-      <label for="preco">Preço (R$):</label>
-      <input type="number" name="preco" id="preco" step="0.01" min="0" value="{{ produto.preco }}" required>
+      <label for="descricao">Descrição:</label>
+      <textarea name="descricao" id="descricao" rows="3" required>{{ produto.descricao }}</textarea>
+
+      <label for="preco">Preço:</label>
+      <input type="number" name="preco" id="preco" value="{{ produto.preco }}" step="0.01" required>
 
       <label for="quantidade">Quantidade:</label>
-      <input type="number" name="quantidade" id="quantidade" min="1" value="{{ produto.quantidade }}" required>
+      <input type="number" name="quantidade" id="quantidade" value="{{ produto.quantidade }}" required>
 
-      <label for="tamanho">Tamanho:</label>
+      <label>Tamanho:</label>
       <div class="tamanhos">
-        {% set tamanhos = ['PP', 'P', 'M', 'G', 'GG'] %}
-        {% for tamanho in tamanhos %}
-        <input type="radio" name="tamanho" id="tamanho_{{ tamanho }}" value="{{ tamanho }}" 
-               {% if produto.tamanho == tamanho %}checked{% endif %}>
-        <label for="tamanho_{{ tamanho }}">{{ tamanho }}</label>
-        {% endfor %}
+        <input type="radio" name="tamanho" id="p" value="P" {% if produto.tamanho == 'P' %}checked{% endif %}>
+        <label for="p">P</label>
+
+        <input type="radio" name="tamanho" id="m" value="M" {% if produto.tamanho == 'M' %}checked{% endif %}>
+        <label for="m">M</label>
+
+        <input type="radio" name="tamanho" id="g" value="G" {% if produto.tamanho == 'G' %}checked{% endif %}>
+        <label for="g">G</label>
+
+        <input type="radio" name="tamanho" id="gg" value="GG" {% if produto.tamanho == 'GG' %}checked{% endif %}>
+        <label for="gg">GG</label>
       </div>
 
-      <label for="cor">Cor:</label>
+      <label>Cor:</label>
       <div class="cores">
-        {% set cores = [
-          ('Preto', 'black'),
-          ('Branco', 'white'),
-          ('Vermelho', 'red'),
-          ('Azul', 'blue'),
-          ('Verde', 'green'),
-          ('Amarelo', 'yellow'),
-          ('Rosa', 'pink'),
-          ('Cinza', 'gray')
-        ] %}
-        {% for cor_nome, cor_valor in cores %}
         <label>
-          <input type="radio" name="cor" value="{{ cor_nome }}" 
-                 {% if produto.cor == cor_nome %}checked{% endif %}>
-          <span class="bolinha" style="background-color: {{ cor_valor }}; 
-                {% if cor_valor == 'white' %}border: 1px solid #ccc;{% endif %}"></span>
+          <input type="radio" name="cor" value="Preto" {% if produto.cor == 'Preto' %}checked{% endif %}>
+          <span class="bolinha" style="background-color: black;"></span>
         </label>
-        {% endfor %}
+        <label>
+          <input type="radio" name="cor" value="Branco" {% if produto.cor == 'Branco' %}checked{% endif %}>
+          <span class="bolinha" style="background-color: white; border: 1px solid #ccc;"></span>
+        </label>
+        <label>
+          <input type="radio" name="cor" value="Vermelho" {% if produto.cor == 'Vermelho' %}checked{% endif %}>
+          <span class="bolinha" style="background-color: red;"></span>
+        </label>
+        <label>
+          <input type="radio" name="cor" value="Azul" {% if produto.cor == 'Azul' %}checked{% endif %}>
+          <span class="bolinha" style="background-color: blue;"></span>
+        </label>
       </div>
 
-      <!-- Seção de Categoria -->
-      <label for="categoria_id">Categoria:</label>
-      <div class="categoria-section">
-        <select name="categoria_id" id="categoria_id" required>
-          <option value="">Selecione uma categoria...</option>
-          {% for categoria in categorias %}
-          <option value="{{ categoria.id }}" 
-                  {% if produto.categoria_id == categoria.id %}selected{% endif %}>
-            {{ categoria.nome }}
-          </option>
-          {% endfor %}
-        </select>
-        <button type="button" class="btn-nova-categoria" onclick="abrirModalCategoria()">
-          + Nova Categoria
-        </button>
-      </div>
+      <label>Imagem atual:</label>
+      <img src="{{ url_for('static', path='uploads/' + (produto.imagem or 'sem-imagem.png')) }}" alt="Imagem Atual" class="imagem-atual">
 
-      <label for="descricao">Descrição:</label>
-      <textarea name="descricao" id="descricao" required>{{ produto.descricao }}</textarea>
-
-      <label for="imagem_atual">Imagem Atual:</label>
-      <img src="{{ url_for('static', path='uploads/' + produto.imagem) if produto.imagem else url_for('static', path='uploads/sem-imagem.png') }}" 
-           alt="Imagem Atual" class="imagem-atual">
-
-      <label for="imagem">Nova Imagem (opcional):</label>
-      <input type="file" name="imagem" id="imagem" accept="image/*">
+      <label for="imagem">Nova imagem (opcional):</label>
+      <input type="file" name="imagem" id="imagem">
 
       <button type="submit">Atualizar Produto</button>
     </form>
-
-    <a href="/lista_adm" class="voltar">← Voltar para Lista de Produtos</a>
   </main>
-
-  <!-- Modal para Nova Categoria -->
-  <div id="modalCategoria" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000;">
-    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 30px; border-radius: 8px; width: 400px;">
-      <h3>Nova Categoria</h3>
-      <form id="formCategoria">
-        <label for="nova_categoria">Nome da Categoria:</label>
-        <input type="text" id="nova_categoria" name="nova_categoria" required style="width: 100%; padding: 8px; margin: 10px 0;">
-        <div style="display: flex; gap: 10px; margin-top: 20px;">
-          <button type="button" onclick="fecharModalCategoria()" style="padding: 8px 16px; background: #6c757d; color: white; border: none; border-radius: 4px; cursor: pointer;">Cancelar</button>
-          <button type="button" onclick="criarCategoria()" style="padding: 8px 16px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">Criar</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <script>
-    // Funções para categorias
-    function abrirModalCategoria() {
-      document.getElementById('modalCategoria').style.display = 'block';
-    }
-
-    function fecharModalCategoria() {
-      document.getElementById('modalCategoria').style.display = 'none';
-      document.getElementById('nova_categoria').value = '';
-    }
-
-    async function criarCategoria() {
-      const nome = document.getElementById('nova_categoria').value.trim();
-      if (!nome) {
-        alert('Digite um nome para a categoria');
-        return;
-      }
-
-      try {
-        const response = await fetch('/categorias/nova', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-          },
-          body: `nome=${encodeURIComponent(nome)}`
-        });
-
-        if (response.ok) {
-          // Recarrega a página para atualizar as categorias
-          location.reload();
-        } else {
-          alert('Erro ao criar categoria');
-        }
-      } catch (error) {
-        alert('Erro ao criar categoria');
-      }
-    }
-  </script>
 </body>
 </html>

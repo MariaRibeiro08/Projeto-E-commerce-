@@ -33,10 +33,6 @@ async def dashboard_usuario(
     for pedido in pedidos:
         itens_pedido = db.query(ItemPedido).filter(ItemPedido.pedido_id == pedido.id).all()
         
-        # ✅ CALCULAR VALOR CORRETO (produtos + frete)
-        valor_frete = float(pedido.valor_frete) if pedido.valor_frete else 0.00
-        valor_total_correto = float(pedido.valor_total) + valor_frete
-        
         # Buscar detalhes dos produtos
         itens_detalhados = []
         for item in itens_pedido:
@@ -54,23 +50,15 @@ async def dashboard_usuario(
             'id': pedido.id,
             'data_pedido': pedido.data_pedido.strftime('%d/%m/%Y %H:%M'),
             'status': pedido.status,
-            'valor_total': valor_total_correto,  # ✅ AGORA COM FRETE
-            'valor_frete': valor_frete,  # ✅ VALOR DO FRETE
-            'valor_produtos': float(pedido.valor_total),  # ✅ VALOR APENAS DOS PRODUTOS
+            'valor_total': float(pedido.valor_total),
             'endereco_entrega': pedido.endereco_entrega,
-            'cep_entrega': pedido.cep_entrega,
             'itens': itens_detalhados
         })
     
-    # ✅ CORREÇÃO: Calcular estatísticas incluindo o frete
+    # Estatísticas do usuário
     total_pedidos = len(pedidos)
     pedidos_ativos = len([p for p in pedidos if p.status in ['Em andamento', 'Processando']])
-    
-    # ✅ CALCULAR TOTAL GASTO INCLUINDO FRETE
-    total_gasto = 0
-    for pedido in pedidos:
-        valor_frete = float(pedido.valor_frete) if pedido.valor_frete else 0.00
-        total_gasto += float(pedido.valor_total) + valor_frete
+    total_gasto = sum(float(p.valor_total) for p in pedidos)
     
     return templates.TemplateResponse("dashboard.html", {
         "request": request,
@@ -79,7 +67,7 @@ async def dashboard_usuario(
         "estatisticas": {
             "total_pedidos": total_pedidos,
             "pedidos_ativos": pedidos_ativos,
-            "total_gasto": total_gasto  # ✅ AGORA COM FRETE
+            "total_gasto": total_gasto
         }
     })
 
@@ -237,70 +225,3 @@ async def cancelar_pedido(
     db.commit()
     
     return RedirectResponse("/dashboard/pedidos?cancelado=true", status_code=303)
-
-@router.get("/perfil", response_class=HTMLResponse)
-async def perfil_usuario(
-    request: Request,
-    usuario: Usuario = Depends(login_required),
-    db: Session = Depends(get_db)
-):
-    """
-    Página do perfil do usuário
-    """
-    return templates.TemplateResponse("perfil.html", {
-        "request": request,
-        "usuario": usuario,
-        "estatisticas": {
-            "total_pedidos": 0,  # Você pode calcular essas estatísticas
-            "pedidos_ativos": 0,
-            "total_gasto": 0.0
-        }
-    })
-
-# ✅ NOVA ROTA: API para detalhes do pedido
-@router.get("/api/pedidos/{pedido_id}")
-async def api_detalhes_pedido(
-    pedido_id: int,
-    usuario: Usuario = Depends(login_required),
-    db: Session = Depends(get_db)
-):
-    """
-    API para obter detalhes de um pedido específico
-    """
-    pedido = db.query(Pedido).filter(
-        Pedido.id == pedido_id,
-        Pedido.usuario_id == usuario.id
-    ).first()
-    
-    if not pedido:
-        raise HTTPException(status_code=404, detail="Pedido não encontrado")
-    
-    # Buscar itens do pedido com detalhes dos produtos
-    itens_pedido = db.query(ItemPedido).filter(ItemPedido.pedido_id == pedido.id).all()
-    
-    itens_detalhados = []
-    for item in itens_pedido:
-        produto = db.query(Produto).filter(Produto.id == item.produto_id).first()
-        if produto:
-            itens_detalhados.append({
-                'id': item.id,
-                'produto_id': produto.id,
-                'nome': produto.nome,
-                'quantidade': item.quantidade,
-                'preco_unitario': float(produto.preco),
-                'subtotal': float(item.subtotal),
-                'imagem': produto.imagem or 'static/default.png',
-                'cor': produto.cor,
-                'tamanho': produto.tamanho
-            })
-    
-    return {
-        'id': pedido.id,
-        'data_pedido': pedido.data_pedido.strftime('%d/%m/%Y às %H:%M'),
-        'status': pedido.status,
-        'valor_total': float(pedido.valor_total),
-        'valor_frete': float(pedido.valor_frete) if pedido.valor_frete else 0.00,
-        'endereco_entrega': pedido.endereco_entrega or 'Endereço não informado',
-        'cep_entrega': pedido.cep_entrega or 'CEP não informado',
-        'itens': itens_detalhados
-    }

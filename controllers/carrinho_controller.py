@@ -163,8 +163,6 @@ async def adicionar_ao_carrinho(
 async def finalizar_pedido(
     request: Request,
     endereco: str = Form(None),
-    frete: float = Form(0.00),  # ✅ NOVO: parâmetro para frete
-    cep_entrega: str = Form(None),  # ✅ NOVO: CEP de entrega
     db: Session = Depends(get_db)
 ):
     """
@@ -176,12 +174,8 @@ async def finalizar_pedido(
         try:
             data = await request.json()
             endereco = data.get("endereco", "")
-            frete = data.get("frete", 0.00)  # ✅ NOVO: obtém frete do JSON
-            cep_entrega = data.get("cep_entrega", "")  # ✅ NOVO: obtém CEP
         except Exception:
             endereco = ""
-            frete = 0.00
-            cep_entrega = ""
 
     usuario = get_usuario_atual(request, db)
     if not usuario:
@@ -211,18 +205,15 @@ async def finalizar_pedido(
                 )
             produto.quantidade -= item.quantidade
 
-    # ✅ ATUALIZA O PEDIDO COM FRETE E CEP
+    # Finaliza o pedido
     pedido.endereco_entrega = endereco
-    pedido.valor_frete = frete  # ✅ SALVA O VALOR DO FRETE
-    pedido.cep_entrega = cep_entrega  # ✅ SALVA O CEP
     pedido.status = "Finalizado"
     db.commit()
 
     return JSONResponse({
         "mensagem": "Pedido finalizado com sucesso",
         "pedido_id": pedido.id,
-        "valor_total": float(pedido.valor_total),
-        "valor_frete": float(frete)  # ✅ RETORNA O FRETE NA RESPOSTA
+        "valor_total": float(pedido.valor_total)
     })
 
 
