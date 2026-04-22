@@ -2,7 +2,7 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Use seu IP
-const API_URL = 'http://192.168.0.135:8000';
+const API_URL = 'https://zados.canadacentral.cloudapp.azure.com';
 
 const api = axios.create({
   baseURL: API_URL,
